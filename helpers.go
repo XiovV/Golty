@@ -12,6 +12,7 @@ import (
 )
 
 func GetChannelVideoData(channelId string) (string, string) {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	requestURL := API_ENDPOINT_ID + channelId + "&" + MAX_RESULTS + "&" + ORDER_BY + "&" + TYPE + "&key=" + API_KEY
 
 	resp, err := http.Get(requestURL)
@@ -36,6 +37,7 @@ func GetChannelVideoData(channelId string) (string, string) {
 }
 
 func GetUserUploadsID(channelName string) string {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	requestURL := API_ENDPOINT_NAME + channelName + "&key=" + API_KEY
 
 	resp, err := http.Get(requestURL)
@@ -60,6 +62,7 @@ func GetUserUploadsID(channelName string) string {
 }
 
 func GetUserVideoData(uploadsId string) (string, string) {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	requestURL := API_ENDPOINT_PLAYLIST + uploadsId + "&maxResults=2" + "&key=" + API_KEY
 
 	resp, err := http.Get(requestURL)
@@ -84,6 +87,7 @@ func GetUserVideoData(uploadsId string) (string, string) {
 }
 
 func DownloadVideoAndAudio(videoID, videoTitle string) {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	video, err := youtube.Get(videoID)
 	if err != nil {
 		log.Panic(err)
@@ -98,9 +102,10 @@ func DownloadVideoAndAudio(videoID, videoTitle string) {
 }
 
 func DownloadAudio(videoID, videoTitle string) {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	video, err := youtube.Get(videoID)
 	if err != nil {
-		log.Panic(err)
+		log.Panic("asdadasd", err)
 	}
 
 	option := &youtube.Option{
@@ -113,6 +118,7 @@ func DownloadAudio(videoID, videoTitle string) {
 }
 
 func DownloadVideo(videoID, videoTitle string) {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	video, err := youtube.Get(videoID)
 	if err != nil {
 		log.Panic(err)
@@ -127,6 +133,7 @@ func DownloadVideo(videoID, videoTitle string) {
 }
 
 func UpdateChannelsDatabase(channelURL string) {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	jsonFile, err := os.Open("channels.json")
 	if err != nil {
 		log.Fatal(err)

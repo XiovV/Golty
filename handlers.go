@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"text/template"
 )
 
@@ -17,24 +19,40 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	channelURL := r.FormValue("channelURL")
+	downloadMode := r.FormValue("mode")
 	UpdateChannelsDatabase(channelURL)
 
-	// db := ReadDatabase()
+	channelName := strings.Split(channelURL, "/")[4]
+	channelType := strings.Split(channelURL, "/")[3]
 
-	// newDb := append(db, Database{Channels: []Channel{Channel{ChannelURL: "test2"}}})
-	// fmt.Println("newDb: ", newDb)
-	// downloadMode := r.FormValue("mode")
+	if channelType == "user" {
+		fmt.Println("USER")
+		uploadsId := GetUserUploadsID("NewRetroWave")
+		videoId, videoTitle := GetUserVideoData(uploadsId)
+		if downloadMode == "Audio Only" {
+			DownloadAudio(videoId, videoTitle)
+		} else if downloadMode == "Video Only" {
+			DownloadVideo(videoId, videoTitle)
+		} else if downloadMode == "Video And Audio" {
+			DownloadVideo(videoId, videoTitle)
+		}
+	} else if channelType == "channel" {
+		fmt.Println("CHANNEL")
+		videoId, videoTitle := GetChannelVideoData(channelName)
+		fmt.Println(videoId, videoTitle)
+		if downloadMode == "Audio Only" {
+			DownloadAudio(videoId, videoTitle)
+		} else if downloadMode == "Video Only" {
+			DownloadVideo(videoId, videoTitle)
+		} else if downloadMode == "Video And Audio" {
+			DownloadVideo(videoId, videoTitle)
+		}
+	}
 
-	// data := Database{
-	// 	Channels: []Channel{
-	// 		Channel{ChannelURL: channelURL},
-	// 	},
-	// 	DownloadedVideos: []DownloadedVideo{
-	// 		DownloadedVideo{VideoID: "adasdasd"},
-	// 	},
-	// }
+	t, err := template.ParseFiles("static/index.html")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// file, _ := json.MarshalIndent(data, "", " ")
-
-	// _ = ioutil.WriteFile("database.json", file, 0644)
+	t.Execute(w, nil)
 }
