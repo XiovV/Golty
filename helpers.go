@@ -83,7 +83,7 @@ func GetUserVideoData(uploadsId string) (string, string) {
 
 	json.Unmarshal([]byte(string(body)), &video)
 
-	return video.Items[1].Snippet.ResourceID.VideoID, video.Items[1].Snippet.Title
+	return video.Items[0].Snippet.ResourceID.VideoID, video.Items[0].Snippet.Title
 }
 
 func DownloadVideoAndAudio(videoID, videoTitle string) {
@@ -114,6 +114,7 @@ func DownloadAudio(videoID, videoTitle string) {
 		Mp3:    true,
 	}
 	video.Download(0, videoTitle+".mp4", option)
+	fmt.Println("Removing mp4...")
 	os.Remove(videoTitle + ".mp4")
 }
 
@@ -147,18 +148,50 @@ func UpdateChannelsDatabase(channelURL string) {
 
 	json.Unmarshal(byteValue, &db)
 
-	db = append(db, Channel{ChannelURL: channelURL})
+	var exists bool
 
-	result, err := json.Marshal(db)
-	if err != nil {
-		log.Println(err)
+	for _, v := range db {
+		if v.ChannelURL == channelURL {
+			fmt.Printf("%v == %v", v.ChannelURL, channelURL)
+			exists = true
+		} else {
+			exists = false
+		}
 	}
 
-	fmt.Println(string(result))
+	if exists == true {
+		fmt.Println("channel already added")
+	} else {
+		db = append(db, Channel{ChannelURL: channelURL})
 
-	json.Unmarshal(result, &db)
+		result, err := json.Marshal(db)
+		if err != nil {
+			log.Println(err)
+		}
 
-	file, _ := json.MarshalIndent(db, "", " ")
+		fmt.Println(string(result))
 
-	_ = ioutil.WriteFile("channels.json", file, 0644)
+		json.Unmarshal(result, &db)
+
+		file, _ := json.MarshalIndent(db, "", " ")
+
+		_ = ioutil.WriteFile("channels.json", file, 0644)
+	}
+}
+
+func GetChannels() []Channel {
+	jsonFile, err := os.Open("channels.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []Channel
+
+	json.Unmarshal(byteValue, &db)
+
+	return db
 }

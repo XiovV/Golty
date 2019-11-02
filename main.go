@@ -17,20 +17,4 @@ func main() {
 	r.HandleFunc("/addchannel", HandleAddChannel).Methods("POST")
 
 	http.ListenAndServe(":8080", handlers.CORS(headers, methods, origins)(r))
-
-	// channelURL := "https://www.youtube.com/user/NewRetroWave"
-
-	// channelName := strings.Split(channelURL, "/")[4]
-	// channelType := strings.Split(channelURL, "/")[3]
-
-	// if channelType == "user" {
-	// 	uploadsId := GetUserUploadsID(channelName)
-	// 	videoId, videoTitle := GetUserVideoData(uploadsId)
-
-	// 	DownloadVideo(videoId, videoTitle)
-	// } else if channelType == "channel" {
-	// 	videoId, videoTitle := GetChannelVideoData(channelName)
-	// 	fmt.Println(videoId, videoTitle)
-	// }
-
 }

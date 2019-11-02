@@ -27,7 +27,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 	if channelType == "user" {
 		fmt.Println("USER")
-		uploadsId := GetUserUploadsID("NewRetroWave")
+		uploadsId := GetUserUploadsID(channelName)
 		videoId, videoTitle := GetUserVideoData(uploadsId)
 		if downloadMode == "Audio Only" {
 			DownloadAudio(videoId, videoTitle)
@@ -54,5 +54,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	t.Execute(w, nil)
+	channels := GetChannels()
+
+	t.Execute(w, channels)
 }
