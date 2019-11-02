@@ -121,3 +121,7 @@ type UserInformation struct {
 		} `json:"contentDetails"`
 	} `json:"items"`
 }
+
+type Channel struct {
+	ChannelURL string
+}

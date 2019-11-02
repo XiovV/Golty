@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/knadh/go-get-youtube/youtube"
 )
@@ -90,7 +92,66 @@ func DownloadVideoAndAudio(videoID, videoTitle string) {
 	option := &youtube.Option{
 		Rename: false,
 		Resume: true,
+		Mp3:    false,
+	}
+	video.Download(0, videoTitle+".mp4", option)
+}
+
+func DownloadAudio(videoID, videoTitle string) {
+	video, err := youtube.Get(videoID)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	option := &youtube.Option{
+		Rename: false,
+		Resume: true,
 		Mp3:    true,
 	}
 	video.Download(0, videoTitle+".mp4", option)
+	os.Remove(videoTitle + ".mp4")
+}
+
+func DownloadVideo(videoID, videoTitle string) {
+	video, err := youtube.Get(videoID)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	option := &youtube.Option{
+		Rename: false,
+		Resume: true,
+		Mp3:    false,
+	}
+	video.Download(0, videoTitle+".mp4", option)
+}
+
+func UpdateChannelsDatabase(channelURL string) {
+	jsonFile, err := os.Open("channels.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []Channel
+
+	json.Unmarshal(byteValue, &db)
+
+	db = append(db, Channel{ChannelURL: channelURL})
+
+	result, err := json.Marshal(db)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(string(result))
+
+	json.Unmarshal(result, &db)
+
+	file, _ := json.MarshalIndent(db, "", " ")
+
+	_ = ioutil.WriteFile("channels.json", file, 0644)
 }

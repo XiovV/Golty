@@ -1,24 +1,36 @@
 package main
 
 import (
-	"fmt"
-	"strings"
+	"net/http"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	channelURL := "https://www.youtube.com/user/NewRetroWave"
+	r := mux.NewRouter()
+	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	methods := handlers.AllowedMethods([]string{"GET", "POST"})
+	origins := handlers.AllowedOrigins([]string{"*"})
 
-	channelName := strings.Split(channelURL, "/")[4]
-	channelType := strings.Split(channelURL, "/")[3]
+	r.HandleFunc("/", HandleIndex).Methods("GET")
+	r.HandleFunc("/addchannel", HandleAddChannel).Methods("POST")
 
-	if channelType == "user" {
-		uploadsId := GetUserUploadsID(channelName)
-		videoId, videoTitle := GetUserVideoData(uploadsId)
+	http.ListenAndServe(":8080", handlers.CORS(headers, methods, origins)(r))
 
-		DownloadVideoAndAudio(videoId, videoTitle)
-	} else if channelType == "channel" {
-		videoId, videoTitle := GetChannelVideoData(channelName)
-		fmt.Println(videoId, videoTitle)
-	}
+	// channelURL := "https://www.youtube.com/user/NewRetroWave"
+
+	// channelName := strings.Split(channelURL, "/")[4]
+	// channelType := strings.Split(channelURL, "/")[3]
+
+	// if channelType == "user" {
+	// 	uploadsId := GetUserUploadsID(channelName)
+	// 	videoId, videoTitle := GetUserVideoData(uploadsId)
+
+	// 	DownloadVideo(videoId, videoTitle)
+	// } else if channelType == "channel" {
+	// 	videoId, videoTitle := GetChannelVideoData(channelName)
+	// 	fmt.Println(videoId, videoTitle)
+	// }
 
 }
