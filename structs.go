@@ -126,3 +126,8 @@ type Channel struct {
 	ChannelURL       string
 	LatestDownloaded string
 }
+
+type Response struct {
+	Channels []Channel
+	Status   string
+}

@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -82,11 +84,6 @@ func UpdateLatestDownloaded(channelName, videoID string) {
 		}
 	}
 
-	result, err := json.Marshal(db)
-	if err != nil {
-		log.Println(err)
-	}
-
 	writeDb(db)
 }
 
@@ -157,7 +154,7 @@ func GetChannels() []Channel {
 
 func UploadChecker() {
 	for {
-		time.Sleep(2 * time.Second)
+		time.Sleep(10 * time.Second)
 		go CheckNow(nil, "")
 	}
 }
@@ -166,7 +163,25 @@ func CheckNow(channels []string, channelType string) {
 	allChannelsInDb := GetChannels()
 
 	if channels == nil {
-		fmt.Println("Check every channel")
+		for _, item := range allChannelsInDb {
+			channelName := strings.Split(item.ChannelURL, "/")[4]
+			channelType := strings.Split(item.ChannelURL, "/")[3]
+
+			fmt.Println(channelName, channelType)
+
+			if strings.Contains(item.ChannelURL, channelName) {
+				videoId, videoTitle := GetLatestVideo(channelName, channelType)
+
+				if item.LatestDownloaded == videoId {
+					fmt.Println("NOW NEW VIDEOS DETECTED FOR: ", item.ChannelURL)
+				} else {
+					fmt.Println("DOWNLOAD FOR: ", item.ChannelURL)
+					DownloadAudio(videoId, videoTitle)
+					UpdateLatestDownloaded(item.ChannelURL, videoId)
+				}
+			}
+
+		}
 	} else {
 		videoId, videoTitle := GetLatestVideo(channels[0], channelType)
 
@@ -179,7 +194,16 @@ func CheckNow(channels []string, channelType string) {
 					UpdateLatestDownloaded(channels[0], videoId)
 				}
 			}
-
 		}
 	}
+}
+
+func ReturnResponse(w http.ResponseWriter, response string) {
+	t, err := template.ParseFiles("static/index.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	channels := GetChannels()
+	t.Execute(w, Response{Channels: channels, Status: response})
 }
