@@ -123,5 +123,6 @@ type UserInformation struct {
 }
 
 type Channel struct {
-	ChannelURL string
+	ChannelURL       string
+	LatestDownloaded string
 }

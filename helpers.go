@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/knadh/go-get-youtube/youtube"
@@ -57,6 +58,45 @@ func DownloadVideo(videoID, videoTitle string) {
 		Mp3:    false,
 	}
 	video.Download(0, videoTitle+".mp4", option)
+}
+
+func UpdateLatestDownloaded(channelURL, videoID string) {
+	channel := "https://www.youtube.com/user/" + channelURL
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	jsonFile, err := os.Open("channels.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []Channel
+
+	json.Unmarshal(byteValue, &db)
+
+	fmt.Println(db)
+
+	for i, item := range db {
+		if item.ChannelURL == channel {
+			db[i].LatestDownloaded = videoID
+			break
+		}
+	}
+
+	result, err := json.Marshal(db)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(string(result))
+
+	json.Unmarshal(result, &db)
+
+	file, _ := json.MarshalIndent(db, "", " ")
+
+	_ = ioutil.WriteFile("channels.json", file, 0644)
 }
 
 func UpdateChannelsDatabase(channelURL string) {
@@ -132,11 +172,26 @@ func UploadChecker() {
 }
 
 func CheckNow(channels []string, channelType string) {
+	allChannels := GetChannels()
+
 	if channels == nil {
 		fmt.Println("Check every channel")
 	} else {
-		fmt.Println("Checking:", channels[0])
 		videoId, videoTitle := GetLatestVideo(channels[0], channelType)
-		DownloadAudio(videoId, videoTitle)
+
+		fmt.Println("Checking:", channels[0])
+		for _, item := range allChannels {
+			if strings.Contains(item.ChannelURL, channels[0]) {
+				if item.LatestDownloaded == videoId {
+					fmt.Println("No new uploads")
+					break
+				} else {
+					fmt.Println("NEW VIDEO DETECTED")
+					DownloadAudio(videoId, videoTitle)
+					UpdateLatestDownloaded(channels[0], videoId)
+				}
+			}
+
+		}
 	}
 }
