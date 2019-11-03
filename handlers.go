@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -20,7 +19,6 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
 	channelURL := r.FormValue("channelURL")
-	fmt.Println(channelURL)
 	channelName := strings.Split(channelURL, "/")[4]
 	channelType := strings.Split(channelURL, "/")[3]
 
@@ -38,7 +36,6 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	channelType := strings.Split(channelURL, "/")[3]
 
 	if channelType == "user" {
-		fmt.Println("USER")
 		videoId, videoTitle := GetLatestVideo(channelName, channelType)
 		if downloadMode == "Audio Only" {
 			DownloadAudio(videoId, videoTitle)
@@ -48,9 +45,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 			DownloadVideo(videoId, videoTitle)
 		}
 	} else if channelType == "channel" {
-		fmt.Println("CHANNEL")
 		videoId, videoTitle := GetLatestVideo(channelName, channelType)
-		fmt.Println(videoId, videoTitle)
 		if downloadMode == "Audio Only" {
 			DownloadAudio(videoId, videoTitle)
 		} else if downloadMode == "Video Only" {

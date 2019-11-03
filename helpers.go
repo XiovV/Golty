@@ -60,8 +60,7 @@ func DownloadVideo(videoID, videoTitle string) {
 	video.Download(0, videoTitle+".mp4", option)
 }
 
-func UpdateLatestDownloaded(channelURL, videoID string) {
-	channel := "https://www.youtube.com/user/" + channelURL
+func UpdateLatestDownloaded(channelName, videoID string) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	jsonFile, err := os.Open("channels.json")
 	if err != nil {
@@ -76,10 +75,8 @@ func UpdateLatestDownloaded(channelURL, videoID string) {
 
 	json.Unmarshal(byteValue, &db)
 
-	fmt.Println(db)
-
 	for i, item := range db {
-		if item.ChannelURL == channel {
+		if strings.Contains(item.ChannelURL, channelName) {
 			db[i].LatestDownloaded = videoID
 			break
 		}
@@ -90,13 +87,7 @@ func UpdateLatestDownloaded(channelURL, videoID string) {
 		log.Println(err)
 	}
 
-	fmt.Println(string(result))
-
-	json.Unmarshal(result, &db)
-
-	file, _ := json.MarshalIndent(db, "", " ")
-
-	_ = ioutil.WriteFile("channels.json", file, 0644)
+	writeDb(db)
 }
 
 func UpdateChannelsDatabase(channelURL string) {
@@ -118,11 +109,9 @@ func UpdateChannelsDatabase(channelURL string) {
 
 	for _, v := range db {
 		if v.ChannelURL == channelURL {
-			fmt.Println("already exists:", channelURL)
 			exists = true
 			break
 		} else {
-			fmt.Println("doesnt exist:", channelURL)
 			exists = false
 		}
 	}
@@ -132,19 +121,21 @@ func UpdateChannelsDatabase(channelURL string) {
 	} else {
 		db = append(db, Channel{ChannelURL: channelURL})
 
-		result, err := json.Marshal(db)
-		if err != nil {
-			log.Println(err)
-		}
-
-		fmt.Println(string(result))
-
-		json.Unmarshal(result, &db)
-
-		file, _ := json.MarshalIndent(db, "", " ")
-
-		_ = ioutil.WriteFile("channels.json", file, 0644)
+		writeDb(db)
 	}
+}
+
+func writeDb(db []Channel) {
+	result, err := json.Marshal(db)
+	if err != nil {
+		log.Println(err)
+	}
+
+	json.Unmarshal(result, &db)
+
+	file, _ := json.MarshalIndent(db, "", " ")
+
+	_ = ioutil.WriteFile("channels.json", file, 0644)
 }
 
 func GetChannels() []Channel {
@@ -172,21 +163,18 @@ func UploadChecker() {
 }
 
 func CheckNow(channels []string, channelType string) {
-	allChannels := GetChannels()
+	allChannelsInDb := GetChannels()
 
 	if channels == nil {
 		fmt.Println("Check every channel")
 	} else {
 		videoId, videoTitle := GetLatestVideo(channels[0], channelType)
 
-		fmt.Println("Checking:", channels[0])
-		for _, item := range allChannels {
+		for _, item := range allChannelsInDb {
 			if strings.Contains(item.ChannelURL, channels[0]) {
 				if item.LatestDownloaded == videoId {
-					fmt.Println("No new uploads")
 					break
 				} else {
-					fmt.Println("NEW VIDEO DETECTED")
 					DownloadAudio(videoId, videoTitle)
 					UpdateLatestDownloaded(channels[0], videoId)
 				}
