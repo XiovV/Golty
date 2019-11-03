@@ -15,6 +15,7 @@ func main() {
 
 	r.HandleFunc("/", HandleIndex).Methods("GET")
 	r.HandleFunc("/addchannel", HandleAddChannel).Methods("POST")
+	r.HandleFunc("/checkchannel", HandleCheckChannel).Methods("POST")
 
 	http.ListenAndServe(":8080", handlers.CORS(headers, methods, origins)(r))
 }

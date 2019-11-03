@@ -5,89 +5,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/knadh/go-get-youtube/youtube"
 )
 
-func GetChannelVideoData(channelId string) (string, string) {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	requestURL := API_ENDPOINT_ID + channelId + "&" + MAX_RESULTS + "&" + ORDER_BY + "&" + TYPE + "&key=" + API_KEY
-
-	resp, err := http.Get(requestURL)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var video ChannelBody
-
-	json.Unmarshal([]byte(string(body)), &video)
-
-	return video.Items[0].ID.VideoID, video.Items[0].Snippet.Title
-}
-
-func GetUserUploadsID(channelName string) string {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	requestURL := API_ENDPOINT_NAME + channelName + "&key=" + API_KEY
-
-	resp, err := http.Get(requestURL)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var user UserInformation
-
-	json.Unmarshal([]byte(string(body)), &user)
-
-	return user.Items[0].ContentDetails.RelatedPlaylists.Uploads
-}
-
-func GetUserVideoData(uploadsId string) (string, string) {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	requestURL := API_ENDPOINT_PLAYLIST + uploadsId + "&maxResults=2" + "&key=" + API_KEY
-
-	resp, err := http.Get(requestURL)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var video NameBody
-
-	json.Unmarshal([]byte(string(body)), &video)
-
-	return video.Items[0].Snippet.ResourceID.VideoID, video.Items[0].Snippet.Title
-}
-
 func DownloadVideoAndAudio(videoID, videoTitle string) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	video, err := youtube.Get(videoID)
 	if err != nil {
 		log.Panic(err)
@@ -152,9 +77,11 @@ func UpdateChannelsDatabase(channelURL string) {
 
 	for _, v := range db {
 		if v.ChannelURL == channelURL {
-			fmt.Printf("%v == %v", v.ChannelURL, channelURL)
+			fmt.Println("already exists:", channelURL)
 			exists = true
+			break
 		} else {
+			fmt.Println("doesnt exist:", channelURL)
 			exists = false
 		}
 	}

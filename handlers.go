@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
-	"text/template"
 )
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +14,27 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	t.Execute(w, nil)
+	t.Execute(w, GetChannels())
+}
+
+func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
+	channelURL := r.FormValue("channelURL")
+	fmt.Println(channelURL)
+	// channelName := strings.Split(channelURL, "/")[4]
+	// channelType := strings.Split(channelURL, "/")[3]
+
+	// if channelType == "user" {
+	// 	uploadsId := GetUserUploadsID(channelName)
+	// 	videoId, videoTitle := GetUserVideoData(uploadsId)
+	// 	DownloadVideoAndAudio(videoId, videoTitle)
+	// 	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
+
+	// } else if channelType == "channel" {
+	// 	videoId, videoTitle := GetChannelVideoData(channelName)
+	// 	DownloadVideoAndAudio(videoId, videoTitle)
+	// 	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
+
+	// }
 }
 
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
@@ -27,8 +47,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 	if channelType == "user" {
 		fmt.Println("USER")
-		uploadsId := GetUserUploadsID(channelName)
-		videoId, videoTitle := GetUserVideoData(uploadsId)
+		videoId, videoTitle := GetLatestVideo(channelName, channelType)
 		if downloadMode == "Audio Only" {
 			DownloadAudio(videoId, videoTitle)
 		} else if downloadMode == "Video Only" {
@@ -38,7 +57,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if channelType == "channel" {
 		fmt.Println("CHANNEL")
-		videoId, videoTitle := GetChannelVideoData(channelName)
+		videoId, videoTitle := GetLatestVideo(channelName, channelType)
 		fmt.Println(videoId, videoTitle)
 		if downloadMode == "Audio Only" {
 			DownloadAudio(videoId, videoTitle)
@@ -49,12 +68,5 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	t, err := template.ParseFiles("static/index.html")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	channels := GetChannels()
-
-	t.Execute(w, channels)
+	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
 }
