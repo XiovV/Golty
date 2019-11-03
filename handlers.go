@@ -18,23 +18,15 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
 	channelURL := r.FormValue("channelURL")
 	fmt.Println(channelURL)
-	// channelName := strings.Split(channelURL, "/")[4]
-	// channelType := strings.Split(channelURL, "/")[3]
+	channelName := strings.Split(channelURL, "/")[4]
+	channelType := strings.Split(channelURL, "/")[3]
 
-	// if channelType == "user" {
-	// 	uploadsId := GetUserUploadsID(channelName)
-	// 	videoId, videoTitle := GetUserVideoData(uploadsId)
-	// 	DownloadVideoAndAudio(videoId, videoTitle)
-	// 	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
+	channel := []string{channelName}
 
-	// } else if channelType == "channel" {
-	// 	videoId, videoTitle := GetChannelVideoData(channelName)
-	// 	DownloadVideoAndAudio(videoId, videoTitle)
-	// 	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
-
-	// }
+	CheckNow(channel, channelType)
 }
 
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {

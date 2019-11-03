@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 
 	"github.com/knadh/go-get-youtube/youtube"
 )
@@ -121,4 +122,21 @@ func GetChannels() []Channel {
 	json.Unmarshal(byteValue, &db)
 
 	return db
+}
+
+func UploadChecker() {
+	for {
+		time.Sleep(2 * time.Second)
+		go CheckNow(nil, "")
+	}
+}
+
+func CheckNow(channels []string, channelType string) {
+	if channels == nil {
+		fmt.Println("Check every channel")
+	} else {
+		fmt.Println("Checking:", channels[0])
+		videoId, videoTitle := GetLatestVideo(channels[0], channelType)
+		DownloadAudio(videoId, videoTitle)
+	}
 }

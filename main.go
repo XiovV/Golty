@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+	go UploadChecker()
+
 	r := mux.NewRouter()
 	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	methods := handlers.AllowedMethods([]string{"GET", "POST"})

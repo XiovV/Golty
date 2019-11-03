@@ -30,8 +30,9 @@
       <button type="submit" class="btn btn-primary mb-2">Add Channel</button>
     </form>
 
-    <h2 class="mt-2">Listening to these channels:</h2>
     <form action="/checkchannel" method="POST">
+    <h2 class="mt-2">Listening to these channels: <span><input type="submit" class="btn btn-primary float-right" value="Check All Now"></span></h2>
+
       <input type="text" name= "channelURL" class="form-control d-none" id="check-now-channel-url">
       <ul class="list-group">
         {{range .}}
