@@ -58,6 +58,9 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, err.Error())
 	}
 
+	// If the directory of the channel doesn't exist on the filesystem, create it
+	CreateDirIfNotExist(channelName)
+
 	if exists == false {
 		Download(channelName, channelType, downloadMode)
 	} else {

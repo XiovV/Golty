@@ -63,7 +63,7 @@ func CheckNow(channel string, channelType string) {
 					fmt.Println("NOW NEW VIDEOS DETECTED FOR: ", item.ChannelURL)
 				} else {
 					fmt.Println("DOWNLOAD FOR: ", item.ChannelURL)
-					DownloadAudio(videoId, videoTitle)
+					DownloadAudio(videoId, videoTitle, channel)
 					UpdateLatestDownloaded(item.ChannelURL, videoId)
 				}
 			}
@@ -77,7 +77,7 @@ func CheckNow(channel string, channelType string) {
 				if item.LatestDownloaded == videoId {
 					break
 				} else {
-					DownloadAudio(videoId, videoTitle)
+					DownloadAudio(videoId, videoTitle, channel)
 					UpdateLatestDownloaded(channel, videoId)
 				}
 			}
@@ -109,4 +109,13 @@ func GetChannelType(channelURL string) (string, error) {
 	}
 
 	return "", fmt.Errorf("channelURL string is either empty or cant be parsed properly")
+}
+
+func CreateDirIfNotExist(dirName string) {
+	if _, err := os.Stat(dirName); os.IsNotExist(err) {
+		err = os.MkdirAll(dirName, 0755)
+		if err != nil {
+			panic(err)
+		}
+	}
 }

@@ -24,7 +24,7 @@ func DownloadVideoAndAudio(videoID, videoTitle string) {
 	video.Download(0, videoTitle+".mp4", option)
 }
 
-func DownloadAudio(videoID, videoTitle string) {
+func DownloadAudio(videoID, videoTitle, channelName string) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	video, err := youtube.Get(videoID)
 	if err != nil {
@@ -41,7 +41,7 @@ func DownloadAudio(videoID, videoTitle string) {
 	os.Remove(videoTitle + ".mp4")
 }
 
-func DownloadVideo(videoID, videoTitle string) {
+func DownloadVideo(videoID, videoTitle, channelName string) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	video, err := youtube.Get(videoID)
 	if err != nil {
@@ -53,27 +53,27 @@ func DownloadVideo(videoID, videoTitle string) {
 		Resume: true,
 		Mp3:    false,
 	}
-	video.Download(0, videoTitle+".mp4", option)
+	video.Download(0, channelName+"/"+videoTitle+".mp4", option)
 }
 
 func Download(channelName, channelType, downloadMode string) {
 	if channelType == "user" {
 		videoId, videoTitle := GetLatestVideo(channelName, channelType)
 		if downloadMode == "Audio Only" {
-			DownloadAudio(videoId, videoTitle)
+			DownloadAudio(videoId, videoTitle, channelName)
 		} else if downloadMode == "Video Only" {
-			DownloadVideo(videoId, videoTitle)
+			DownloadVideo(videoId, videoTitle, channelName)
 		} else if downloadMode == "Video And Audio" {
-			DownloadVideo(videoId, videoTitle)
+			DownloadVideo(videoId, videoTitle, channelName)
 		}
 	} else if channelType == "channel" {
 		videoId, videoTitle := GetLatestVideo(channelName, channelType)
 		if downloadMode == "Audio Only" {
-			DownloadAudio(videoId, videoTitle)
+			DownloadAudio(videoId, videoTitle, channelName)
 		} else if downloadMode == "Video Only" {
-			DownloadVideo(videoId, videoTitle)
+			DownloadVideo(videoId, videoTitle, channelName)
 		} else if downloadMode == "Video And Audio" {
-			DownloadVideo(videoId, videoTitle)
+			DownloadVideo(videoId, videoTitle, channelName)
 		}
 	}
 }
