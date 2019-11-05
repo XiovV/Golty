@@ -55,3 +55,25 @@ func DownloadVideo(videoID, videoTitle string) {
 	}
 	video.Download(0, videoTitle+".mp4", option)
 }
+
+func Download(channelName, channelType, downloadMode string) {
+	if channelType == "user" {
+		videoId, videoTitle := GetLatestVideo(channelName, channelType)
+		if downloadMode == "Audio Only" {
+			DownloadAudio(videoId, videoTitle)
+		} else if downloadMode == "Video Only" {
+			DownloadVideo(videoId, videoTitle)
+		} else if downloadMode == "Video And Audio" {
+			DownloadVideo(videoId, videoTitle)
+		}
+	} else if channelType == "channel" {
+		videoId, videoTitle := GetLatestVideo(channelName, channelType)
+		if downloadMode == "Audio Only" {
+			DownloadAudio(videoId, videoTitle)
+		} else if downloadMode == "Video Only" {
+			DownloadVideo(videoId, videoTitle)
+		} else if downloadMode == "Video And Audio" {
+			DownloadVideo(videoId, videoTitle)
+		}
+	}
+}

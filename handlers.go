@@ -34,9 +34,9 @@ func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
-	// http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
+	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
 
-	ReturnResponse(w, "Checking")
+	// ReturnResponse(w, "Checking")
 
 	CheckNow("", "")
 }
@@ -57,25 +57,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, err.Error())
 	}
 
-	if channelType == "user" {
-		videoId, videoTitle := GetLatestVideo(channelName, channelType)
-		if downloadMode == "Audio Only" {
-			DownloadAudio(videoId, videoTitle)
-		} else if downloadMode == "Video Only" {
-			DownloadVideo(videoId, videoTitle)
-		} else if downloadMode == "Video And Audio" {
-			DownloadVideo(videoId, videoTitle)
-		}
-	} else if channelType == "channel" {
-		videoId, videoTitle := GetLatestVideo(channelName, channelType)
-		if downloadMode == "Audio Only" {
-			DownloadAudio(videoId, videoTitle)
-		} else if downloadMode == "Video Only" {
-			DownloadVideo(videoId, videoTitle)
-		} else if downloadMode == "Video And Audio" {
-			DownloadVideo(videoId, videoTitle)
-		}
-	}
+	Download(channelName, channelType, downloadMode)
 
 	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
 }
