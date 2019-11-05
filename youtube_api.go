@@ -73,7 +73,7 @@ func getUserUploadsID(channelName string) string {
 		log.Fatal(err)
 	}
 
-	var user UserInformation
+	var user UserBody
 
 	json.Unmarshal([]byte(string(body)), &user)
 

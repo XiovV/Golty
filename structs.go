@@ -101,7 +101,7 @@ type NameBody struct {
 	} `json:"items"`
 }
 
-type UserInformation struct {
+type UserBody struct {
 	Kind     string `json:"kind"`
 	Etag     string `json:"etag"`
 	PageInfo struct {
