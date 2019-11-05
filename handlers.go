@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
-	"strings"
 )
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
@@ -19,12 +19,18 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 	channelURL := r.FormValue("channelURL")
-	channelName := strings.Split(channelURL, "/")[4]
-	channelType := strings.Split(channelURL, "/")[3]
+	channelName, err := GetChannelName(channelURL)
+	if err != nil {
+		fmt.Println(err)
+		ReturnResponse(w, err.Error())
+	}
+	channelType, err := GetChannelType(channelURL)
+	if err != nil {
+		fmt.Println(err)
+		ReturnResponse(w, err.Error())
+	}
 
-	channel := []string{channelName}
-
-	CheckNow(channel, channelType)
+	CheckNow(channelName, channelType)
 }
 
 func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +38,7 @@ func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
 
 	ReturnResponse(w, "Checking")
 
-	CheckNow(nil, "")
+	CheckNow("", "")
 }
 
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
@@ -40,8 +46,16 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	downloadMode := r.FormValue("mode")
 	UpdateChannelsDatabase(channelURL)
 
-	channelName := strings.Split(channelURL, "/")[4]
-	channelType := strings.Split(channelURL, "/")[3]
+	channelName, err := GetChannelName(channelURL)
+	if err != nil {
+		fmt.Println(err)
+		ReturnResponse(w, err.Error())
+	}
+	channelType, err := GetChannelType(channelURL)
+	if err != nil {
+		fmt.Println(err)
+		ReturnResponse(w, err.Error())
+	}
 
 	if channelType == "user" {
 		videoId, videoTitle := GetLatestVideo(channelName, channelType)

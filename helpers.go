@@ -10,130 +10,7 @@ import (
 	"os"
 	"strings"
 	"time"
-
-	"github.com/knadh/go-get-youtube/youtube"
 )
-
-func DownloadVideoAndAudio(videoID, videoTitle string) {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
-	video, err := youtube.Get(videoID)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	option := &youtube.Option{
-		Rename: false,
-		Resume: true,
-		Mp3:    false,
-	}
-	video.Download(0, videoTitle+".mp4", option)
-}
-
-func DownloadAudio(videoID, videoTitle string) {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	video, err := youtube.Get(videoID)
-	if err != nil {
-		log.Panic("asdadasd", err)
-	}
-
-	option := &youtube.Option{
-		Rename: false,
-		Resume: true,
-		Mp3:    true,
-	}
-	video.Download(0, videoTitle+".mp4", option)
-	fmt.Println("Removing mp4...")
-	os.Remove(videoTitle + ".mp4")
-}
-
-func DownloadVideo(videoID, videoTitle string) {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	video, err := youtube.Get(videoID)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	option := &youtube.Option{
-		Rename: false,
-		Resume: true,
-		Mp3:    false,
-	}
-	video.Download(0, videoTitle+".mp4", option)
-}
-
-func UpdateLatestDownloaded(channelName, videoID string) {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	jsonFile, err := os.Open("channels.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	var db []Channel
-
-	json.Unmarshal(byteValue, &db)
-
-	for i, item := range db {
-		if strings.Contains(item.ChannelURL, channelName) {
-			db[i].LatestDownloaded = videoID
-			break
-		}
-	}
-
-	writeDb(db)
-}
-
-func UpdateChannelsDatabase(channelURL string) {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	jsonFile, err := os.Open("channels.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	var db []Channel
-
-	json.Unmarshal(byteValue, &db)
-
-	var exists bool
-
-	for _, v := range db {
-		if v.ChannelURL == channelURL {
-			exists = true
-			break
-		} else {
-			exists = false
-		}
-	}
-
-	if exists == true {
-		fmt.Println("channel already added")
-	} else {
-		db = append(db, Channel{ChannelURL: channelURL})
-
-		writeDb(db)
-	}
-}
-
-func writeDb(db []Channel) {
-	result, err := json.Marshal(db)
-	if err != nil {
-		log.Println(err)
-	}
-
-	json.Unmarshal(result, &db)
-
-	file, _ := json.MarshalIndent(db, "", " ")
-
-	_ = ioutil.WriteFile("channels.json", file, 0644)
-}
 
 func GetChannels() []Channel {
 	jsonFile, err := os.Open("channels.json")
@@ -155,17 +32,27 @@ func GetChannels() []Channel {
 func UploadChecker() {
 	for {
 		time.Sleep(10 * time.Second)
-		go CheckNow(nil, "")
+		// go CheckNow(nil, "")
+
+		fmt.Println("Upload Checker running...")
 	}
 }
 
-func CheckNow(channels []string, channelType string) {
+func CheckNow(channel string, channelType string) {
 	allChannelsInDb := GetChannels()
 
-	if channels == nil {
+	// if channel and channelType are both 0 then that means we want to check
+	// for new uploads for all channels in the database
+	if channel == "" && channelType == "" {
 		for _, item := range allChannelsInDb {
-			channelName := strings.Split(item.ChannelURL, "/")[4]
-			channelType := strings.Split(item.ChannelURL, "/")[3]
+			channelName, err := GetChannelName(item.ChannelURL)
+			if err != nil {
+				fmt.Println(err)
+			}
+			channelType, err := GetChannelType(item.ChannelURL)
+			if err != nil {
+				fmt.Println(err)
+			}
 
 			fmt.Println(channelName, channelType)
 
@@ -183,15 +70,15 @@ func CheckNow(channels []string, channelType string) {
 
 		}
 	} else {
-		videoId, videoTitle := GetLatestVideo(channels[0], channelType)
+		videoId, videoTitle := GetLatestVideo(channel, channelType)
 
 		for _, item := range allChannelsInDb {
-			if strings.Contains(item.ChannelURL, channels[0]) {
+			if strings.Contains(item.ChannelURL, channel) {
 				if item.LatestDownloaded == videoId {
 					break
 				} else {
 					DownloadAudio(videoId, videoTitle)
-					UpdateLatestDownloaded(channels[0], videoId)
+					UpdateLatestDownloaded(channel, videoId)
 				}
 			}
 		}
@@ -206,4 +93,20 @@ func ReturnResponse(w http.ResponseWriter, response string) {
 
 	channels := GetChannels()
 	t.Execute(w, Response{Channels: channels, Status: response})
+}
+
+func GetChannelName(channelURL string) (string, error) {
+	if channelURL != "" {
+		return strings.Split(channelURL, "/")[4], nil
+	}
+
+	return "", fmt.Errorf("channelURL string is either empty or cant be parsed properly")
+}
+
+func GetChannelType(channelURL string) (string, error) {
+	if channelURL != "" {
+		return strings.Split(channelURL, "/")[3], nil
+	}
+
+	return "", fmt.Errorf("channelURL string is either empty or cant be parsed properly")
 }

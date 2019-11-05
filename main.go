@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	// go UploadChecker()
+	go UploadChecker()
 
 	r := mux.NewRouter()
 	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
