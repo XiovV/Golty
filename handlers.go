@@ -29,6 +29,7 @@ func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		ReturnResponse(w, err.Error())
 	}
+	fmt.Println("CHECKING")
 
 	CheckNow(channelName, channelType)
 }

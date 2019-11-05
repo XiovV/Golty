@@ -42,7 +42,7 @@
       <input type="text" name= "channelURL" class="form-control d-none" id="check-now-channel-url">
       <ul class="list-group">
         {{range .Channels}}
-          <li onclick="checkNow(this.innerText)" value={{.ChannelURL}} class="list-group-item" >{{.ChannelURL}}<span><input type="submit" class="btn btn-primary float-right" value="Check Now"></span></li>
+          <li onclick="checkNow(this.innerText)" value={{.ChannelURL}} class="list-group-item" >{{.ChannelURL}}<input type="submit" class="btn btn-danger float-right ml-2" value=&times;><input type="submit" class="btn btn-primary float-right" value="Check Now"></li>
         {{end}}
       </ul>
     </form>

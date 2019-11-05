@@ -9,6 +9,8 @@ import (
 )
 
 func DownloadAudio(videoID, videoTitle, channelName string) {
+	path := channelName + "/" + videoTitle + ".mp4"
+
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	video, err := youtube.Get(videoID)
 	if err != nil {
@@ -20,12 +22,13 @@ func DownloadAudio(videoID, videoTitle, channelName string) {
 		Resume: true,
 		Mp3:    true,
 	}
-	video.Download(0, channelName+"/"+videoTitle+".mp4", option)
+	video.Download(0, path, option)
 	fmt.Println("Removing mp4...")
-	os.Remove(videoTitle + ".mp4")
+	os.Remove(path)
 }
 
 func DownloadVideo(videoID, videoTitle, channelName string) {
+	path := channelName + "/" + videoTitle + ".mp4"
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	video, err := youtube.Get(videoID)
 	if err != nil {
@@ -37,7 +40,7 @@ func DownloadVideo(videoID, videoTitle, channelName string) {
 		Resume: true,
 		Mp3:    false,
 	}
-	video.Download(0, channelName+"/"+videoTitle+".mp4", option)
+	video.Download(0, path, option)
 }
 
 func Download(channelName, channelType, downloadMode string) {
@@ -45,18 +48,24 @@ func Download(channelName, channelType, downloadMode string) {
 		videoId, videoTitle := GetLatestVideo(channelName, channelType)
 		if downloadMode == "Audio Only" {
 			DownloadAudio(videoId, videoTitle, channelName)
+			UpdateLatestDownloaded(channelName, videoId)
 		} else if downloadMode == "Video Only" {
+			UpdateLatestDownloaded(channelName, videoId)
 			DownloadVideo(videoId, videoTitle, channelName)
 		} else if downloadMode == "Video And Audio" {
+			UpdateLatestDownloaded(channelName, videoId)
 			DownloadVideo(videoId, videoTitle, channelName)
 		}
 	} else if channelType == "channel" {
 		videoId, videoTitle := GetLatestVideo(channelName, channelType)
 		if downloadMode == "Audio Only" {
+			UpdateLatestDownloaded(channelName, videoId)
 			DownloadAudio(videoId, videoTitle, channelName)
 		} else if downloadMode == "Video Only" {
+			UpdateLatestDownloaded(channelName, videoId)
 			DownloadVideo(videoId, videoTitle, channelName)
 		} else if downloadMode == "Video And Audio" {
+			UpdateLatestDownloaded(channelName, videoId)
 			DownloadVideo(videoId, videoTitle, channelName)
 		}
 	}
