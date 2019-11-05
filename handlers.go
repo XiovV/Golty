@@ -64,6 +64,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 	if exists == false {
 		Download(channelName, channelType, downloadMode)
+		ReturnResponse(w, "Channel added successfully")
 	} else {
 		ReturnResponse(w, "This channel already exists")
 	}
