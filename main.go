@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/handlers"
@@ -8,6 +9,8 @@ import (
 )
 
 func main() {
+	fmt.Println("Server running")
+
 	go UploadChecker()
 
 	r := mux.NewRouter()

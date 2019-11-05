@@ -34,7 +34,7 @@ func UpdateLatestDownloaded(channelName, videoID string) {
 	writeDb(db)
 }
 
-func UpdateChannelsDatabase(channelURL string) {
+func UpdateChannelsDatabase(channelURL string) bool {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	jsonFile, err := os.Open("channels.json")
 	if err != nil {
@@ -55,18 +55,24 @@ func UpdateChannelsDatabase(channelURL string) {
 		if v.ChannelURL == channelURL {
 			exists = true
 			break
+		} else if channelURL == "" {
+			fmt.Println("channelURL can't be empty", channelURL)
+			exists = true
+			break
 		} else {
 			exists = false
 		}
 	}
 
 	if exists == true {
-		fmt.Println("channel already added")
+		fmt.Println("channel already added", channelURL)
+		return true
 	} else {
+		fmt.Println("adding to db: ", channelURL)
 		db = append(db, Channel{ChannelURL: channelURL})
-
 		writeDb(db)
 	}
+	return false
 }
 
 func writeDb(db []Channel) {

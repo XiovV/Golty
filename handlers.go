@@ -44,7 +44,8 @@ func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	channelURL := r.FormValue("channelURL")
 	downloadMode := r.FormValue("mode")
-	UpdateChannelsDatabase(channelURL)
+
+	exists := UpdateChannelsDatabase(channelURL)
 
 	channelName, err := GetChannelName(channelURL)
 	if err != nil {
@@ -57,7 +58,9 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, err.Error())
 	}
 
-	Download(channelName, channelType, downloadMode)
-
-	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
+	if exists == false {
+		Download(channelName, channelType, downloadMode)
+	} else {
+		ReturnResponse(w, "This channel already exists")
+	}
 }

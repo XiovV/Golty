@@ -10,6 +10,12 @@
 </head>
 <body>
   <div class="container">
+    <div class="alert alert-danger alert-dismissible mt-3" role="alert">
+        <strong>Warning: </strong> {{.Status}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
     <form action="/addchannel" method="POST">
       <div class="form-group mt-4">
         <label for="exampleFormControlInput1">Channel URL</label>
@@ -42,11 +48,23 @@
     </form>
     
   </div>
+  
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <script>
-    function checkNow(e) {
-      document.querySelector("#check-now-channel-url").value = e
-    }
-  </script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      let status = {{.Status}}
+  
+      if (status == "") {
+        console.log("There is no status. Don't display any alerts")
+        $(".alert").alert('close')
+      } else {
+        console.log("Display alert")
+      }
+  
+      function checkNow(e) {
+        document.querySelector("#check-now-channel-url").value = e
+      }
+    </script>
 </body>
 </html>
