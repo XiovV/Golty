@@ -40,11 +40,9 @@ func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
-
-	// ReturnResponse(w, "Checking")
-
+	w.Header().Set("Content-Type", "application/json")
 	CheckNow("", "")
+	json.NewEncoder(w).Encode(Response{Type: "In Progress", Message: "Checking all channels"})
 }
 
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {

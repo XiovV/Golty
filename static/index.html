@@ -39,9 +39,8 @@
       </div>
       <button type="submit" class="btn btn-primary mb-2">Add Channel</button>
     </form>
-    <input type="submit" class="btn btn-primary float-right" value="Check All Now">
+    <button class="btn btn-primary float-right" onclick="checkAll()">Check All Now</button>
     <h2 class="mt-2">Listening to these channels: </h2>
-    <input type="text" name= "channelURL" class="form-control d-none" id="check-now-channel-url">
     <ul class="list-group" id="channels">
     </ul>
   </div>
@@ -51,6 +50,14 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <script>
       let channels = [];
+      function checkAll() {
+        fetch("http://localhost:8080/api/check-all")
+        .then(res => res.json())
+        .then(res => {
+          console.log(res)
+        })
+      }
+
       function getChannels() {
         let ul = document.getElementById("channels");
         

@@ -22,7 +22,7 @@ func main() {
 	r.HandleFunc("/api/get-channels", HandleGetChannels).Methods("GET")
 	// r.HandleFunc("/addchannel", HandleAddChannel).Methods("POST")
 	r.HandleFunc("/api/check-channel", HandleCheckChannel).Methods("POST")
-	// r.HandleFunc("/checkall", HandleCheckAll).Methods("POST")
+	r.HandleFunc("/api/check-all", HandleCheckAll).Methods("GET")
 
 	http.ListenAndServe(":8080", handlers.CORS(headers, methods, origins)(r))
 }
