@@ -86,16 +86,6 @@ func CheckNow(channel string, channelType string) Response {
 	return Response{Type: "Error", Message: "Something went wrong"}
 }
 
-// func ReturnResponse(w http.ResponseWriter, response string) {
-// 	t, err := template.ParseFiles("static/index.html")
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	channels := GetChannels()
-// 	t.Execute(w, Response{Channels: channels, Status: response})
-// }
-
 func GetChannelName(channelURL string) (string, error) {
 	if channelURL != "" {
 		return strings.Split(channelURL, "/")[4], nil

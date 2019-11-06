@@ -10,12 +10,16 @@
 </head>
 <body onload="getChannels()">
   <div class="container">
-    <div class="alert alert-danger alert-dismissible mt-3" role="alert">
-        <strong>Warning: </strong> {{.Status}}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+    <div class="alert alert-danger alert-dismissible mt-3 d-none" id="warning" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="alert alert-success alert-dismissible mt-3 d-none" id="success" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <form action="/addchannel" method="POST">
       <div class="form-group mt-4">
         <label for="exampleFormControlInput1">Channel URL</label>
@@ -88,7 +92,17 @@
 
         fetch("http://localhost:8080/api/check-channel", options)
         .then(res => res.json())
-        .then(res => console.log(res))
+        .then(res => {
+          let success = document.getElementById("success");
+
+          console.log(res)
+
+          if (res.Type == "Success") {
+            success.classList.remove("d-none")
+            success.innerHTML = `${res.Message}`
+          }
+         
+        })
         console.log("ID: ", id)
       }
     </script>
