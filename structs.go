@@ -127,7 +127,11 @@ type Channel struct {
 	LatestDownloaded string
 }
 
+type Payload struct {
+	ChannelURL string `json: channelURL`
+}
+
 type Response struct {
-	Channels []Channel
-	Status   string
+	Type    string `json: type`
+	Message string `json: message`
 }

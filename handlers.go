@@ -14,25 +14,29 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	channels := GetChannels()
-	t.Execute(w, Response{Channels: channels})
+	t.Execute(w, nil)
 }
 
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
-	channelURL := r.FormValue("channelURL")
+	w.Header().Set("Content-Type", "application/json")
+	var channel Payload
+	_ = json.NewDecoder(r.Body).Decode(&channel)
+	channelURL := channel.ChannelURL
+
 	channelName, err := GetChannelName(channelURL)
 	if err != nil {
 		fmt.Println(err)
-		ReturnResponse(w, err.Error())
 	}
 	channelType, err := GetChannelType(channelURL)
 	if err != nil {
 		fmt.Println(err)
-		ReturnResponse(w, err.Error())
 	}
 	fmt.Println("CHECKING")
 
 	CheckNow(channelName, channelType)
+
+	json.NewEncoder(w).Encode(Response{Type: "Success", Message: "New videos detected"})
+
 }
 
 func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
@@ -52,12 +56,12 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	channelName, err := GetChannelName(channelURL)
 	if err != nil {
 		fmt.Println(err)
-		ReturnResponse(w, err.Error())
+		// ReturnResponse(w, err.Error())
 	}
 	channelType, err := GetChannelType(channelURL)
 	if err != nil {
 		fmt.Println(err)
-		ReturnResponse(w, err.Error())
+		// ReturnResponse(w, err.Error())
 	}
 
 	// If the directory of the channel doesn't exist on the filesystem, create it
@@ -65,9 +69,9 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 	if exists == false {
 		Download(channelName, channelType, downloadMode)
-		ReturnResponse(w, "Channel added successfully")
+		// ReturnResponse(w, "Channel added successfully")
 	} else {
-		ReturnResponse(w, "This channel already exists")
+		// ReturnResponse(w, "This channel already exists")
 	}
 }
 
@@ -75,8 +79,6 @@ func HandleGetChannels(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	channels := GetChannels()
-
-	fmt.Println(channels)
 
 	json.NewEncoder(w).Encode(channels)
 }

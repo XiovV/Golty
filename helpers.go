@@ -3,10 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -38,7 +36,7 @@ func UploadChecker() {
 	}
 }
 
-func CheckNow(channel string, channelType string) {
+func CheckNow(channel string, channelType string) Response {
 	allChannelsInDb := GetChannels()
 
 	// if channel and channelType are both 0 then that means we want to check
@@ -67,7 +65,6 @@ func CheckNow(channel string, channelType string) {
 					UpdateLatestDownloaded(item.ChannelURL, videoId)
 				}
 			}
-
 		}
 	} else {
 		videoId, videoTitle := GetLatestVideo(channel, channelType)
@@ -75,25 +72,29 @@ func CheckNow(channel string, channelType string) {
 		for _, item := range allChannelsInDb {
 			if strings.Contains(item.ChannelURL, channel) {
 				if item.LatestDownloaded == videoId {
+					fmt.Println("No new videos")
+					return Response{Type: "Success", Message: "No new videos detected"}
 					break
 				} else {
 					DownloadAudio(videoId, videoTitle, channel)
 					UpdateLatestDownloaded(channel, videoId)
+					return Response{Type: "Success", Message: "New video detected"}
 				}
 			}
 		}
 	}
+	return Response{Type: "Error", Message: "Something went wrong"}
 }
 
-func ReturnResponse(w http.ResponseWriter, response string) {
-	t, err := template.ParseFiles("static/index.html")
-	if err != nil {
-		log.Fatal(err)
-	}
+// func ReturnResponse(w http.ResponseWriter, response string) {
+// 	t, err := template.ParseFiles("static/index.html")
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	channels := GetChannels()
-	t.Execute(w, Response{Channels: channels, Status: response})
-}
+// 	channels := GetChannels()
+// 	t.Execute(w, Response{Channels: channels, Status: response})
+// }
 
 func GetChannelName(channelURL string) (string, error) {
 	if channelURL != "" {

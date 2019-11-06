@@ -35,18 +35,11 @@
       </div>
       <button type="submit" class="btn btn-primary mb-2">Add Channel</button>
     </form>
-    <form action="/checkall" method="POST"><input type="submit" class="btn btn-primary float-right" value="Check All Now"></form>
-    <form action="/checkchannel" method="POST">
+    <input type="submit" class="btn btn-primary float-right" value="Check All Now">
     <h2 class="mt-2">Listening to these channels: </h2>
-
-      <input type="text" name= "channelURL" class="form-control d-none" id="check-now-channel-url">
-      <ul class="list-group" id="channels">
-        <!-- {{range .Channels}}
-          <li onclick="checkNow(this.innerText)" value={{.ChannelURL}} class="list-group-item" >{{.ChannelURL}}<input type="submit" class="btn btn-danger float-right ml-2" value=&times;><input type="submit" class="btn btn-primary float-right" value="Check Now"></li>
-        {{end}} -->
-      </ul>
-    </form>
-    
+    <input type="text" name= "channelURL" class="form-control d-none" id="check-now-channel-url">
+    <ul class="list-group" id="channels">
+    </ul>
   </div>
   
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -54,33 +47,49 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <script>
       let channels = [];
-      let status = {{.Status}}
-  
-      if (status == "") {
-        console.log("There is no status. Don't display any alerts")
-        $(".alert").alert('close')
-      } else {
-        console.log("Display alert")
-      }
-  
-      function checkNow(e) {
-        document.querySelector("#check-now-channel-url").value = e
-      }
-
       function getChannels() {
         let ul = document.getElementById("channels");
         
         fetch("http://localhost:8080/api/get-channels")
         .then(res => res.json())
-        .then(data => {
-          for (i=0; i<data.length; i++) {
+        .then(channels => {
+          channels.forEach(channel => {
             let li = document.createElement("li");
             li.setAttribute("class", "list-group-item")
 
-            li.appendChild(document.createTextNode(data[i].ChannelURL));
+            li.appendChild(document.createTextNode(channel.ChannelURL));
             ul.appendChild(li)
-          }
+          })
+
+          displayButtons()
         })
+      }
+
+      function displayButtons() {
+        channels = document.querySelectorAll(".list-group-item")
+        channels.forEach(channel => {
+          oldHTML = channel.innerHTML
+          channel.innerHTML = oldHTML + `<button class="btn btn-primary float-right" id="${channel.innerHTML}" onClick="checkChannel(this.id)">Check Now</button>`
+        })
+      }
+
+      function checkChannel(id) {
+        let channelURL = {
+          "channelURL": id
+        }
+
+        const options = {
+          method: 'POST',
+          body: JSON.stringify(channelURL),
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          })
+        }
+
+        fetch("http://localhost:8080/api/check-channel", options)
+        .then(res => res.json())
+        .then(res => console.log(res))
+        console.log("ID: ", id)
       }
     </script>
 </body>
