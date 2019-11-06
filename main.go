@@ -20,7 +20,7 @@ func main() {
 
 	r.HandleFunc("/", HandleIndex).Methods("GET")
 	r.HandleFunc("/api/get-channels", HandleGetChannels).Methods("GET")
-	// r.HandleFunc("/addchannel", HandleAddChannel).Methods("POST")
+	r.HandleFunc("/api/add-channel", HandleAddChannel).Methods("POST")
 	r.HandleFunc("/api/check-channel", HandleCheckChannel).Methods("POST")
 	r.HandleFunc("/api/check-all", HandleCheckAll).Methods("GET")
 
