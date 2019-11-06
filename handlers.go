@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -68,4 +69,14 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	} else {
 		ReturnResponse(w, "This channel already exists")
 	}
+}
+
+func HandleGetChannels(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	channels := GetChannels()
+
+	fmt.Println(channels)
+
+	json.NewEncoder(w).Encode(channels)
 }

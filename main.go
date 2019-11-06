@@ -19,9 +19,10 @@ func main() {
 	origins := handlers.AllowedOrigins([]string{"*"})
 
 	r.HandleFunc("/", HandleIndex).Methods("GET")
-	r.HandleFunc("/addchannel", HandleAddChannel).Methods("POST")
-	r.HandleFunc("/checkchannel", HandleCheckChannel).Methods("POST")
-	r.HandleFunc("/checkall", HandleCheckAll).Methods("POST")
+	r.HandleFunc("/api/get-channels", HandleGetChannels).Methods("GET")
+	// r.HandleFunc("/addchannel", HandleAddChannel).Methods("POST")
+	// r.HandleFunc("/checkchannel", HandleCheckChannel).Methods("POST")
+	// r.HandleFunc("/checkall", HandleCheckAll).Methods("POST")
 
 	http.ListenAndServe(":8080", handlers.CORS(headers, methods, origins)(r))
 }
