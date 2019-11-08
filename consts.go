@@ -10,4 +10,11 @@ var (
 	MAX_RESULTS           = "maxResults=1"
 	ORDER_BY              = "order=date"
 	TYPE                  = "type=video"
+	URL_META              = "https://www.youtube.com/get_video_info?&video_id="
+)
+
+const (
+	KB float64 = 1 << (10 * (iota + 1))
+	MB
+	GB
 )
