@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -9,7 +10,14 @@ import (
 
 func GetLatestVideo(channelName, channelType string) (string, string) {
 	if channelType == "user" {
-		uploadsId := getUserUploadsID(channelName)
+		// Read the uploads id from a database before making an api call
+		uploadsId, exists := GetUploadsIDFromDatabase(channelName)
+
+		if exists == false {
+			uploadsId = GetUserUploadsID(channelName)
+			UpdateUploadsID(channelName, uploadsId)
+		}
+
 		requestURL := API_ENDPOINT_PLAYLIST + uploadsId + "&maxResults=2" + "&key=" + API_KEY
 
 		resp, err := http.Get(requestURL)
@@ -55,7 +63,8 @@ func GetLatestVideo(channelName, channelType string) (string, string) {
 	return video.Items[0].ID.VideoID, video.Items[0].Snippet.Title
 }
 
-func getUserUploadsID(channelName string) string {
+func GetUserUploadsID(channelName string) string {
+	fmt.Println("MAKING API CALL TO GET UPLOADS ID")
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	requestURL := API_ENDPOINT_NAME + channelName + "&key=" + API_KEY
 

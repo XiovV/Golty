@@ -11,6 +11,7 @@ var (
 	ORDER_BY              = "order=date"
 	TYPE                  = "type=video"
 	URL_META              = "https://www.youtube.com/get_video_info?&video_id="
+	USER_URL              = "https://www.youtube.com/user/"
 )
 
 const (

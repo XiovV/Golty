@@ -122,6 +122,11 @@ type UserBody struct {
 	} `json:"items"`
 }
 
+type UploadID struct {
+	ChannelURL string
+	UploadsID  string
+}
+
 type Channel struct {
 	ChannelURL       string
 	LatestDownloaded string

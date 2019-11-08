@@ -36,6 +36,7 @@ func DownloadVideoAndAudio(channelName, channelType string) {
 		Mp3:    true,
 	}
 	video.Download(0, path, option)
+	UpdateLatestDownloaded(channelName, videoId)
 }
 
 func DownloadAudio(videoID, videoTitle, channelName string) {

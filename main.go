@@ -13,7 +13,7 @@ func uploadChecker() {
 	for {
 		time.Sleep(20 * time.Second)
 
-		go CheckAll()
+		// go CheckAll()
 		fmt.Println("Upload Checker running...")
 	}
 }

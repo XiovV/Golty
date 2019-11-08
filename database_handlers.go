@@ -9,6 +9,96 @@ import (
 	"strings"
 )
 
+func GetUploadsIDFromDatabase(channelName string) (string, bool) {
+	channelURL := USER_URL + channelName
+
+	jsonFile, err := os.Open("uploadid.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []UploadID
+
+	json.Unmarshal(byteValue, &db)
+
+	for _, item := range db {
+		if item.ChannelURL == channelURL {
+			return item.UploadsID, true
+			break
+		}
+	}
+
+	return "", false
+}
+
+func UpdateUploadsID(channelName, uploadsId string) {
+	jsonFile, err := os.Open("uploadid.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []UploadID
+
+	json.Unmarshal(byteValue, &db)
+
+	for i, item := range db {
+		if strings.Contains(item.ChannelURL, channelName) {
+			db[i].UploadsID = uploadsId
+			break
+		}
+	}
+
+	writeUploadsDb(db, "uploadid.json")
+}
+
+func UpdateUploadsIDDatabase(channelURL string) bool {
+	jsonFile, err := os.Open("uploadid.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []UploadID
+
+	json.Unmarshal(byteValue, &db)
+
+	var exists bool
+
+	for _, v := range db {
+		if v.ChannelURL == channelURL {
+			exists = true
+			break
+		} else if channelURL == "" {
+			fmt.Println("channelURL can't be empty", channelURL)
+			exists = true
+			break
+		} else {
+			exists = false
+		}
+	}
+
+	if exists == true {
+		fmt.Println("channel already added", channelURL)
+		return true
+	} else {
+		fmt.Println("adding to db: ", channelURL)
+		db = append(db, UploadID{ChannelURL: channelURL})
+		writeUploadsDb(db, "uploadid.json")
+	}
+	return false
+}
+
 func UpdateLatestDownloaded(channelName, videoID string) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	jsonFile, err := os.Open("channels.json")
@@ -31,7 +121,7 @@ func UpdateLatestDownloaded(channelName, videoID string) {
 		}
 	}
 
-	writeDb(db)
+	writeDb(db, "channels.json")
 }
 
 func UpdateChannelsDatabase(channelURL string) bool {
@@ -70,12 +160,12 @@ func UpdateChannelsDatabase(channelURL string) bool {
 	} else {
 		fmt.Println("adding to db: ", channelURL)
 		db = append(db, Channel{ChannelURL: channelURL})
-		writeDb(db)
+		writeDb(db, "channels.json")
 	}
 	return false
 }
 
-func writeDb(db []Channel) {
+func writeUploadsDb(db []UploadID, dbName string) {
 	result, err := json.Marshal(db)
 	if err != nil {
 		log.Println(err)
@@ -85,5 +175,18 @@ func writeDb(db []Channel) {
 
 	file, _ := json.MarshalIndent(db, "", " ")
 
-	_ = ioutil.WriteFile("channels.json", file, 0644)
+	_ = ioutil.WriteFile(dbName, file, 0644)
+}
+
+func writeDb(db []Channel, dbName string) {
+	result, err := json.Marshal(db)
+	if err != nil {
+		log.Println(err)
+	}
+
+	json.Unmarshal(result, &db)
+
+	file, _ := json.MarshalIndent(db, "", " ")
+
+	_ = ioutil.WriteFile(dbName, file, 0644)
 }

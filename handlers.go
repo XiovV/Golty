@@ -51,7 +51,8 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	channelURL := r.FormValue("channelURL")
 	// downloadMode := r.FormValue("mode")
 
-	exists := UpdateChannelsDatabase(channelURL)
+	channelExists := UpdateChannelsDatabase(channelURL)
+	UpdateUploadsIDDatabase(channelURL)
 
 	channelName, err := GetChannelName(channelURL)
 	if err != nil {
@@ -62,10 +63,16 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
+	// Put uploads id of the user into a database
+	if channelType == "user" {
+		uploadsId := GetUserUploadsID(channelName)
+		UpdateUploadsID(channelName, uploadsId)
+	}
+
 	// If the directory of the channel doesn't exist on the filesystem, create it
 	CreateDirIfNotExist(channelName)
 
-	if exists == false {
+	if channelExists == false {
 		DownloadVideoAndAudio(channelName, channelType)
 	}
 }
