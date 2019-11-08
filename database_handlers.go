@@ -190,3 +190,26 @@ func writeDb(db []Channel, dbName string) {
 
 	_ = ioutil.WriteFile(dbName, file, 0644)
 }
+
+func DeleteChannel(channelURL string) {
+	jsonFile, err := os.Open("channels.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []Channel
+
+	json.Unmarshal(byteValue, &db)
+
+	for i, item := range db {
+		if item.ChannelURL == channelURL {
+			db = RemoveAtIndex(db, i)
+		}
+	}
+
+	writeDb(db, "channels.json")
+}

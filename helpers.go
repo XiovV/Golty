@@ -100,3 +100,7 @@ func CreateDirIfNotExist(dirName string) {
 		}
 	}
 }
+
+func RemoveAtIndex(s []Channel, index int) []Channel {
+	return append(s[:index], s[index+1:]...)
+}
