@@ -41,7 +41,7 @@ func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 
 func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	CheckNow("", "")
+	go CheckAll()
 	json.NewEncoder(w).Encode(Response{Type: "In Progress", Message: "Checking all channels"})
 }
 

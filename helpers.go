@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"strings"
-	"time"
 )
 
 func GetChannels() []Channel {
@@ -27,59 +26,50 @@ func GetChannels() []Channel {
 	return db
 }
 
-func UploadChecker() {
-	for {
-		time.Sleep(10 * time.Second)
-		// go CheckNow(nil, "")
+func CheckAll() {
+	allChannelsInDb := GetChannels()
 
-		fmt.Println("Upload Checker running...")
+	for _, item := range allChannelsInDb {
+		channelName, err := GetChannelName(item.ChannelURL)
+		if err != nil {
+			fmt.Println(err)
+		}
+		channelType, err := GetChannelType(item.ChannelURL)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Println(channelName, channelType)
+
+		if strings.Contains(item.ChannelURL, channelName) {
+			videoId, videoTitle := GetLatestVideo(channelName, channelType)
+
+			if item.LatestDownloaded == videoId {
+				fmt.Println("NOW NEW VIDEOS DETECTED FOR: ", item.ChannelURL)
+			} else {
+				fmt.Println("DOWNLOAD FOR: ", item.ChannelURL)
+				go DownloadAudio(videoId, videoTitle, channelName)
+				UpdateLatestDownloaded(item.ChannelURL, videoId)
+			}
+		}
 	}
 }
 
 func CheckNow(channel string, channelType string) Response {
 	allChannelsInDb := GetChannels()
 
-	// if channel and channelType are both 0 then that means we want to check
-	// for new uploads for all channels in the database
-	if channel == "" && channelType == "" {
-		for _, item := range allChannelsInDb {
-			channelName, err := GetChannelName(item.ChannelURL)
-			if err != nil {
-				fmt.Println(err)
-			}
-			channelType, err := GetChannelType(item.ChannelURL)
-			if err != nil {
-				fmt.Println(err)
-			}
+	videoId, videoTitle := GetLatestVideo(channel, channelType)
 
-			fmt.Println(channelName, channelType)
-
-			if strings.Contains(item.ChannelURL, channelName) {
-				videoId, videoTitle := GetLatestVideo(channelName, channelType)
-
-				if item.LatestDownloaded == videoId {
-					fmt.Println("NOW NEW VIDEOS DETECTED FOR: ", item.ChannelURL)
-				} else {
-					fmt.Println("DOWNLOAD FOR: ", item.ChannelURL)
-					DownloadAudio(videoId, videoTitle, channel)
-					UpdateLatestDownloaded(item.ChannelURL, videoId)
-				}
-			}
-		}
-	} else {
-		videoId, videoTitle := GetLatestVideo(channel, channelType)
-
-		for _, item := range allChannelsInDb {
-			if strings.Contains(item.ChannelURL, channel) {
-				if item.LatestDownloaded == videoId {
-					fmt.Println("No new videos")
-					return Response{Type: "Success", Message: "No new videos detected"}
-					break
-				} else {
-					DownloadAudio(videoId, videoTitle, channel)
-					UpdateLatestDownloaded(channel, videoId)
-					return Response{Type: "Success", Message: "New video detected"}
-				}
+	for _, item := range allChannelsInDb {
+		if strings.Contains(item.ChannelURL, channel) {
+			if item.LatestDownloaded == videoId {
+				fmt.Println("No new videos")
+				return Response{Type: "Success", Message: "No new videos detected"}
+				break
+			} else {
+				DownloadAudio(videoId, videoTitle, channel)
+				UpdateLatestDownloaded(channel, videoId)
+				return Response{Type: "Success", Message: "New video detected"}
 			}
 		}
 	}

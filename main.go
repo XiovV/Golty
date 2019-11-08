@@ -3,15 +3,25 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
+func uploadChecker() {
+	for {
+		time.Sleep(20 * time.Second)
+
+		go CheckAll()
+		fmt.Println("Upload Checker running...")
+	}
+}
+
 func main() {
 	fmt.Println("Server running")
 
-	go UploadChecker()
+	go uploadChecker()
 
 	r := mux.NewRouter()
 	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
