@@ -39,7 +39,7 @@ TODO: Create image and write guide
 ```
 
 ## Known Issues
-* Sometimes YouTube returns a 403 for some reason and the backend cannot download the video. When a download fails it will be displayed in a list so you can manually download the video
+* Sometimes YouTube returns a 403 for some reason and the backend cannot download the video. When a download fails it will be displayed in a list so you can manually download the video.
 
 ## Built With
 * [Go](https://golang.org/) - Go Language
