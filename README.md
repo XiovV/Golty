@@ -1,9 +1,7 @@
 # GoAutoYT
-> YouTube Auto downloader
+<p align="center">GoAutoYT makes it easy for you to automatically download videos from as many YouTube channels as you'd like.</p>
 
-GoAutoYT makes it easy for you to automatically download videos from as many YouTube channels as you'd like.
-
-![](demo.png)
+<p align="center"><img src="https://raw.githubusercontent.com/lord/img/master/screenshot-slate.png" width=700 alt="Screenshot of Example Documentation created with Slate"></p>
 
 ## Built With
 * [Go](https://golang.org/) - Go Language
