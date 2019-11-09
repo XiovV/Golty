@@ -19,7 +19,7 @@ func uploadChecker() {
 }
 
 func main() {
-	fmt.Println("Server running")
+	fmt.Println("Server running on port 8080")
 
 	go uploadChecker()
 

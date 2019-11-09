@@ -3,6 +3,41 @@
 
 <p align="center"><img src="https://raw.githubusercontent.com/XiovV/go-auto-yt/master/demo.png" width=700 alt="Screenshot of Example Documentation created with Slate"></p>
 
+Features
+------------
+* **Clean, very simple design** - The dashboard only contains an input form where you can add a channel and configure checking intervals and what to download, and a little list of all your channels where you can delete them or tell the server to check for new uploads immediately.
+
+* **Everything is on a single page** - You can view and control everything from just one page. 
+
+* **Makes downloading videos/audio automatically very easy** - Just paste a link of a channel you want to download, set a checking interval and that's it, the server will keep checking for new uploads and download if necessary.
+
+Getting Started (without Docker)
+------------
+### Prerequisites
+* **Windows, Mac, Linux**
+* **Go, version 1.13.4 or newer**
+
+### Setting Up
+```
+git clone https://github.com/XiovV/go-auto-yt.git
+cd go-auto-yt
+go get -d ./...
+go build
+./go-auto-yt
+```
+
+You can now go to https://localhost:8080 and start using GoAutoYT.
+
+Getting Started (with Docker)
+------------
+### Prerequisites
+* **Docker**
+
+### Running The Container
+```
+TODO: Create image and write guide
+```
+
 ## Built With
 * [Go](https://golang.org/) - Go Language
 * [Gorilla Mux](https://github.com/gorilla/mux) - Go Multiplexer
