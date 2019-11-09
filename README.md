@@ -14,7 +14,7 @@ Features
 Getting Started (without Docker)
 ------------
 ### Prerequisites
-* **Windows, Mac, Linux**
+* **Windows, Mac or Linux** - Only tested on Linux, but should work on Mac and Windows
 * **Go, version 1.13.4 or newer**
 
 ### Setting Up
