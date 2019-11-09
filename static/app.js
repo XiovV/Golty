@@ -31,10 +31,6 @@ function deleteChannel(id) {
   fetch("http://localhost:8080/api/delete-channel", options)
   .then(res => res.json())
   .then(res => {
-    let success = document.getElementById("success");
-
-    console.log(res)
-
     if (res.Type == "Success") {
       displaySuccessMessage(res.Message)
 
