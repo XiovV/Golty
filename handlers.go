@@ -3,18 +3,16 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
-	"log"
 	"net/http"
+	"strings"
 )
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("static/index.html")
-	if err != nil {
-		log.Fatal(err)
-	}
+	http.ServeFile(w, r, "static/index.html")
+}
 
-	t.Execute(w, nil)
+func ServeJS(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "static/app.js")
 }
 
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
@@ -83,4 +81,16 @@ func HandleGetChannels(w http.ResponseWriter, r *http.Request) {
 	channels := GetChannels()
 
 	json.NewEncoder(w).Encode(channels)
+}
+
+func HandleDeleteChannel(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var channel Payload
+	_ = json.NewDecoder(r.Body).Decode(&channel)
+	channelURL := channel.ChannelURL
+	channelURL = strings.Replace(channelURL, "delChannel", "", -1)
+
+	DeleteChannel(channelURL)
+
+	json.NewEncoder(w).Encode(Response{Type: "Success", Message: "Channel removed"})
 }

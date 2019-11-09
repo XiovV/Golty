@@ -33,6 +33,9 @@ func main() {
 	r.HandleFunc("/api/add-channel", HandleAddChannel).Methods("POST")
 	r.HandleFunc("/api/check-channel", HandleCheckChannel).Methods("POST")
 	r.HandleFunc("/api/check-all", HandleCheckAll).Methods("GET")
+	r.HandleFunc("/api/delete-channel", HandleDeleteChannel).Methods("POST")
+
+	r.HandleFunc("/static/app.js", ServeJS).Methods("GET")
 
 	http.ListenAndServe(":8080", handlers.CORS(headers, methods, origins)(r))
 }
