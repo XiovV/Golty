@@ -50,7 +50,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
 
 	channelURL := r.FormValue("channelURL")
-	// downloadMode := r.FormValue("mode")
+	downloadMode := r.FormValue("mode")
 
 	channelExists := UpdateChannelsDatabase(channelURL)
 	UpdateUploadsIDDatabase(channelURL)
@@ -74,7 +74,11 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	CreateDirIfNotExist(channelName)
 
 	if channelExists == false {
-		DownloadVideoAndAudio(channelName, channelType)
+		if downloadMode == "Audio And Video" {
+			DownloadVideoAndAudio(channelName, channelType)
+		} else if downloadMode == "Audio Only" {
+			DownloadAudio(channelName, channelType)
+		}
 	}
 }
 

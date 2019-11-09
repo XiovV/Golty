@@ -33,17 +33,17 @@ func DownloadVideoAndAudio(channelName, channelType string) {
 	option := &Option{
 		Rename: false,
 		Resume: true,
-		Mp3:    true,
+		Mp3:    false,
 	}
 	video.Download(0, path, option, videoId)
 	UpdateLatestDownloaded(channelName, videoId)
 }
 
-func DownloadAudio(videoID, videoTitle, channelName string) {
+func DownloadAudio(channelName, channelType string) {
+	videoId, videoTitle := GetLatestVideo(channelName, channelType)
 	path := channelName + "/" + videoTitle + ".mp4"
 
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	video, err := getVideoData(videoID)
+	video, err := getVideoData(videoId)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -53,7 +53,8 @@ func DownloadAudio(videoID, videoTitle, channelName string) {
 		Resume: true,
 		Mp3:    true,
 	}
-	video.Download(0, path, option, videoID)
+	video.Download(0, path, option, videoId)
+	UpdateLatestDownloaded(channelName, videoId)
 	fmt.Println("Removing mp4...")
 	os.Remove(path)
 }

@@ -42,13 +42,13 @@ func CheckAll() {
 		fmt.Println(channelName, channelType)
 
 		if strings.Contains(item.ChannelURL, channelName) {
-			videoId, videoTitle := GetLatestVideo(channelName, channelType)
+			videoId, _ := GetLatestVideo(channelName, channelType)
 
 			if item.LatestDownloaded == videoId {
 				fmt.Println("NOW NEW VIDEOS DETECTED FOR: ", item.ChannelURL)
 			} else {
 				fmt.Println("DOWNLOAD FOR: ", item.ChannelURL)
-				go DownloadAudio(videoId, videoTitle, channelName)
+				go DownloadAudio(channelName, channelType)
 				UpdateLatestDownloaded(item.ChannelURL, videoId)
 			}
 		}
@@ -58,7 +58,7 @@ func CheckAll() {
 func CheckNow(channel string, channelType string) Response {
 	allChannelsInDb := GetChannels()
 
-	videoId, videoTitle := GetLatestVideo(channel, channelType)
+	videoId, _ := GetLatestVideo(channel, channelType)
 
 	for _, item := range allChannelsInDb {
 		if strings.Contains(item.ChannelURL, channel) {
@@ -67,7 +67,7 @@ func CheckNow(channel string, channelType string) Response {
 				return Response{Type: "False", Message: "No new videos detected"}
 				break
 			} else {
-				DownloadAudio(videoId, videoTitle, channel)
+				DownloadAudio(channel, channelType)
 				UpdateLatestDownloaded(channel, videoId)
 				return Response{Type: "True", Message: "New video detected"}
 			}
