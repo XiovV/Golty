@@ -21,7 +21,6 @@ Getting Started (without Docker)
 ```
 git clone https://github.com/XiovV/go-auto-yt.git
 cd go-auto-yt
-go get -d ./...
 go build
 ./go-auto-yt
 ```
