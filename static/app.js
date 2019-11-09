@@ -8,28 +8,10 @@ function checkAll() {
 }
 
 function getChannels() {
-  let ul = document.getElementById("channels");
-  
   fetch("http://localhost:8080/api/get-channels")
   .then(res => res.json())
   .then(channels => {
-    channels.forEach(channel => {
-      let li = document.createElement("li");
-      li.setAttribute("class", "list-group-item")
-
-      li.appendChild(document.createTextNode(channel.ChannelURL));
-      ul.appendChild(li)
-    })
-
-    displayButtons()
-  })
-}
-
-function displayButtons() {
-  channels = document.querySelectorAll(".list-group-item")
-  channels.forEach(channel => {
-    oldHTML = channel.innerHTML
-    channel.innerHTML = oldHTML + `<button class="btn btn-danger float-right ml-2" id="${channel.innerHTML+"delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.innerHTML}" onClick="checkChannel(this.id)">Check Now</button>`
+    displayChannels(channels)
   })
 }
 
@@ -54,10 +36,20 @@ function deleteChannel(id) {
     console.log(res)
 
     if (res.Type == "Success") {
-      success.classList.remove("d-none")
-      success.innerHTML = `${res.Message}`
+      displaySuccessMessage(res.Message)
+
+      removeFromList(channelURL.channelURL)
     }
   })
+}
+
+function removeFromList(channelURL) {
+  channelURL = channelURL.replace('delChannel', '')
+
+  let channels = document.getElementById("channels")
+  let li = document.getElementById(channelURL + "listElem")
+  console.log(channels)
+  channels.removeChild(li)
 }
 
 function checkChannel(id) {
@@ -76,15 +68,42 @@ function checkChannel(id) {
   fetch("http://localhost:8080/api/check-channel", options)
   .then(res => res.json())
   .then(res => {
-    let success = document.getElementById("success");
-
     console.log(res)
 
     if (res.Type == "Success") {
-      success.classList.remove("d-none")
-      success.innerHTML = `${res.Message}`
+      displaySuccessMessage(res.Message)
     }
     
   })
   console.log("ID: ", id)
+}
+
+function displaySuccessMessage(message) {
+  let success = document.getElementById("success")
+  success.classList.remove("d-none")
+  success.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`
+}
+
+function displayChannels(channels) {
+  let ul = document.getElementById("channels");
+  ul.innerHTML = ""
+
+  channels.forEach(channel => {
+    let li = document.createElement("li");
+    li.setAttribute("class", "list-group-item")
+    li.setAttribute("id", channel.ChannelURL+"listElem")
+
+    li.appendChild(document.createTextNode(channel.ChannelURL));
+    ul.appendChild(li)
+  })
+
+  displayButtons()
+}
+
+function displayButtons() {
+  channels = document.querySelectorAll(".list-group-item")
+  channels.forEach(channel => {
+    oldHTML = channel.innerHTML
+    channel.innerHTML = oldHTML + `<button class="btn btn-danger float-right ml-2" id="${channel.innerHTML+"delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.innerHTML}" onClick="checkChannel(this.id)">Check Now</button>`
+  })
 }
