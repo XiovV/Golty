@@ -64,12 +64,12 @@ func CheckNow(channel string, channelType string) Response {
 		if strings.Contains(item.ChannelURL, channel) {
 			if item.LatestDownloaded == videoId {
 				fmt.Println("No new videos")
-				return Response{Type: "Success", Message: "No new videos detected"}
+				return Response{Type: "False", Message: "No new videos detected"}
 				break
 			} else {
 				DownloadAudio(videoId, videoTitle, channel)
 				UpdateLatestDownloaded(channel, videoId)
-				return Response{Type: "Success", Message: "New video detected"}
+				return Response{Type: "True", Message: "New video detected"}
 			}
 		}
 	}

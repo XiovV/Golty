@@ -127,6 +127,10 @@ type UploadID struct {
 	UploadsID  string
 }
 
+type FailedVideos struct {
+	VideoID string
+}
+
 type Channel struct {
 	ChannelURL       string
 	LatestDownloaded string

@@ -9,6 +9,24 @@ import (
 	"strings"
 )
 
+func UpdateFailedVideos(videoId string) {
+	jsonFile, err := os.Open("failed.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []FailedVideos
+
+	json.Unmarshal(byteValue, &db)
+
+	db = append(db, FailedVideos{VideoID: videoId})
+	writeFailedVideos(db, "failed.json")
+}
+
 func GetUploadsIDFromDatabase(channelName string) (string, bool) {
 	channelURL := USER_URL + channelName
 
@@ -166,6 +184,19 @@ func UpdateChannelsDatabase(channelURL string) bool {
 }
 
 func writeUploadsDb(db []UploadID, dbName string) {
+	result, err := json.Marshal(db)
+	if err != nil {
+		log.Println(err)
+	}
+
+	json.Unmarshal(result, &db)
+
+	file, _ := json.MarshalIndent(db, "", " ")
+
+	_ = ioutil.WriteFile(dbName, file, 0644)
+}
+
+func writeFailedVideos(db []FailedVideos, dbName string) {
 	result, err := json.Marshal(db)
 	if err != nil {
 		log.Println(err)

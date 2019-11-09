@@ -31,9 +31,12 @@ func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("CHECKING")
 
-	CheckNow(channelName, channelType)
-
-	json.NewEncoder(w).Encode(Response{Type: "Success", Message: "New videos detected"})
+	res := CheckNow(channelName, channelType)
+	if res.Type == "True" {
+		json.NewEncoder(w).Encode(Response{Type: "Success", Message: "New videos detected"})
+	} else {
+		json.NewEncoder(w).Encode(Response{Type: "Success", Message: "No new videos detected"})
+	}
 
 }
 

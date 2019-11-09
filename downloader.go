@@ -35,7 +35,7 @@ func DownloadVideoAndAudio(channelName, channelType string) {
 		Resume: true,
 		Mp3:    true,
 	}
-	video.Download(0, path, option)
+	video.Download(0, path, option, videoId)
 	UpdateLatestDownloaded(channelName, videoId)
 }
 
@@ -53,7 +53,7 @@ func DownloadAudio(videoID, videoTitle, channelName string) {
 		Resume: true,
 		Mp3:    true,
 	}
-	video.Download(0, path, option)
+	video.Download(0, path, option, videoID)
 	fmt.Println("Removing mp4...")
 	os.Remove(path)
 }
@@ -142,7 +142,7 @@ func getVideoData(videoId string) (Video, error) {
 	return *meta, nil
 }
 
-func (video *Video) Download(index int, filename string, option *Option) error {
+func (video *Video) Download(index int, filename string, option *Option, videoId string) error {
 	var (
 		out    *os.File
 		err    error
