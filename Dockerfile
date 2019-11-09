@@ -7,4 +7,4 @@ RUN go build
 
 FROM alpine:latest AS production
 COPY --from=builder /app .
-CMD ["./main"]
+CMD ["./go-auto-yt"]
