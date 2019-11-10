@@ -23,7 +23,7 @@ import (
 // THIS DOWNLOADER IS BASED ON https://github.com/knadh/go-get-youtube
 
 // Download downloads a video based on downloadMode
-func Download(channelName, channelType, downloadMode string) {
+func Download(channelName, channelType, downloadMode string) error {
 	videoId, videoTitle := GetLatestVideo(channelName, channelType)
 	path := channelName + "/" + videoTitle + ".mp4"
 
@@ -58,9 +58,12 @@ func Download(channelName, channelType, downloadMode string) {
 			didDownloadFail := CheckIfDownloadFailed(path)
 			if didDownloadFail == true {
 				InsertFailedDownload(videoId)
+				return fmt.Errorf("Download failed, writing to failed.json")
 			}
 		}
 	}
+
+	return fmt.Errorf("Something went seriously wrong")
 }
 
 func parseMeta(video_id, query_string string) (*Video, error) {

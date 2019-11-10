@@ -83,8 +83,17 @@ function checkChannel(id) {
       } else if(res.Key == "NEW_VIDEO_DETECTED") {
         displaySuccessMessage(res.Message)
       }
+    } else if(res.Type == "Error") {
+      if(res.Key == "ERROR_DOWNLOADING_VIDEO") {
+        displayErrorMessage(res.Message)
+      }
     }
   })
+}
+function displayErrorMessage(message) {
+  let error = document.getElementById("error")
+  error.classList.remove("d-none")
+  error.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`
 }
 
 function displaySuccessMessage(message) {
