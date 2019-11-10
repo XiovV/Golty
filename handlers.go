@@ -31,6 +31,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error(err)
 	}
+
 	channelType, err := GetChannelType(channelURL)
 	if err != nil {
 		log.Error(err)
@@ -40,7 +41,6 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	if doesChannelExist == true {
 		log.Info("This channel already exists")
 	} else {
-		// If the directory of the channel doesn't exist on the filesystem, create it
 		CreateDirIfNotExist(channelName)
 		log.Info("Adding channel to DB")
 		AddChannelToDatabase(channelURL)
@@ -48,9 +48,15 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 			uploadsId := GetUserUploadsIDFromAPI(channelName)
 			InitUploadsID(channelURL)
 			UpdateUploadsID(channelURL, uploadsId)
-			Download(channelName, channelType, downloadMode)
+			err := Download(channelName, channelType, downloadMode)
+			if err != nil {
+				log.Error(err)
+			}
 		} else if channelType == "channel" {
-			Download(channelName, channelType, downloadMode)
+			err := Download(channelName, channelType, downloadMode)
+			if err != nil {
+				log.Error(err)
+			}
 		}
 	}
 }
