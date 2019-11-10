@@ -4,15 +4,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func GetChannels() []Channel {
+	log.Info("Getting all channels from channels.json")
 	jsonFile, err := os.Open("channels.json")
 	if err != nil {
-		log.Fatal(err)
+		log.Error("There was an error reading channels.json: ", err)
 	}
 
 	defer jsonFile.Close()
@@ -21,57 +23,62 @@ func GetChannels() []Channel {
 
 	var db []Channel
 
-	json.Unmarshal(byteValue, &db)
-
+	err = json.Unmarshal(byteValue, &db)
+	if err != nil {
+		log.Error("There was an error unmarshalling json: ", err)
+	}
+	log.Info("Successfully read all channels")
 	return db
 }
 
 func CheckAll() {
+	log.Info("Checking for all channels")
 	allChannelsInDb := GetChannels()
 
 	for _, item := range allChannelsInDb {
 		channelName, err := GetChannelName(item.ChannelURL)
 		if err != nil {
-			fmt.Println(err)
+			log.Error("There was an error getting channel name: ", err)
 		}
 		channelType, err := GetChannelType(item.ChannelURL)
 		if err != nil {
-			fmt.Println(err)
+			log.Error("There was an error getting channel type: ", err)
 		}
-
-		fmt.Println(channelName, channelType)
 
 		if strings.Contains(item.ChannelURL, channelName) {
 			videoId, _ := GetLatestVideo(channelName, channelType)
 
 			if item.LatestDownloaded == videoId {
-				fmt.Println("NOW NEW VIDEOS DETECTED FOR: ", item.ChannelURL)
+				log.Info("No new videos found for: ", item.ChannelURL)
 			} else {
-				fmt.Println("DOWNLOAD FOR: ", item.ChannelURL)
-				go DownloadAudio(channelName, channelType)
+				log.Info("New video detected for: ", item.ChannelURL)
+				go Download(channelName, channelType, "Audio Only")
 				UpdateLatestDownloaded(item.ChannelURL, videoId)
 			}
 		}
 	}
 }
 
-func CheckNow(channel string, channelType string) Response {
+func CheckNow(channelName string, channelType string) Response {
+	log.Info("Checking for new videos")
 	allChannelsInDb := GetChannels()
 
-	videoId, _ := GetLatestVideo(channel, channelType)
+	videoId, _ := GetLatestVideo(channelName, channelType)
 
 	for _, item := range allChannelsInDb {
-		if strings.Contains(item.ChannelURL, channel) {
+		if strings.Contains(item.ChannelURL, channelName) {
 			if item.LatestDownloaded == videoId {
-				fmt.Println("No new videos")
+				log.Info("No new videos found for: ", channelName)
 				return Response{Type: "False", Message: "No new videos detected"}
 			} else {
-				DownloadAudio(channel, channelType)
-				UpdateLatestDownloaded(channel, videoId)
+				log.Info("New video detected for: ", channelName)
+				Download(channelName, channelType, "Audio Only")
+				UpdateLatestDownloaded(channelName, videoId)
 				return Response{Type: "True", Message: "New video detected"}
 			}
 		}
 	}
+	log.Error("Something went terribly wrong")
 	return Response{Type: "Error", Message: "Something went wrong"}
 }
 
@@ -92,10 +99,13 @@ func GetChannelType(channelURL string) (string, error) {
 }
 
 func CreateDirIfNotExist(dirName string) {
+	log.Info("Creating channel directory")
 	if _, err := os.Stat(dirName); os.IsNotExist(err) {
 		err = os.MkdirAll(dirName, 0755)
 		if err != nil {
-			panic(err)
+			log.Error("Couldn't create channel directory: ", err)
+		} else {
+			log.Info("Channel directory created successfully")
 		}
 	}
 }

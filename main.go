@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 func uploadChecker() {
@@ -14,12 +14,12 @@ func uploadChecker() {
 		time.Sleep(20 * time.Second)
 
 		// go CheckAll()
-		fmt.Println("Upload Checker running...")
+		log.Info("Upload Checker running...")
 	}
 }
 
 func main() {
-	fmt.Println("Server running on port 8080")
+	log.Info("Server running on port 8080")
 
 	go uploadChecker()
 

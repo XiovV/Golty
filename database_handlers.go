@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func UpdateFailedVideos(videoId string) {
@@ -45,6 +46,7 @@ func GetUploadsIDFromDatabase(channelName string) (string, bool) {
 
 	for _, item := range db {
 		if item.ChannelURL == channelURL {
+			log.Info("Found uploads id for this user")
 			return item.UploadsID, true
 		}
 	}
@@ -52,6 +54,7 @@ func GetUploadsIDFromDatabase(channelName string) (string, bool) {
 	return "", false
 }
 
+// UpdateUploadsID stores/updates UploadsID inside uploadid.json for a channel
 func UpdateUploadsID(channelName, uploadsId string) {
 	jsonFile, err := os.Open("uploadid.json")
 	if err != nil {
@@ -76,7 +79,8 @@ func UpdateUploadsID(channelName, uploadsId string) {
 	writeUploadsDb(db, "uploadid.json")
 }
 
-func UpdateUploadsIDDatabase(channelURL string) bool {
+// InitUploadsID puts a channel inside uploadid.json and leaves UploadsID empty.
+func InitUploadsID(channelURL string) bool {
 	jsonFile, err := os.Open("uploadid.json")
 	if err != nil {
 		log.Fatal(err)
@@ -117,10 +121,10 @@ func UpdateUploadsIDDatabase(channelURL string) bool {
 }
 
 func UpdateLatestDownloaded(channelName, videoID string) {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.Info("Updating latest downloaded video id")
 	jsonFile, err := os.Open("channels.json")
 	if err != nil {
-		log.Fatal(err)
+		log.Error("There was an error reading channels.json: ", err)
 	}
 
 	defer jsonFile.Close()
@@ -134,6 +138,7 @@ func UpdateLatestDownloaded(channelName, videoID string) {
 	for i, item := range db {
 		if strings.Contains(item.ChannelURL, channelName) {
 			db[i].LatestDownloaded = videoID
+			log.Info("Latest downloaded video id updated successfully")
 			break
 		}
 	}
@@ -141,8 +146,7 @@ func UpdateLatestDownloaded(channelName, videoID string) {
 	writeDb(db, "channels.json")
 }
 
-func UpdateChannelsDatabase(channelURL string) bool {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+func AddChannelToDatabase(channelURL string) {
 	jsonFile, err := os.Open("channels.json")
 	if err != nil {
 		log.Fatal(err)
@@ -156,30 +160,9 @@ func UpdateChannelsDatabase(channelURL string) bool {
 
 	json.Unmarshal(byteValue, &db)
 
-	var exists bool
-
-	for _, v := range db {
-		if v.ChannelURL == channelURL {
-			exists = true
-			break
-		} else if channelURL == "" {
-			fmt.Println("channelURL can't be empty", channelURL)
-			exists = true
-			break
-		} else {
-			exists = false
-		}
-	}
-
-	if exists == true {
-		fmt.Println("channel already added", channelURL)
-		return true
-	} else {
-		fmt.Println("adding to db: ", channelURL)
-		db = append(db, Channel{ChannelURL: channelURL})
-		writeDb(db, "channels.json")
-	}
-	return false
+	log.Info("Adding channel to DB")
+	db = append(db, Channel{ChannelURL: channelURL})
+	writeDb(db, "channels.json")
 }
 
 func writeUploadsDb(db []UploadID, dbName string) {
@@ -211,7 +194,7 @@ func writeFailedVideos(db []FailedVideos, dbName string) {
 func writeDb(db []Channel, dbName string) {
 	result, err := json.Marshal(db)
 	if err != nil {
-		log.Println(err)
+		log.Error("There was an error writing to database: ", err)
 	}
 
 	json.Unmarshal(result, &db)
@@ -224,7 +207,7 @@ func writeDb(db []Channel, dbName string) {
 func DeleteChannel(channelURL string) {
 	jsonFile, err := os.Open("channels.json")
 	if err != nil {
-		log.Fatal(err)
+		log.Error("There was an error reading channels.json", err)
 	}
 
 	defer jsonFile.Close()
@@ -238,8 +221,32 @@ func DeleteChannel(channelURL string) {
 	for i, item := range db {
 		if item.ChannelURL == channelURL {
 			db = RemoveAtIndex(db, i)
+			log.Info("Successfully removed channel from channels.json")
 		}
 	}
 
 	writeDb(db, "channels.json")
+}
+
+func DoesChannelExist(channelURL string) bool {
+	jsonFile, err := os.Open("channels.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []Channel
+
+	json.Unmarshal(byteValue, &db)
+
+	for _, channel := range db {
+		if channel.ChannelURL == channelURL {
+			return true
+		}
+	}
+
+	return false
 }

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -17,46 +16,47 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // THIS DOWNLOADER IS BASED ON https://github.com/knadh/go-get-youtube
 
-func DownloadVideoAndAudio(channelName, channelType string) {
+// Download downloads a video based on downloadMode
+func Download(channelName, channelType, downloadMode string) {
 	videoId, videoTitle := GetLatestVideo(channelName, channelType)
 	path := channelName + "/" + videoTitle + ".mp4"
 
 	video, err := getVideoData(videoId)
 	if err != nil {
-		log.Panic(err)
+		log.Error("Couldn't get video data: ", err)
 	}
-
-	option := &Option{
-		Rename: false,
-		Resume: true,
-		Mp3:    false,
+	if downloadMode == "Video And Audio" { // Download .mp4 with audio and video in one file
+		option := &Option{
+			Rename: false,
+			Resume: true,
+			Mp3:    false,
+		}
+		video.Download(0, path, option, videoId)
+		log.Info("Successfully downloaded video")
+		UpdateLatestDownloaded(channelName, videoId)
+	} else if downloadMode == "Audio Only" { // Extract audio from the .mp4 file and remove the .mp4
+		option := &Option{
+			Rename: false,
+			Resume: true,
+			Mp3:    true,
+		}
+		video.Download(0, path, option, videoId)
+		log.Info("Removing .mp4")
+		err := os.Remove(path)
+		if err != nil {
+			log.Error("Error removing .mp4:", err)
+		} else {
+			log.Info("Successfully removed .mp4")
+			log.Info("Successfully downloaded video")
+			UpdateLatestDownloaded(channelName, videoId)
+		}
 	}
-	video.Download(0, path, option, videoId)
-	UpdateLatestDownloaded(channelName, videoId)
-}
-
-func DownloadAudio(channelName, channelType string) {
-	videoId, videoTitle := GetLatestVideo(channelName, channelType)
-	path := channelName + "/" + videoTitle + ".mp4"
-
-	video, err := getVideoData(videoId)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	option := &Option{
-		Rename: false,
-		Resume: true,
-		Mp3:    true,
-	}
-	video.Download(0, path, option, videoId)
-	UpdateLatestDownloaded(channelName, videoId)
-	fmt.Println("Removing mp4...")
-	os.Remove(path)
 }
 
 func parseMeta(video_id, query_string string) (*Video, error) {
