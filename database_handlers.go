@@ -10,24 +10,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func UpdateFailedVideos(videoId string) {
-	jsonFile, err := os.Open("failed.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	var db []FailedVideos
-
-	json.Unmarshal(byteValue, &db)
-
-	db = append(db, FailedVideos{VideoID: videoId})
-	writeFailedVideos(db, "failed.json")
-}
-
 func GetUploadsIDFromDatabase(channelName string) (string, bool) {
 	channelURL := USER_URL + channelName
 
@@ -178,19 +160,6 @@ func writeUploadsDb(db []UploadID, dbName string) {
 	_ = ioutil.WriteFile(dbName, file, 0644)
 }
 
-func writeFailedVideos(db []FailedVideos, dbName string) {
-	result, err := json.Marshal(db)
-	if err != nil {
-		log.Println(err)
-	}
-
-	json.Unmarshal(result, &db)
-
-	file, _ := json.MarshalIndent(db, "", " ")
-
-	_ = ioutil.WriteFile(dbName, file, 0644)
-}
-
 func writeDb(db []Channel, dbName string) {
 	result, err := json.Marshal(db)
 	if err != nil {
@@ -249,4 +218,54 @@ func DoesChannelExist(channelURL string) bool {
 	}
 
 	return false
+}
+
+func CheckIfDownloadFailed(videoPath string) bool {
+	log.Info("Checking if the download failed")
+	path := strings.Split(videoPath, "/")
+	videoTitle := path[1]
+	files, err := ioutil.ReadDir(path[0])
+	if err != nil {
+		log.Error("There was a problem reading the directory: ", err)
+	}
+
+	for _, f := range files {
+		if f.Name() == videoTitle {
+			return false
+		}
+	}
+
+	return true
+}
+
+func InsertFailedDownload(videoId string) {
+	jsonFile, err := os.Open("failed.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []FailedVideo
+
+	json.Unmarshal(byteValue, &db)
+
+	log.Info("Adding channel to DB")
+	db = append(db, FailedVideo{VideoID: videoId})
+	writeFailedVideosDb(db, "failed.json")
+}
+
+func writeFailedVideosDb(db []FailedVideo, dbName string) {
+	result, err := json.Marshal(db)
+	if err != nil {
+		log.Error("There was an error writing to database: ", err)
+	}
+
+	json.Unmarshal(result, &db)
+
+	file, _ := json.MarshalIndent(db, "", " ")
+
+	_ = ioutil.WriteFile(dbName, file, 0644)
 }

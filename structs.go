@@ -127,7 +127,7 @@ type UploadID struct {
 	UploadsID  string
 }
 
-type FailedVideos struct {
+type FailedVideo struct {
 	VideoID string
 }
 

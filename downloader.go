@@ -55,6 +55,10 @@ func Download(channelName, channelType, downloadMode string) {
 			log.Info("Successfully removed .mp4")
 			log.Info("Successfully downloaded video")
 			UpdateLatestDownloaded(channelName, videoId)
+			didDownloadFail := CheckIfDownloadFailed(path)
+			if didDownloadFail == true {
+				InsertFailedDownload(videoId)
+			}
 		}
 	}
 }
