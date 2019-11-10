@@ -67,17 +67,25 @@ function checkChannel(id) {
     console.log(res)
 
     if (res.Type == "Success") {
-      displaySuccessMessage(res.Message)
+      if (res.Key == "NO_NEW_VIDEOS") {
+        displayWarningMessage(res.Message)
+      } else if(res.Key == "NEW_VIDEO_DETECTED") {
+        displaySuccessMessage(res.Message)
+      }
     }
-    
   })
-  console.log("ID: ", id)
 }
 
 function displaySuccessMessage(message) {
   let success = document.getElementById("success")
   success.classList.remove("d-none")
   success.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`
+}
+
+function displayWarningMessage(message) {
+  let warning = document.getElementById("warning")
+  warning.classList.remove("d-none")
+  warning.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`
 }
 
 function displayChannels(channels) {
