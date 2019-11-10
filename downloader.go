@@ -24,46 +24,64 @@ import (
 
 // Download downloads a video based on downloadMode
 func Download(channelName, channelType, downloadMode string) error {
+	if downloadMode == "Video And Audio" {
+		// Download .mp4 with audio and video in one file
+		return downloadVideoAndAudio(channelName, channelType)
+		// Extract audio from the .mp4 file and remove the .mp4
+	} else if downloadMode == "Audio Only" {
+		return downloadAudioOnly(channelName, channelType)
+	}
+	return fmt.Errorf("Something went seriously wrong")
+}
+
+func downloadVideoAndAudio(channelName, channelType string) error {
 	videoId, videoTitle := GetLatestVideo(channelName, channelType)
 	path := channelName + "/" + videoTitle + ".mp4"
 
 	video, err := getVideoData(videoId)
 	if err != nil {
 		log.Error("Couldn't get video data: ", err)
+		return fmt.Errorf("Couldn't get video data: %s", err.Error())
 	}
-	if downloadMode == "Video And Audio" { // Download .mp4 with audio and video in one file
-		option := &Option{
-			Rename: false,
-			Resume: true,
-			Mp3:    false,
-		}
-		video.Download(0, path, option, videoId)
-		log.Info("Successfully downloaded video")
-		UpdateLatestDownloaded(channelName, videoId)
-	} else if downloadMode == "Audio Only" { // Extract audio from the .mp4 file and remove the .mp4
-		option := &Option{
-			Rename: false,
-			Resume: true,
-			Mp3:    true,
-		}
-		video.Download(0, path, option, videoId)
-		log.Info("Removing .mp4")
-		err := os.Remove(path)
-		if err != nil {
-			log.Error("Error removing .mp4:", err)
-		} else {
-			log.Info("Successfully removed .mp4")
-			log.Info("Successfully downloaded video")
-			UpdateLatestDownloaded(channelName, videoId)
-			didDownloadFail := CheckIfDownloadFailed(path)
-			if didDownloadFail == true {
-				InsertFailedDownload(videoId)
-				return fmt.Errorf("Download failed, writing to failed.json")
-			}
-		}
+	option := &Option{
+		Rename: false,
+		Resume: true,
+		Mp3:    false,
+	}
+	video.Download(0, path, option, videoId)
+	log.Info("Successfully downloaded video")
+	return UpdateLatestDownloaded(channelName, videoId)
+}
+
+func downloadAudioOnly(channelName, channelType string) error {
+	videoId, videoTitle := GetLatestVideo(channelName, channelType)
+	path := channelName + "/" + videoTitle + ".mp4"
+
+	video, err := getVideoData(videoId)
+	if err != nil {
+		log.Error("Couldn't get video data: ", err)
+		return fmt.Errorf("Couldn't get video data: %s", err.Error())
+	}
+	option := &Option{
+		Rename: false,
+		Resume: true,
+		Mp3:    true,
+	}
+	video.Download(0, path, option, videoId)
+	log.Info("Removing .mp4")
+	err = os.Remove(path)
+	if err != nil {
+		log.Error("Error removing .mp4:", err)
+		return fmt.Errorf("Error removing .mp4: %v", err)
+	}
+	log.Info("Successfully removed .mp4")
+	log.Info("Successfully downloaded video")
+	didDownloadFail := CheckIfDownloadFailed(path)
+	if didDownloadFail == true {
+		return InsertFailedDownload(videoId)
 	}
 
-	return fmt.Errorf("Something went seriously wrong")
+	return UpdateLatestDownloaded(channelName, videoId)
 }
 
 func parseMeta(video_id, query_string string) (*Video, error) {

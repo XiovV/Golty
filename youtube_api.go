@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// GetLatestVideo fetches and returns latest video's id and title
 func GetLatestVideo(channelName, channelType string) (string, string) {
 	if channelType == "user" {
 		// Read the uploads id from a database before making an api call

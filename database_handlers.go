@@ -102,11 +102,12 @@ func InitUploadsID(channelURL string) bool {
 	return false
 }
 
-func UpdateLatestDownloaded(channelName, videoID string) {
+func UpdateLatestDownloaded(channelName, videoID string) error {
 	log.Info("Updating latest downloaded video id")
 	jsonFile, err := os.Open("channels.json")
 	if err != nil {
 		log.Error("There was an error reading channels.json: ", err)
+		return fmt.Errorf("There was an error reading channels.json: %v", err.Error())
 	}
 
 	defer jsonFile.Close()
@@ -125,7 +126,7 @@ func UpdateLatestDownloaded(channelName, videoID string) {
 		}
 	}
 
-	writeDb(db, "channels.json")
+	return writeDb(db, "channels.json")
 }
 
 func AddChannelToDatabase(channelURL string) {
@@ -160,10 +161,11 @@ func writeUploadsDb(db []UploadID, dbName string) {
 	_ = ioutil.WriteFile(dbName, file, 0644)
 }
 
-func writeDb(db []Channel, dbName string) {
+func writeDb(db []Channel, dbName string) error {
 	result, err := json.Marshal(db)
 	if err != nil {
 		log.Error("There was an error writing to database: ", err)
+		return fmt.Errorf("There was an error writing to database: %v", err)
 	}
 
 	json.Unmarshal(result, &db)
@@ -171,6 +173,8 @@ func writeDb(db []Channel, dbName string) {
 	file, _ := json.MarshalIndent(db, "", " ")
 
 	_ = ioutil.WriteFile(dbName, file, 0644)
+
+	return nil
 }
 
 func DeleteChannel(channelURL string) {
@@ -238,10 +242,11 @@ func CheckIfDownloadFailed(videoPath string) bool {
 	return true
 }
 
-func InsertFailedDownload(videoId string) {
+func InsertFailedDownload(videoId string) error {
 	jsonFile, err := os.Open("failed.json")
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
+		return fmt.Errorf("There was a problem reading failed.json: %v", err)
 	}
 
 	defer jsonFile.Close()
@@ -255,23 +260,33 @@ func InsertFailedDownload(videoId string) {
 	for _, video := range db {
 		if video.VideoID == videoId {
 			log.Info("This videoId is already in the list")
+			return fmt.Errorf("This videoId is already in the list")
 		} else {
 			log.Info("Adding channel to DB")
 			db = append(db, FailedVideo{VideoID: videoId})
-			writeFailedVideosDb(db, "failed.json")
+			return writeFailedVideosDb(db, "failed.json")
 		}
 	}
+
+	return fmt.Errorf("Something went terribly wrong")
 }
 
-func writeFailedVideosDb(db []FailedVideo, dbName string) {
+func writeFailedVideosDb(db []FailedVideo, dbName string) error {
 	result, err := json.Marshal(db)
 	if err != nil {
-		log.Error("There was an error writing to database: ", err)
+		log.Error("There was an error marshalling json from failed.json: ", err)
+		return fmt.Errorf("There was an error marshalling json from failed.json: : %v", err)
 	}
 
 	json.Unmarshal(result, &db)
 
 	file, _ := json.MarshalIndent(db, "", " ")
 
-	_ = ioutil.WriteFile(dbName, file, 0644)
+	err = ioutil.WriteFile(dbName, file, 0644)
+	if err != nil {
+		log.Error("There was an error writing to failed.json: ", err)
+		return fmt.Errorf("There was an error writing to failed.json: %v", err)
+	}
+
+	return nil
 }
