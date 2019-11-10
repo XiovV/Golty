@@ -252,9 +252,15 @@ func InsertFailedDownload(videoId string) {
 
 	json.Unmarshal(byteValue, &db)
 
-	log.Info("Adding channel to DB")
-	db = append(db, FailedVideo{VideoID: videoId})
-	writeFailedVideosDb(db, "failed.json")
+	for _, video := range db {
+		if video.VideoID == videoId {
+			log.Info("This videoId is already in the list")
+		} else {
+			log.Info("Adding channel to DB")
+			db = append(db, FailedVideo{VideoID: videoId})
+			writeFailedVideosDb(db, "failed.json")
+		}
+	}
 }
 
 func writeFailedVideosDb(db []FailedVideo, dbName string) {
