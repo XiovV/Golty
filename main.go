@@ -34,6 +34,7 @@ func main() {
 	r.HandleFunc("/api/check-channel", HandleCheckChannel).Methods("POST")
 	r.HandleFunc("/api/check-all", HandleCheckAll).Methods("GET")
 	r.HandleFunc("/api/delete-channel", HandleDeleteChannel).Methods("POST")
+	r.HandleFunc("/api/get-failed-downloads", HandleGetFailedDownloads).Methods("GET")
 
 	r.HandleFunc("/static/app.js", ServeJS).Methods("GET")
 

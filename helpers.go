@@ -119,3 +119,21 @@ func CreateDirIfNotExist(dirName string) {
 func RemoveAtIndex(s []Channel, index int) []Channel {
 	return append(s[:index], s[index+1:]...)
 }
+
+func GetFailedDownloads() []FailedVideo {
+	log.Info("Getting failed downloads")
+	jsonFile, err := os.Open("failed.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var db []FailedVideo
+
+	json.Unmarshal(byteValue, &db)
+
+	return db
+}

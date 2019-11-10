@@ -75,6 +75,12 @@ func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(res)
 }
 
+func HandleGetFailedDownloads(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	failedDownloads := GetFailedDownloads()
+	json.NewEncoder(w).Encode(failedDownloads)
+}
+
 func HandleGetChannels(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
