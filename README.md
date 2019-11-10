@@ -40,7 +40,8 @@ TODO: Create image and write guide
 ```
 
 ## Known Issues
-* Sometimes YouTube returns a 403 error for some reason and the backend cannot download the video. When a download fails it will be displayed in a list so you can manually download the video.
+* Sometimes the video just doesn't want to download and I have no idea why, but I'll probably fix it eventually. When a download fails it will be displayed in a list so you can manually download the video.
+* Checking interval is hardcoded to 5 hours, at the moment you cannot change it.
 
 ## Built With
 * [Go](https://golang.org/) - Go Language
