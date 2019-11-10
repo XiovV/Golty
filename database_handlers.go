@@ -10,10 +10,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func GetUploadsIDFromDatabase(channelName string) (string, bool) {
-	channelURL := USER_URL + channelName
-
-	jsonFile, err := os.Open("uploadid.json")
+func openJSONDatabase(dbName string) []byte {
+	jsonFile, err := os.Open(dbName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -21,6 +19,13 @@ func GetUploadsIDFromDatabase(channelName string) (string, bool) {
 	defer jsonFile.Close()
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
+	return byteValue
+}
+
+func GetUploadsIDFromDatabase(channelName string) (string, bool) {
+	channelURL := USER_URL + channelName
+
+	byteValue := openJSONDatabase("channels.json")
 
 	var db []UploadID
 
@@ -38,14 +43,7 @@ func GetUploadsIDFromDatabase(channelName string) (string, bool) {
 
 // UpdateUploadsID stores/updates UploadsID inside uploadid.json for a channel
 func UpdateUploadsID(channelName, uploadsId string) {
-	jsonFile, err := os.Open("uploadid.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue := openJSONDatabase("uploadid.json")
 
 	var db []UploadID
 
@@ -63,14 +61,7 @@ func UpdateUploadsID(channelName, uploadsId string) {
 
 // InitUploadsID puts a channel inside uploadid.json and leaves UploadsID empty.
 func InitUploadsID(channelURL string) bool {
-	jsonFile, err := os.Open("uploadid.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue := openJSONDatabase("uploadid.json")
 
 	var db []UploadID
 
@@ -104,15 +95,8 @@ func InitUploadsID(channelURL string) bool {
 
 func UpdateLatestDownloaded(channelName, videoID string) error {
 	log.Info("Updating latest downloaded video id")
-	jsonFile, err := os.Open("channels.json")
-	if err != nil {
-		log.Error("There was an error reading channels.json: ", err)
-		return fmt.Errorf("There was an error reading channels.json: %v", err.Error())
-	}
 
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue := openJSONDatabase("channels.json")
 
 	var db []Channel
 
@@ -130,14 +114,7 @@ func UpdateLatestDownloaded(channelName, videoID string) error {
 }
 
 func AddChannelToDatabase(channelURL string) {
-	jsonFile, err := os.Open("channels.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue := openJSONDatabase("channels.json")
 
 	var db []Channel
 
@@ -178,14 +155,7 @@ func writeDb(db []Channel, dbName string) error {
 }
 
 func DeleteChannel(channelURL string) {
-	jsonFile, err := os.Open("channels.json")
-	if err != nil {
-		log.Error("There was an error reading channels.json", err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue := openJSONDatabase("channels.json")
 
 	var db []Channel
 
@@ -202,14 +172,7 @@ func DeleteChannel(channelURL string) {
 }
 
 func DoesChannelExist(channelURL string) bool {
-	jsonFile, err := os.Open("channels.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue := openJSONDatabase("channels.json")
 
 	var db []Channel
 
@@ -243,15 +206,7 @@ func CheckIfDownloadFailed(videoPath string) bool {
 }
 
 func InsertFailedDownload(videoId string) error {
-	jsonFile, err := os.Open("failed.json")
-	if err != nil {
-		log.Error(err)
-		return fmt.Errorf("There was a problem reading failed.json: %v", err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue := openJSONDatabase("failed.json")
 
 	var db []FailedVideo
 
