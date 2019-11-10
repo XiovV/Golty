@@ -157,3 +157,96 @@
 {"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:30:39+01:00"}
 {"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:30:39+01:00"}
 {"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:30:39+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:42:27+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:42:32+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:42:32+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:42:32+01:00"}
+{"level":"info","msg":"Checking for all channels","time":"2019-11-10T20:42:35+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:42:35+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:42:35+01:00"}
+{"level":"info","msg":"No new videos found for: https://www.youtube.com/channel/UCpbH_7H71IPKq4eH7CD5spg","time":"2019-11-10T20:42:35+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:42:35+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:42:35+01:00"}
+{"level":"info","msg":"New video detected for: https://www.youtube.com/user/ThePrimeThanatos","time":"2019-11-10T20:42:36+01:00"}
+{"level":"info","msg":"Updating latest downloaded video id","time":"2019-11-10T20:42:36+01:00"}
+{"level":"info","msg":"Latest downloaded video id updated successfully","time":"2019-11-10T20:42:36+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:42:36+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:42:36+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:42:36+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:42:36+01:00"}
+{"level":"info","msg":"No new videos found for: https://www.youtube.com/user/NewRetroWave","time":"2019-11-10T20:42:36+01:00"}
+{"level":"info","msg":"Checking if the download failed","time":"2019-11-10T20:42:36+01:00"}
+{"level":"info","msg":"Adding channel to DB","time":"2019-11-10T20:42:36+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:42:47+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:45:27+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:45:30+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:45:30+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:45:30+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:45:32+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:45:32+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:45:32+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:45:32+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:45:32+01:00"}
+{"level":"info","msg":"No new videos found for: ThePrimeThanatos","time":"2019-11-10T20:45:32+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:45:47+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:46:00+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:46:00+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:46:00+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"New video detected for: ThePrimeThanatos","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Checking if the download failed","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Adding video id to the list","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Updating latest downloaded video id","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Latest downloaded video id updated successfully","time":"2019-11-10T20:46:02+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:46:07+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:46:27+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:46:34+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:46:54+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:46:57+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:46:57+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:46:57+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:47:06+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:47:07+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:47:07+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:47:07+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"New video detected for: ThePrimeThanatos","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Checking if the download failed","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Adding video id to the list","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Updating latest downloaded video id","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Latest downloaded video id updated successfully","time":"2019-11-10T20:47:13+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:47:26+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:47:46+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:48:06+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:48:26+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:48:46+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:49:06+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:49:26+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:49:45+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:49:58+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:49:58+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:49:58+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:49:59+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:49:59+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:49:59+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:49:59+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:49:59+01:00"}
+{"level":"info","msg":"New video detected for: ThePrimeThanatos","time":"2019-11-10T20:49:59+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:49:59+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:49:59+01:00"}
+{"level":"info","msg":"Checking if the download failed","time":"2019-11-10T20:49:59+01:00"}
+{"level":"info","msg":"This videoId is already in the list","time":"2019-11-10T20:49:59+01:00"}
+{"level":"error","msg":"This videoId is already in the list","time":"2019-11-10T20:49:59+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:50:05+01:00"}

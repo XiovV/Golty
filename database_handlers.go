@@ -209,20 +209,23 @@ func InsertFailedDownload(videoId string) error {
 	byteValue := openJSONDatabase("failed.json")
 
 	var db []FailedVideo
-
+	var same bool
 	json.Unmarshal(byteValue, &db)
 
 	for _, video := range db {
+		fmt.Println(video.VideoID, videoId)
 		if video.VideoID == videoId {
-			log.Info("This videoId is already in the list")
-			return fmt.Errorf("This videoId is already in the list")
+			same = true
 		} else {
-			log.Info("Adding channel to DB")
-			db = append(db, FailedVideo{VideoID: videoId})
-			return writeFailedVideosDb(db, "failed.json")
+			same = false
 		}
 	}
-
+	if same == true {
+		log.Info("This videoId is already in the list")
+		return fmt.Errorf("This videoId is already in the list")
+	}
+	log.Info("Adding video id to the list")
+	db = append(db, FailedVideo{VideoID: videoId})
 	return fmt.Errorf("Something went terribly wrong")
 }
 
