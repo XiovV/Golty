@@ -1,13 +1,28 @@
 package main
 
 import (
+	"io"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
+
+func init() {
+	logFile, err := os.OpenFile("log.txt", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Error("Error reading log file: ", err)
+	}
+
+	mw := io.MultiWriter(os.Stdout, logFile)
+
+	log.SetFormatter(&log.JSONFormatter{})
+
+	log.SetOutput(mw)
+}
 
 func uploadChecker() {
 	for {
@@ -29,6 +44,7 @@ func main() {
 	origins := handlers.AllowedOrigins([]string{"*"})
 
 	r.HandleFunc("/", HandleIndex).Methods("GET")
+	r.HandleFunc("/logs", HandleLogs).Methods("GET")
 	r.HandleFunc("/api/get-channels", HandleGetChannels).Methods("GET")
 	r.HandleFunc("/api/add-channel", HandleAddChannel).Methods("POST")
 	r.HandleFunc("/api/check-channel", HandleCheckChannel).Methods("POST")

@@ -16,6 +16,11 @@ func ServeJS(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/app.js")
 }
 
+func HandleLogs(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	http.ServeFile(w, r, "log.txt")
+}
+
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
 
