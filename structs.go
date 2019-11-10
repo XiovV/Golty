@@ -142,6 +142,7 @@ type Payload struct {
 
 type Response struct {
 	Type    string
+	Key     string
 	Message string
 }
 
