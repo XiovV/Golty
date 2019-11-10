@@ -69,17 +69,17 @@ func CheckNow(channelName string, channelType string) Response {
 		if strings.Contains(item.ChannelURL, channelName) {
 			if item.LatestDownloaded == videoId {
 				log.Info("No new videos found for: ", channelName)
-				return Response{Type: "False", Message: "No new videos detected"}
+				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected"}
 			} else {
 				log.Info("New video detected for: ", channelName)
 				Download(channelName, channelType, "Audio Only")
 				UpdateLatestDownloaded(channelName, videoId)
-				return Response{Type: "True", Message: "New video detected"}
+				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected"}
 			}
 		}
 	}
 	log.Error("Something went terribly wrong")
-	return Response{Type: "Error", Message: "Something went wrong"}
+	return Response{Type: "Error", Key: "UNKNOWN_ERROR", Message: "Something went wrong"}
 }
 
 func GetChannelName(channelURL string) (string, error) {
