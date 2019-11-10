@@ -41,6 +41,7 @@ TODO: Create image and write guide
 
 ## Roadmap
 * Create a crawler in order to bypass YouTube API
+* Create a docker image
 
 ## Known Issues
 * Sometimes the video just doesn't want to download and I have no idea why, but I'll probably fix it eventually. When a download fails it will be displayed in a list so you can manually download the video.
