@@ -16,7 +16,7 @@ Getting Started (without Docker)
 ### Prerequisites
 * **Windows, Mac or Linux** - Only tested on Linux, but should work on Mac and Windows
 * **Go, version 1.13.4 or newer**
-* **[YouTube API Key](https://www.slickremix.com/docs/get-api-key-for-youtube/)** - Step by step guide
+* **[YouTube API Key](https://www.slickremix.com/docs/get-api-key-for-youtube/)** - Step by step guide on how to get it
 
 ### Setting Up (Tested on Linux, but should work on Mac. Windows - not sure)
 ```
