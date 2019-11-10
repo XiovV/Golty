@@ -46,7 +46,6 @@ func GetUploadsIDFromDatabase(channelName string) (string, bool) {
 	for _, item := range db {
 		if item.ChannelURL == channelURL {
 			return item.UploadsID, true
-			break
 		}
 	}
 

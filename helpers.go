@@ -65,7 +65,6 @@ func CheckNow(channel string, channelType string) Response {
 			if item.LatestDownloaded == videoId {
 				fmt.Println("No new videos")
 				return Response{Type: "False", Message: "No new videos detected"}
-				break
 			} else {
 				DownloadAudio(channel, channelType)
 				UpdateLatestDownloaded(channel, videoId)

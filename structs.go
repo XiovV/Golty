@@ -137,12 +137,12 @@ type Channel struct {
 }
 
 type Payload struct {
-	ChannelURL string `json: channelURL`
+	ChannelURL string
 }
 
 type Response struct {
-	Type    string `json: type`
-	Message string `json: message`
+	Type    string
+	Message string
 }
 
 type Option struct {
