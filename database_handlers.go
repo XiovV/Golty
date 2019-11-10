@@ -25,7 +25,7 @@ func openJSONDatabase(dbName string) []byte {
 func GetUploadsIDFromDatabase(channelName string) (string, bool) {
 	channelURL := USER_URL + channelName
 
-	byteValue := openJSONDatabase("channels.json")
+	byteValue := openJSONDatabase("uploadid.json")
 
 	var db []UploadID
 

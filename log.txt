@@ -1,0 +1,159 @@
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:18:40+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:18:47+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:18:47+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:18:47+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:18:48+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:18:48+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:18:48+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:18:49+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:18:49+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:18:49+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:18:54+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:18:55+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:18:55+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:18:55+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:18:55+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:18:55+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:18:55+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:18:55+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:18:55+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:18:55+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:19:04+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:19:05+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:19:05+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:19:05+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:19:06+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:19:06+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:19:06+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:19:06+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:19:06+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:19:06+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:19:06+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:19:06+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:19:06+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:19:06+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:21:02+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:21:05+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:21:05+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:21:05+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:21:06+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:21:06+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:21:06+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:21:06+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:21:06+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:21:06+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:21:06+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:21:06+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:21:06+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:21:06+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:21:55+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:21:56+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:21:56+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:21:56+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:21:57+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:21:57+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:21:57+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:21:57+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:21:57+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:21:57+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:21:57+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:21:57+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:21:57+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:21:57+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:23:51+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:23:54+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:23:54+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:23:54+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:23:55+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:23:55+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:23:55+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:23:55+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:23:55+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:23:55+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:23:55+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:23:55+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:23:55+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:23:55+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:24:34+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:24:35+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:24:35+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:24:35+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:24:38+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:24:38+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:24:38+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:24:38+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:24:38+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:24:38+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:24:38+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:24:38+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:24:38+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:24:38+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:25:07+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:25:09+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:25:09+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:25:09+01:00"}
+{"level":"info","msg":"Checking for new videos","time":"2019-11-10T20:25:11+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:25:11+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:25:11+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:25:11+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:25:11+01:00"}
+{"level":"info","msg":"No new videos found for: NewRetroWave","time":"2019-11-10T20:25:12+01:00"}
+{"level":"info","msg":"Creating channel directory","time":"2019-11-10T20:25:24+01:00"}
+{"level":"info","msg":"Channel directory created successfully","time":"2019-11-10T20:25:24+01:00"}
+{"level":"info","msg":"Adding channel to DB","time":"2019-11-10T20:25:24+01:00"}
+{"level":"info","msg":"Adding channel to DB","time":"2019-11-10T20:25:24+01:00"}
+{"level":"info","msg":"Making api call to get uploads id for a user","time":"2019-11-10T20:25:24+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:25:24+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:25:24+01:00"}
+{"level":"info","msg":"Removing .mp4","time":"2019-11-10T20:25:25+01:00"}
+{"level":"error","msg":"Error removing .mp4:remove ThePrimeThanatos/Cyberpunk 2077 Radio Mix Vol. 2 | Retro Electro/Darksynth/Synthwave.mp4: no such file or directory","time":"2019-11-10T20:25:25+01:00"}
+{"level":"error","msg":"Error removing .mp4: remove ThePrimeThanatos/Cyberpunk 2077 Radio Mix Vol. 2 | Retro Electro/Darksynth/Synthwave.mp4: no such file or directory","time":"2019-11-10T20:25:25+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:25:25+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:25:25+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:25:25+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:25:27+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:25:34+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:25:34+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:25:34+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:25:42+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:25:42+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:25:42+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:25:47+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-10T20:29:39+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:29:59+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:29:59+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:29:59+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:29:59+01:00"}
+{"level":"info","msg":"Creating channel directory","time":"2019-11-10T20:30:03+01:00"}
+{"level":"info","msg":"Channel directory created successfully","time":"2019-11-10T20:30:03+01:00"}
+{"level":"info","msg":"Adding channel to DB","time":"2019-11-10T20:30:03+01:00"}
+{"level":"info","msg":"Adding channel to DB","time":"2019-11-10T20:30:03+01:00"}
+{"level":"info","msg":"Making api call to get uploads id for a user","time":"2019-11-10T20:30:03+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:30:04+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:30:04+01:00"}
+{"level":"info","msg":"Checking if the download failed","time":"2019-11-10T20:30:04+01:00"}
+{"level":"info","msg":"Adding channel to DB","time":"2019-11-10T20:30:04+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:30:04+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:30:04+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:30:04+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:30:19+01:00"}
+{"level":"info","msg":"Successfully removed channel from channels.json","time":"2019-11-10T20:30:28+01:00"}
+{"level":"info","msg":"Creating channel directory","time":"2019-11-10T20:30:30+01:00"}
+{"level":"info","msg":"Adding channel to DB","time":"2019-11-10T20:30:30+01:00"}
+{"level":"info","msg":"Adding channel to DB","time":"2019-11-10T20:30:30+01:00"}
+{"level":"info","msg":"Making api call to get uploads id for a user","time":"2019-11-10T20:30:30+01:00"}
+{"level":"info","msg":"Found uploads id for this user","time":"2019-11-10T20:30:30+01:00"}
+{"level":"info","msg":"Found uploads id for user, not making an api request","time":"2019-11-10T20:30:30+01:00"}
+{"level":"info","msg":"Checking if the download failed","time":"2019-11-10T20:30:36+01:00"}
+{"level":"info","msg":"Removing .mp4","time":"2019-11-10T20:30:36+01:00"}
+{"level":"info","msg":"Successfully removed .mp4","time":"2019-11-10T20:30:36+01:00"}
+{"level":"info","msg":"Successfully downloaded video","time":"2019-11-10T20:30:36+01:00"}
+{"level":"info","msg":"Updating latest downloaded video id","time":"2019-11-10T20:30:36+01:00"}
+{"level":"info","msg":"Latest downloaded video id updated successfully","time":"2019-11-10T20:30:36+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:30:36+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:30:36+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:30:36+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-10T20:30:39+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-10T20:30:39+01:00"}
+{"level":"info","msg":"Getting failed downloads","time":"2019-11-10T20:30:39+01:00"}
+{"level":"info","msg":"Upload Checker running...","time":"2019-11-10T20:30:39+01:00"}

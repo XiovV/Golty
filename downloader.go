@@ -49,6 +49,10 @@ func downloadVideoAndAudio(channelName, channelType string) error {
 		Mp3:    false,
 	}
 	video.Download(0, path, option, videoId)
+	didDownloadFail := CheckIfDownloadFailed(path)
+	if didDownloadFail == true {
+		return InsertFailedDownload(videoId)
+	}
 	log.Info("Successfully downloaded video")
 	return UpdateLatestDownloaded(channelName, videoId)
 }
@@ -68,18 +72,19 @@ func downloadAudioOnly(channelName, channelType string) error {
 		Mp3:    true,
 	}
 	video.Download(0, path, option, videoId)
-	log.Info("Removing .mp4")
-	err = os.Remove(path)
-	if err != nil {
-		log.Error("Error removing .mp4:", err)
-		return fmt.Errorf("Error removing .mp4: %v", err)
-	}
-	log.Info("Successfully removed .mp4")
-	log.Info("Successfully downloaded video")
 	didDownloadFail := CheckIfDownloadFailed(path)
 	if didDownloadFail == true {
 		return InsertFailedDownload(videoId)
 	}
+	log.Info("Removing .mp4")
+	err = os.Remove(path)
+	if err != nil {
+		log.Error("Error removing .mp4:", err)
+		InsertFailedDownload(videoId)
+		return fmt.Errorf("Error removing .mp4: %v", err)
+	}
+	log.Info("Successfully removed .mp4")
+	log.Info("Successfully downloaded video")
 
 	return UpdateLatestDownloaded(channelName, videoId)
 }
