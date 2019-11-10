@@ -39,6 +39,9 @@ Getting Started (with Docker)
 TODO: Create image and write guide
 ```
 
+## Roadmap
+* Create a crawler in order to bypass YouTube API
+
 ## Known Issues
 * Sometimes the video just doesn't want to download and I have no idea why, but I'll probably fix it eventually. When a download fails it will be displayed in a list so you can manually download the video.
 * Checking interval is hardcoded to 5 hours, at the moment you cannot change it.
