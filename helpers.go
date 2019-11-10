@@ -31,18 +31,21 @@ func GetChannels() []Channel {
 	return db
 }
 
-func CheckAll() {
+func CheckAll() Response {
 	log.Info("Checking for all channels")
 	allChannelsInDb := GetChannels()
+	var foundFor []string
 
 	for _, item := range allChannelsInDb {
 		channelName, err := GetChannelName(item.ChannelURL)
 		if err != nil {
 			log.Error("There was an error getting channel name: ", err)
+			return Response{Type: "Error", Key: "ERROR_GETTING_CHANNEL_NAME", Message: err.Error()}
 		}
 		channelType, err := GetChannelType(item.ChannelURL)
 		if err != nil {
 			log.Error("There was an error getting channel type: ", err)
+			return Response{Type: "Error", Key: "ERROR_GETTING_CHANNEL_TYPE", Message: err.Error()}
 		}
 
 		if strings.Contains(item.ChannelURL, channelName) {
@@ -52,11 +55,14 @@ func CheckAll() {
 				log.Info("No new videos found for: ", item.ChannelURL)
 			} else {
 				log.Info("New video detected for: ", item.ChannelURL)
+				foundFor = append(foundFor, item.ChannelURL)
 				go Download(channelName, channelType, "Audio Only")
 				UpdateLatestDownloaded(item.ChannelURL, videoId)
 			}
 		}
 	}
+
+	return Response{Type: "Success", Key: "NEW_VIDEOS_FOR_CHANNELS", Message: strings.Join(foundFor, ",")}
 }
 
 func CheckNow(channelName string, channelType string) Response {

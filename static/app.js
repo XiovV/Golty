@@ -3,7 +3,9 @@ function checkAll() {
   fetch("http://localhost:8080/api/check-all")
   .then(res => res.json())
   .then(res => {
-    console.log(res)
+    if (res.Type == "Success") {
+      displaySuccessMessage(res.Message)
+    }
   })
 }
 
