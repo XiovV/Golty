@@ -27,15 +27,8 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	channelURL := r.FormValue("channelURL")
 	downloadMode := r.FormValue("mode")
 
-	channelName, err := GetChannelName(channelURL)
-	if err != nil {
-		log.Error(err)
-	}
-
-	channelType, err := GetChannelType(channelURL)
-	if err != nil {
-		log.Error(err)
-	}
+	channel, _ := GetChannelInfo(channelURL)
+	channelType := channel.Type
 
 	doesChannelExist := DoesChannelExist(channelURL)
 	if doesChannelExist == true {
@@ -45,12 +38,12 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		log.Info("Adding channel to DB")
 		AddChannelToDatabase(channelURL)
 		if channelType == "user" {
-			err := Download(channelName, channelType, downloadMode)
+			err := channel.Download(downloadMode)
 			if err != nil {
 				log.Error(err)
 			}
 		} else if channelType == "channel" {
-			err := Download(channelName, channelType, downloadMode)
+			err := channel.Download(downloadMode)
 			if err != nil {
 				log.Error(err)
 			}

@@ -4,8 +4,10 @@ import (
 	"fmt"
 )
 
-// Download downloads a video based on downloadMode
-func Download(channelName, channelType, downloadMode string) error {
+// Download downloads a the latest video based on downloadMode
+func (c ChannelTest) Download(downloadMode string) error {
+	channelName := c.Name
+	channelType := c.Type
 	if downloadMode == "Video And Audio" {
 		// Download .mp4 with audio and video in one file
 		return downloadVideoAndAudio(channelName, channelType)
