@@ -21,7 +21,6 @@ Getting Started (without Docker)
 ### Setting Up (Tested on Linux, but should work on Mac. Windows - not sure)
 ```
 git clone https://github.com/XiovV/go-auto-yt.git
-export API_KEY=your_youtube_api_key
 cd go-auto-yt
 go build
 ./go-auto-yt
