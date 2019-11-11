@@ -16,7 +16,7 @@ function addChannel() {
     })
   };
 
-  fetch("http://localhost:8080/api/add-channel", options)
+  fetch("/api/add-channel", options)
     .then(res => res.json())
     .then(res => {
       if (res.Type == "Success") {
@@ -27,7 +27,7 @@ function addChannel() {
 }
 
 function checkAll() {
-  fetch("http://localhost:8080/api/check-all")
+  fetch("/api/check-all")
     .then(res => res.json())
     .then(res => {
       if (res.Type == "Success") {
@@ -37,7 +37,7 @@ function checkAll() {
 }
 
 function getChannels() {
-  fetch("http://localhost:8080/api/get-channels")
+  fetch("/api/get-channels")
     .then(res => res.json())
     .then(channels => {
       displayChannels(channels);
@@ -57,7 +57,7 @@ function deleteChannel(id) {
     })
   };
 
-  fetch("http://localhost:8080/api/delete-channel", options)
+  fetch("/api/delete-channel", options)
     .then(res => res.json())
     .then(res => {
       if (res.Type == "Success") {
@@ -90,7 +90,7 @@ function checkChannel(id) {
     })
   };
 
-  fetch("http://localhost:8080/api/check-channel", options)
+  fetch("/api/check-channel", options)
     .then(res => res.json())
     .then(res => {
       console.log(res);
