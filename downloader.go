@@ -7,36 +7,30 @@ import (
 // Download downloads a the latest video based on downloadMode
 func (c ChannelBasicInfo) Download(downloadMode string) error {
 	channelName := c.Name
-	channelType := c.Type
 	if downloadMode == "Video And Audio" {
 		// Download .mp4 with audio and video in one file
-		return downloadVideoAndAudio(channelName, channelType)
-		// Extract audio from the .mp4 file and remove the .mp4
+		video := c.GetLatestVideo()
+		return video.downloadVideoAndAudio(channelName)
 	} else if downloadMode == "Audio Only" {
-		return downloadAudioOnly(channelName, channelType)
+		// Extract audio from the .mp4 file and remove the .mp4
+		video := c.GetLatestVideo()
+		return video.downloadAudioOnly(channelName)
 	}
 	return fmt.Errorf("Something went seriously wrong")
 }
 
-func downloadVideoAndAudio(channelName, channelType string) error {
-	channel := ChannelBasicInfo{Name: channelName, Type: channelType}
-
-	video := channel.GetLatestVideo()
-	err := video.DownloadYTDL()
+func (v Video) downloadVideoAndAudio(channelName string) error {
+	err := v.DownloadYTDL()
 	if err != nil {
 		return err
 	}
-
-	return UpdateLatestDownloaded(channelName, video.VideoID)
+	return UpdateLatestDownloaded(channelName, v.VideoID)
 }
 
-func downloadAudioOnly(channelName, channelType string) error {
-	channel := ChannelBasicInfo{Name: channelName, Type: channelType}
-	video := channel.GetLatestVideo()
-	err := video.DownloadAudioYTDL()
+func (v Video) downloadAudioOnly(channelName string) error {
+	err := v.DownloadAudioYTDL()
 	if err != nil {
 		return err
 	}
-
-	return UpdateLatestDownloaded(channelName, video.VideoID)
+	return UpdateLatestDownloaded(channelName, v.VideoID)
 }
