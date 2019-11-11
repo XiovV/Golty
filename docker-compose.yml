@@ -8,5 +8,7 @@ services:
     # Choose ONE of these
       - ./localdl:/app/downloads # local folder mapping
     #  - downloads:/app/downloads # docker volume mapping
+    ports:
+    - 8080:8080
 volumes:
   downloads:
