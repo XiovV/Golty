@@ -9,20 +9,12 @@ function checkAll() {
   })
 }
 
-function getFailedDownloads() {
-  fetch("http://localhost:8080/api/get-failed-downloads")
-  .then(res => res.json())
-  .then(failedDownloads => {
-    displayFailedDownloads(failedDownloads)
-  })
-}
 
 function getChannels() {
   fetch("http://localhost:8080/api/get-channels")
   .then(res => res.json())
   .then(channels => {
     displayChannels(channels)
-    getFailedDownloads()
   })
 }
 
@@ -106,23 +98,6 @@ function displayWarningMessage(message) {
   let warning = document.getElementById("warning")
   warning.classList.remove("d-none")
   warning.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`
-}
-
-function displayFailedDownloads(failedDownloads) {
-  let ul = document.getElementById("failedDownloads");
-  ul.innerHTML = ""
-
-  failedDownloads.forEach(failedDownload => {
-    let li = document.createElement("li");
-    li.setAttribute("class", "list-group-item")
-    li.setAttribute("id", failedDownload.VideoID)
-    failedDownloadURL = document.createElement('a');
-    failedDownloadURL.appendChild(document.createTextNode("https://www.youtube.com/watch?v="+failedDownload.VideoID))
-    failedDownloadURL.title = "https://www.youtube.com/watch?v="+failedDownload.VideoID;
-    failedDownloadURL.href = "https://www.youtube.com/watch?v="+failedDownload.VideoID;
-    li.appendChild(failedDownloadURL);
-    ul.appendChild(li)
-  })
 }
 
 function displayChannels(channels) {

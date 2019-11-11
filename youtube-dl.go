@@ -35,7 +35,11 @@ func GetLatestVideo(channelName, channelType string) string {
 }
 
 func DownloadYTDL(videoId string) error {
-	cmd := exec.Command("youtube-dl", "https://www.youtube.com/watch?v="+videoId)
+	// youtube-dl -o '%(uploader)s/ - %(title)s.%(ext)s' https://www.youtube.com/watch\?v\=i3o4G4bmqPc
+
+	// cmd := exec.Command("youtube-dl", "https://www.youtube.com/watch?v="+videoId)
+	cmd := exec.Command("youtube-dl", "-o", "%(uploader)s/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+videoId)
+
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatal(string(out))
@@ -46,7 +50,7 @@ func DownloadYTDL(videoId string) error {
 }
 
 func DownloadAudioYTDL(videoId string) error {
-	cmd := exec.Command("youtube-dl", "--extract-audio", "--audio-format", "mp3", "https://www.youtube.com/watch?v="+videoId)
+	cmd := exec.Command("youtube-dl", "--extract-audio", "--audio-format", "mp3", "-o", "%(uploader)s/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+videoId)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatal(string(out))
