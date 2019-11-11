@@ -5,7 +5,7 @@ import (
 )
 
 // Download downloads a the latest video based on downloadMode
-func (c ChannelTest) Download(downloadMode string) error {
+func (c ChannelBasicInfo) Download(downloadMode string) error {
 	channelName := c.Name
 	channelType := c.Type
 	if downloadMode == "Video And Audio" {
@@ -19,7 +19,9 @@ func (c ChannelTest) Download(downloadMode string) error {
 }
 
 func downloadVideoAndAudio(channelName, channelType string) error {
-	video := GetLatestVideo(channelName, channelType)
+	channel := ChannelBasicInfo{Name: channelName, Type: channelType}
+
+	video := channel.GetLatestVideo()
 	err := video.DownloadYTDL()
 	if err != nil {
 		return err
@@ -29,7 +31,8 @@ func downloadVideoAndAudio(channelName, channelType string) error {
 }
 
 func downloadAudioOnly(channelName, channelType string) error {
-	video := GetLatestVideo(channelName, channelType)
+	channel := ChannelBasicInfo{Name: channelName, Type: channelType}
+	video := channel.GetLatestVideo()
 	err := video.DownloadAudioYTDL()
 	if err != nil {
 		return err

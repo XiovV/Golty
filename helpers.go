@@ -31,17 +31,17 @@ func GetChannels() []Channel {
 	return db
 }
 
-func GetChannelInfo(channelURL string) (ChannelTest, error) {
+func GetChannelInfo(channelURL string) (ChannelBasicInfo, error) {
 	channelName, err := GetChannelName(channelURL)
 	if err != nil {
-		return ChannelTest{}, fmt.Errorf("There was an error getting channel name: %s", err)
+		return ChannelBasicInfo{}, fmt.Errorf("There was an error getting channel name: %s", err)
 	}
 	channelType, err := GetChannelType(channelURL)
 	if err != nil {
-		return ChannelTest{}, fmt.Errorf("There was an error getting channel type: %s", err)
+		return ChannelBasicInfo{}, fmt.Errorf("There was an error getting channel type: %s", err)
 	}
 
-	return ChannelTest{Name: channelName, Type: channelType}, nil
+	return ChannelBasicInfo{Name: channelName, Type: channelType}, nil
 }
 
 func CheckAll() Response {
@@ -55,10 +55,10 @@ func CheckAll() Response {
 			log.Error(err)
 		}
 		channelName := channel.Name
-		channelType := channel.Type
 
 		if strings.Contains(item.ChannelURL, channelName) {
-			videoId := GetLatestVideo(channelName, channelType)
+			videoId := channel.GetLatestVideo()
+			// videoId := GetLatestVideo(channelName, channelType)
 
 			if item.LatestDownloaded == videoId.VideoID {
 				log.Info("No new videos found for: ", item.ChannelURL)
@@ -78,9 +78,9 @@ func CheckNow(channelName string, channelType string) Response {
 	log.Info("Checking for new videos")
 	allChannelsInDb := GetChannels()
 
-	videoId := GetLatestVideo(channelName, channelType)
+	channel := ChannelBasicInfo{Name: channelName, Type: channelType}
 
-	channel := ChannelTest{Name: channelName, Type: channelType}
+	videoId := channel.GetLatestVideo()
 
 	for _, item := range allChannelsInDb {
 		if strings.Contains(item.ChannelURL, channelName) {

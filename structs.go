@@ -138,12 +138,14 @@ type FailedVideo struct {
 	VideoID string
 }
 
-type ChannelTest struct {
+type ChannelBasicInfo struct {
 	Name string
 	Type string
 }
 
 type Channel struct {
+	Name             string
+	Type             string
 	ChannelURL       string
 	LatestDownloaded string
 }

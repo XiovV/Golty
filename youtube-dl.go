@@ -35,11 +35,11 @@ func getChannelMetadata(channelName string) Video {
 	return Video{VideoID: metaData.ID}
 }
 
-func GetLatestVideo(channelName, channelType string) Video {
-	if channelType == "user" {
-		return getUserMetadata(channelName)
+func (c ChannelBasicInfo) GetLatestVideo() Video {
+	if c.Type == "user" {
+		return getUserMetadata(c.Name)
 	}
-	return getChannelMetadata(channelName)
+	return getChannelMetadata(c.Name)
 }
 
 func (v Video) DownloadYTDL() error {
