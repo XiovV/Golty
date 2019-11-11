@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  go-auto-yt:
+    build: .
+    restart: always
+    volumes:
+    # Choose ONE of these
+      - ./localdl:/app/downloads # local folder mapping
+    #  - downloads:/app/downloads # docker volume mapping
+volumes:
+  downloads:
