@@ -1,6 +1,6 @@
 let channels = [];
 function checkAll() {
-  fetch("/api/check-all")
+  fetch("http://localhost:8080/api/check-all")
     .then(res => res.json())
     .then(res => {
       if (res.Type == "Success") {
@@ -10,7 +10,7 @@ function checkAll() {
 }
 
 function getChannels() {
-  fetch("/api/get-channels")
+  fetch("http://localhost:8080/api/get-channels")
     .then(res => res.json())
     .then(channels => {
       displayChannels(channels);
@@ -30,7 +30,7 @@ function deleteChannel(id) {
     })
   };
 
-  fetch("/api/delete-channel", options)
+  fetch("http://localhost:8080/api/delete-channel", options)
     .then(res => res.json())
     .then(res => {
       if (res.Type == "Success") {
@@ -63,7 +63,7 @@ function checkChannel(id) {
     })
   };
 
-  fetch("/api/check-channel", options)
+  fetch("http://localhost:8080/api/check-channel", options)
     .then(res => res.json())
     .then(res => {
       console.log(res);
