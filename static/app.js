@@ -1,4 +1,31 @@
 let channels = [];
+function addChannel() {
+  let channelURL = document.getElementById("channel-url").value
+  let downloadMode = document.getElementById("download-mode").value
+
+  let channelData = {
+    channelURL,
+    downloadMode
+  };
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(channelData),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("http://localhost:8080/api/add-channel", options)
+    .then(res => res.json())
+    .then(res => {
+      if (res.Type == "Success") {
+        displaySuccessMessage(res.Message);
+        getChannels()
+      }
+    });
+}
+
 function checkAll() {
   fetch("http://localhost:8080/api/check-all")
     .then(res => res.json())

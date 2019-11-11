@@ -28,24 +28,23 @@
       </div>
     </div>
     
-    <form action="/api/add-channel" method="POST">
-      <div class="form-group mt-4">
-        <label for="exampleFormControlInput1">Channel URL</label>
-        <input type="text" name= "channelURL" class="form-control" id="exampleFormControlInput1" placeholder="https://www.youtube.com/user/Example">
-      </div>
-      <div class="form-group">
-        <label for="exampleFormControlSelect1">Select What To Download</label>
-        <select name="mode" class="form-control" id="exampleFormControlSelect1">
-          <option>Audio Only</option>
-          <option>Video And Audio</option>
-        </select>
-      </div>
-      <div class="form-group mt-4">
-        <label for="exampleFormControlInput1">Checking Interval (in minutes)</label>
-        <input type="number" name= "interval" class="form-control" id="exampleFormControlInput1" placeholder="60">
-      </div>
-      <button type="submit" class="btn btn-primary mb-2">Add Channel<span><div class="spinner-border align-middle ml-2 d-none"></div></span></button>
-    </form>
+    <div class="form-group mt-4">
+      <label for="channel-url">Channel URL</label>
+      <input type="text" class="form-control" id="channel-url" placeholder="https://www.youtube.com/user/Example">
+    </div>
+    <div class="form-group">
+      <label for="download-mode">Select What To Download</label>
+      <select class="form-control" id="download-mode">
+        <option value="Audio Only">Audio Only</option>
+        <option value="Audio And Video">Video And Audio</option>
+      </select>
+    </div>
+    <div class="form-group mt-4">
+      <label for="checking-interval">Checking Interval (in minutes)</label>
+      <input type="number" class="form-control" id="checking-interval" placeholder="60">
+    </div>
+    <button class="btn btn-primary mb-2" onclick="addChannel()">Add Channel<span><div class="spinner-border align-middle ml-2 d-none"></div></span></button>
+    
     <button class="btn btn-primary float-right" onclick="checkAll()">Check All Now</button>
 
     <h2 class="mt-2">Listening to these channels: </h2>

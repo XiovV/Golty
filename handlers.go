@@ -22,19 +22,27 @@ func HandleLogs(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
+	var channelData AddChannelPayload
+	err := json.NewDecoder(r.Body).Decode(&channelData)
+	if err != nil {
+		log.Error(err, r.Body)
+	}
+	channelURL := channelData.ChannelURL
 
-	channelURL := r.FormValue("channelURL")
-	downloadMode := r.FormValue("mode")
+	downloadMode := channelData.DownloadMode
+
+	log.Info(channelData)
 
 	channel, _ := GetChannelInfo(channelURL)
+
 	channelType := channel.Type
 
 	doesChannelExist := DoesChannelExist(channelURL)
 	if doesChannelExist == true {
 		log.Info("This channel already exists")
+		res := Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"}
+		json.NewEncoder(w).Encode(res)
 	} else {
-		// CreateDirIfNotExist(channelName)
 		log.Info("Adding channel to DB")
 		AddChannelToDatabase(channelURL)
 		if channelType == "user" {
@@ -42,11 +50,15 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Error(err)
 			}
+			res := Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added"}
+			json.NewEncoder(w).Encode(res)
 		} else if channelType == "channel" {
 			err := channel.Download(downloadMode)
 			if err != nil {
 				log.Error(err)
 			}
+			res := Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added"}
+			json.NewEncoder(w).Encode(res)
 		}
 	}
 }
