@@ -40,7 +40,7 @@ TODO: Create image and write guide
 ```
 
 ## Roadmap
-* Create a crawler in order to bypass YouTube API
+* Create a youtube-dl wrapper so the backend doesn't have to rely on YouTube API and to fix failed downloads
 * Create a docker image
 
 ## Known Issues
@@ -51,4 +51,3 @@ TODO: Create image and write guide
 * [Go](https://golang.org/) - Go Language
 * [Gorilla Mux](https://github.com/gorilla/mux) - Go Multiplexer
 * [Bootstrap](https://getbootstrap.com/) - CSS Framework
-* [go-get-youtube](https://github.com/knadh/go-get-youtube) - Go library for downloading YouTube videos
