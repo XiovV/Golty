@@ -51,13 +51,13 @@ func CheckAll() Response {
 		if strings.Contains(item.ChannelURL, channelName) {
 			videoId := GetLatestVideo(channelName, channelType)
 
-			if item.LatestDownloaded == videoId {
+			if item.LatestDownloaded == videoId.VideoID {
 				log.Info("No new videos found for: ", item.ChannelURL)
 			} else {
 				log.Info("New video detected for: ", item.ChannelURL)
 				foundFor = append(foundFor, item.ChannelURL)
 				go Download(channelName, channelType, "Audio Only")
-				UpdateLatestDownloaded(item.ChannelURL, videoId)
+				UpdateLatestDownloaded(item.ChannelURL, videoId.VideoID)
 			}
 		}
 	}
@@ -73,7 +73,7 @@ func CheckNow(channelName string, channelType string) Response {
 
 	for _, item := range allChannelsInDb {
 		if strings.Contains(item.ChannelURL, channelName) {
-			if item.LatestDownloaded == videoId {
+			if item.LatestDownloaded == videoId.VideoID {
 				log.Info("No new videos found for: ", channelName)
 				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected"}
 			} else {
@@ -83,7 +83,7 @@ func CheckNow(channelName string, channelType string) Response {
 					log.Error(err)
 					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}
 				}
-				UpdateLatestDownloaded(channelName, videoId)
+				UpdateLatestDownloaded(channelName, videoId.VideoID)
 				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected"}
 			}
 		}

@@ -152,3 +152,7 @@ type Response struct {
 	Key     string
 	Message string
 }
+
+type Video struct {
+	VideoID string
+}

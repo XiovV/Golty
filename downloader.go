@@ -17,21 +17,21 @@ func Download(channelName, channelType, downloadMode string) error {
 }
 
 func downloadVideoAndAudio(channelName, channelType string) error {
-	videoId := GetLatestVideo(channelName, channelType)
-	err := DownloadYTDL(videoId)
+	video := GetLatestVideo(channelName, channelType)
+	err := video.DownloadYTDL()
 	if err != nil {
 		return err
 	}
 
-	return UpdateLatestDownloaded(channelName, videoId)
+	return UpdateLatestDownloaded(channelName, video.VideoID)
 }
 
 func downloadAudioOnly(channelName, channelType string) error {
-	videoId := GetLatestVideo(channelName, channelType)
-	err := DownloadAudioYTDL(videoId)
+	video := GetLatestVideo(channelName, channelType)
+	err := video.DownloadAudioYTDL()
 	if err != nil {
 		return err
 	}
 
-	return UpdateLatestDownloaded(channelName, videoId)
+	return UpdateLatestDownloaded(channelName, video.VideoID)
 }
