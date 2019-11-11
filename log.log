@@ -1,0 +1,11 @@
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-11T20:23:04+01:00"}
+{"level":"info","msg":"Server running on port 8080","time":"2019-11-11T20:23:08+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-11T20:23:13+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-11T20:23:13+01:00"}
+{"level":"info","msg":"Successfully removed channel from channels.json","time":"2019-11-11T20:23:17+01:00"}
+{"level":"info","msg":"Adding channel to DB","time":"2019-11-11T20:23:19+01:00"}
+{"level":"info","msg":"Adding channel to DB","time":"2019-11-11T20:23:19+01:00"}
+{"level":"info","msg":"Updating latest downloaded video id","time":"2019-11-11T20:23:34+01:00"}
+{"level":"info","msg":"Latest downloaded video id updated successfully","time":"2019-11-11T20:23:34+01:00"}
+{"level":"info","msg":"Getting all channels from channels.json","time":"2019-11-11T20:23:34+01:00"}
+{"level":"info","msg":"Successfully read all channels","time":"2019-11-11T20:23:34+01:00"}
