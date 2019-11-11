@@ -1,0 +1,37 @@
+dist: bionic
+
+branches:
+  only:
+    - master
+
+stages:
+  - test
+  - build-go
+  - build-docker
+#  - deploy
+
+jobs:
+  include:
+  - stage: "test"
+    language: go
+    go: "1.13"
+    install: 
+    - go get -v
+    script:
+    - go test -v
+  - stage: "build-go"
+    language: go
+    go: "1.13"
+    install:
+    - go get -v
+    script:
+    - go build -v
+  - stage: "build-docker"
+    script: 
+    - docker build --no-cache -t go-auto-yt:build .
+#  - stage: "deploy"
+#    language: shell
+#    script:
+#    - docker build -t go-auto-yt .
+#    - docker tag go-auto-yt go-auto-yt:stable
+#    - docker push go-auto-yt:stable
