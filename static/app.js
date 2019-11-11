@@ -123,3 +123,9 @@ function displayButtons() {
     channel.innerHTML = oldHTML + `<button class="btn btn-danger float-right ml-2" id="${channel.innerHTML+"delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.innerHTML}" onClick="checkChannel(this.id)">Check Now</button>`
   })
 }
+
+function displaySpinner() {
+  spinner = document.getElementById("spinner")
+  console.log(spinner)
+  spinner.classList.remove("d-none")
+}

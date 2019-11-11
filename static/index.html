@@ -37,7 +37,6 @@
         <label for="exampleFormControlSelect1">Select What To Download</label>
         <select name="mode" class="form-control" id="exampleFormControlSelect1">
           <option>Audio Only</option>
-          <option>Video Only</option>
           <option>Video And Audio</option>
         </select>
       </div>
@@ -45,9 +44,10 @@
         <label for="exampleFormControlInput1">Checking Interval (in minutes)</label>
         <input type="number" name= "interval" class="form-control" id="exampleFormControlInput1" placeholder="60">
       </div>
-      <button type="submit" class="btn btn-primary mb-2">Add Channel</button>
+      <button type="submit" class="btn btn-primary mb-2">Add Channel<span><div class="spinner-border align-middle ml-2 d-none"></div></span></button>
     </form>
     <button class="btn btn-primary float-right" onclick="checkAll()">Check All Now</button>
+
     <h2 class="mt-2">Listening to these channels: </h2>
     <ul class="list-group" id="channels">
     </ul>

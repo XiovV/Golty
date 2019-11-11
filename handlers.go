@@ -18,7 +18,7 @@ func ServeJS(w http.ResponseWriter, r *http.Request) {
 
 func HandleLogs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	http.ServeFile(w, r, "log.txt")
+	http.ServeFile(w, r, "log.log")
 }
 
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
