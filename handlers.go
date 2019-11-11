@@ -22,7 +22,7 @@ func HandleLogs(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 	channelURL := r.FormValue("channelURL")
 	downloadMode := r.FormValue("mode")
