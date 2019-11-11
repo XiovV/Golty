@@ -49,7 +49,7 @@ func CheckAll() Response {
 		}
 
 		if strings.Contains(item.ChannelURL, channelName) {
-			videoId, _ := GetLatestVideo(channelName, channelType)
+			videoId := GetLatestVideo(channelName, channelType)
 
 			if item.LatestDownloaded == videoId {
 				log.Info("No new videos found for: ", item.ChannelURL)
@@ -69,7 +69,7 @@ func CheckNow(channelName string, channelType string) Response {
 	log.Info("Checking for new videos")
 	allChannelsInDb := GetChannels()
 
-	videoId, _ := GetLatestVideo(channelName, channelType)
+	videoId := GetLatestVideo(channelName, channelType)
 
 	for _, item := range allChannelsInDb {
 		if strings.Contains(item.ChannelURL, channelName) {

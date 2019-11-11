@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func GetLatestVideoYTDL(channelName, channelType string) string {
+func GetLatestVideo(channelName, channelType string) string {
 	if channelType == "user" {
 		cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", "https://www.youtube.com/user/"+channelName)
 		out, err := cmd.CombinedOutput()

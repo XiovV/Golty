@@ -28,7 +28,7 @@ func uploadChecker() {
 	for {
 		time.Sleep(5 * time.Hour)
 
-		go CheckAll()
+		// go CheckAll()
 		log.Info("Upload Checker running...")
 	}
 }

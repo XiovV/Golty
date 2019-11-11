@@ -45,9 +45,6 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		log.Info("Adding channel to DB")
 		AddChannelToDatabase(channelURL)
 		if channelType == "user" {
-			uploadsId := GetUserUploadsIDFromAPI(channelName)
-			InitUploadsID(channelURL)
-			UpdateUploadsID(channelURL, uploadsId)
 			err := Download(channelName, channelType, downloadMode)
 			if err != nil {
 				log.Error(err)
