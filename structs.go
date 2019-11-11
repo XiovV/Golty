@@ -144,8 +144,6 @@ type ChannelBasicInfo struct {
 }
 
 type Channel struct {
-	Name             string
-	Type             string
 	ChannelURL       string
 	LatestDownloaded string
 }
