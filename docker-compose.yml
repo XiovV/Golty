@@ -6,9 +6,15 @@ services:
     restart: always
     volumes:
     # Choose ONE of these
-      - ./localdl:/app/downloads # local folder mapping
+      - ./downloads:/app/downloads # local folder mapping
     #  - downloads:/app/downloads # docker volume mapping
+    # And ONE of these
+      - ./config:/app/config
+    #  - config:/app/config
     ports:
     - 8080:8080
-volumes:
-  downloads:
+#    network_mode: "host"
+# uncomment this if using the docker volume mapping above
+#volumes:
+#  downloads:
+#  config:
