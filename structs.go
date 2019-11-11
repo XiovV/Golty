@@ -1,125 +1,132 @@
 package main
 
-import "time"
-
-type ChannelBody struct {
-	Kind          string `json:"kind"`
-	Etag          string `json:"etag"`
-	NextPageToken string `json:"nextPageToken"`
-	RegionCode    string `json:"regionCode"`
-	PageInfo      struct {
-		TotalResults   int `json:"totalResults"`
-		ResultsPerPage int `json:"resultsPerPage"`
-	} `json:"pageInfo"`
-	Items []struct {
-		Kind string `json:"kind"`
-		Etag string `json:"etag"`
-		ID   struct {
-			Kind    string `json:"kind"`
-			VideoID string `json:"videoId"`
-		} `json:"id"`
-		Snippet struct {
-			PublishedAt time.Time `json:"publishedAt"`
-			ChannelID   string    `json:"channelId"`
-			Title       string    `json:"title"`
-			Description string    `json:"description"`
-			Thumbnails  struct {
-				Default struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"default"`
-				Medium struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"medium"`
-				High struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"high"`
-			} `json:"thumbnails"`
-			ChannelTitle         string `json:"channelTitle"`
-			LiveBroadcastContent string `json:"liveBroadcastContent"`
-		} `json:"snippet"`
-	} `json:"items"`
-}
-
-type NameBody struct {
-	Kind          string `json:"kind"`
-	Etag          string `json:"etag"`
-	NextPageToken string `json:"nextPageToken"`
-	PageInfo      struct {
-		TotalResults   int `json:"totalResults"`
-		ResultsPerPage int `json:"resultsPerPage"`
-	} `json:"pageInfo"`
-	Items []struct {
-		Kind    string `json:"kind"`
-		Etag    string `json:"etag"`
-		ID      string `json:"id"`
-		Snippet struct {
-			PublishedAt time.Time `json:"publishedAt"`
-			ChannelID   string    `json:"channelId"`
-			Title       string    `json:"title"`
-			Description string    `json:"description"`
-			Thumbnails  struct {
-				Default struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"default"`
-				Medium struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"medium"`
-				High struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"high"`
-				Standard struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"standard"`
-				Maxres struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"maxres"`
-			} `json:"thumbnails"`
-			ChannelTitle string `json:"channelTitle"`
-			PlaylistID   string `json:"playlistId"`
-			Position     int    `json:"position"`
-			ResourceID   struct {
-				Kind    string `json:"kind"`
-				VideoID string `json:"videoId"`
-			} `json:"resourceId"`
-		} `json:"snippet"`
-	} `json:"items"`
-}
-
-type UserBody struct {
-	Kind     string `json:"kind"`
-	Etag     string `json:"etag"`
-	PageInfo struct {
-		TotalResults   int `json:"totalResults"`
-		ResultsPerPage int `json:"resultsPerPage"`
-	} `json:"pageInfo"`
-	Items []struct {
-		Kind           string `json:"kind"`
-		Etag           string `json:"etag"`
-		ID             string `json:"id"`
-		ContentDetails struct {
-			RelatedPlaylists struct {
-				Uploads      string `json:"uploads"`
-				WatchHistory string `json:"watchHistory"`
-				WatchLater   string `json:"watchLater"`
-			} `json:"relatedPlaylists"`
-		} `json:"contentDetails"`
-	} `json:"items"`
+type ChannelInformation struct {
+	PlaylistUploader   string      `json:"playlist_uploader"`
+	UploadDate         string      `json:"upload_date"`
+	Extractor          string      `json:"extractor"`
+	Series             interface{} `json:"series"`
+	Format             string      `json:"format"`
+	Vbr                interface{} `json:"vbr"`
+	Chapters           interface{} `json:"chapters"`
+	Height             int         `json:"height"`
+	LikeCount          int         `json:"like_count"`
+	Duration           int         `json:"duration"`
+	Fulltitle          string      `json:"fulltitle"`
+	PlaylistIndex      int         `json:"playlist_index"`
+	Album              string      `json:"album"`
+	ViewCount          int         `json:"view_count"`
+	Playlist           string      `json:"playlist"`
+	Title              string      `json:"title"`
+	Filename           string      `json:"_filename"`
+	Creator            string      `json:"creator"`
+	Ext                string      `json:"ext"`
+	ID                 string      `json:"id"`
+	DislikeCount       int         `json:"dislike_count"`
+	PlaylistID         string      `json:"playlist_id"`
+	Abr                int         `json:"abr"`
+	UploaderURL        string      `json:"uploader_url"`
+	Categories         []string    `json:"categories"`
+	Fps                int         `json:"fps"`
+	StretchedRatio     interface{} `json:"stretched_ratio"`
+	SeasonNumber       interface{} `json:"season_number"`
+	Annotations        interface{} `json:"annotations"`
+	WebpageURLBasename string      `json:"webpage_url_basename"`
+	Acodec             string      `json:"acodec"`
+	DisplayID          string      `json:"display_id"`
+	RequestedFormats   []struct {
+		Asr               interface{} `json:"asr"`
+		Tbr               float64     `json:"tbr"`
+		Protocol          string      `json:"protocol"`
+		Format            string      `json:"format"`
+		URL               string      `json:"url"`
+		Vcodec            string      `json:"vcodec"`
+		FormatNote        string      `json:"format_note"`
+		Height            int         `json:"height"`
+		DownloaderOptions struct {
+			HTTPChunkSize int `json:"http_chunk_size"`
+		} `json:"downloader_options"`
+		Width       int    `json:"width"`
+		Ext         string `json:"ext"`
+		Filesize    int    `json:"filesize"`
+		Fps         int    `json:"fps"`
+		FormatID    string `json:"format_id"`
+		PlayerURL   string `json:"player_url"`
+		HTTPHeaders struct {
+			AcceptCharset  string `json:"Accept-Charset"`
+			AcceptLanguage string `json:"Accept-Language"`
+			AcceptEncoding string `json:"Accept-Encoding"`
+			Accept         string `json:"Accept"`
+			UserAgent      string `json:"User-Agent"`
+		} `json:"http_headers"`
+		Acodec string `json:"acodec"`
+		Abr    int    `json:"abr,omitempty"`
+	} `json:"requested_formats"`
+	AutomaticCaptions struct {
+	} `json:"automatic_captions"`
+	Description        string      `json:"description"`
+	Tags               []string    `json:"tags"`
+	Track              string      `json:"track"`
+	RequestedSubtitles interface{} `json:"requested_subtitles"`
+	StartTime          interface{} `json:"start_time"`
+	AverageRating      float64     `json:"average_rating"`
+	Uploader           string      `json:"uploader"`
+	FormatID           string      `json:"format_id"`
+	EpisodeNumber      interface{} `json:"episode_number"`
+	UploaderID         string      `json:"uploader_id"`
+	Subtitles          struct {
+	} `json:"subtitles"`
+	PlaylistTitle string `json:"playlist_title"`
+	Width         int    `json:"width"`
+	Thumbnails    []struct {
+		URL string `json:"url"`
+		ID  string `json:"id"`
+	} `json:"thumbnails"`
+	License      interface{} `json:"license"`
+	Artist       string      `json:"artist"`
+	ExtractorKey string      `json:"extractor_key"`
+	ReleaseDate  interface{} `json:"release_date"`
+	AltTitle     string      `json:"alt_title"`
+	Thumbnail    string      `json:"thumbnail"`
+	ChannelID    string      `json:"channel_id"`
+	IsLive       interface{} `json:"is_live"`
+	ReleaseYear  interface{} `json:"release_year"`
+	EndTime      interface{} `json:"end_time"`
+	WebpageURL   string      `json:"webpage_url"`
+	Formats      []struct {
+		Asr               int     `json:"asr"`
+		Tbr               float64 `json:"tbr"`
+		Protocol          string  `json:"protocol"`
+		Format            string  `json:"format"`
+		URL               string  `json:"url"`
+		Vcodec            string  `json:"vcodec"`
+		FormatNote        string  `json:"format_note"`
+		Abr               int     `json:"abr,omitempty"`
+		PlayerURL         string  `json:"player_url"`
+		DownloaderOptions struct {
+			HTTPChunkSize int `json:"http_chunk_size"`
+		} `json:"downloader_options,omitempty"`
+		Width       interface{} `json:"width"`
+		Ext         string      `json:"ext"`
+		Filesize    int         `json:"filesize"`
+		Fps         interface{} `json:"fps"`
+		FormatID    string      `json:"format_id"`
+		Height      interface{} `json:"height"`
+		HTTPHeaders struct {
+			AcceptCharset  string `json:"Accept-Charset"`
+			AcceptLanguage string `json:"Accept-Language"`
+			AcceptEncoding string `json:"Accept-Encoding"`
+			Accept         string `json:"Accept"`
+			UserAgent      string `json:"User-Agent"`
+		} `json:"http_headers"`
+		Acodec    string `json:"acodec"`
+		Container string `json:"container,omitempty"`
+	} `json:"formats"`
+	PlaylistUploaderID string      `json:"playlist_uploader_id"`
+	ChannelURL         string      `json:"channel_url"`
+	Resolution         interface{} `json:"resolution"`
+	Vcodec             string      `json:"vcodec"`
+	NEntries           int         `json:"n_entries"`
+	AgeLimit           int         `json:"age_limit"`
 }
 
 type UploadID struct {
@@ -144,313 +151,4 @@ type Response struct {
 	Type    string
 	Key     string
 	Message string
-}
-
-type Option struct {
-	Resume bool // resume failed or cancelled download
-	Rename bool // rename output file using video title
-	Mp3    bool // extract audio using ffmpeg
-}
-
-type Video struct {
-	Id, Title, Author, Keywords, Thumbnail_url string
-	Avg_rating                                 float32
-	View_count, Length_seconds                 int
-	Formats                                    []Format
-	Filename                                   string
-}
-
-type Format struct {
-	Itag                     int
-	Video_type, Quality, Url string
-}
-
-type PlayerResponse struct {
-	ResponseContext struct {
-		ServiceTrackingParams []struct {
-			Service string `json:"service"`
-			Params  []struct {
-				Key   string `json:"key"`
-				Value string `json:"value"`
-			} `json:"params"`
-		} `json:"serviceTrackingParams"`
-	} `json:"responseContext"`
-	PlayabilityStatus struct {
-		Status          string `json:"status"`
-		PlayableInEmbed bool   `json:"playableInEmbed"`
-	} `json:"playabilityStatus"`
-	StreamingData struct {
-		ExpiresInSeconds string `json:"expiresInSeconds"`
-		Formats          []struct {
-			Itag             int    `json:"itag"`
-			URL              string `json:"url"`
-			MimeType         string `json:"mimeType"`
-			Bitrate          int    `json:"bitrate"`
-			Width            int    `json:"width"`
-			Height           int    `json:"height"`
-			LastModified     string `json:"lastModified"`
-			ContentLength    string `json:"contentLength"`
-			Quality          string `json:"quality"`
-			QualityLabel     string `json:"qualityLabel"`
-			ProjectionType   string `json:"projectionType"`
-			AverageBitrate   int    `json:"averageBitrate,omitempty"`
-			AudioQuality     string `json:"audioQuality"`
-			ApproxDurationMs string `json:"approxDurationMs,omitempty"`
-			AudioSampleRate  string `json:"audioSampleRate,omitempty"`
-			AudioChannels    int    `json:"audioChannels,omitempty"`
-		} `json:"formats"`
-		AdaptiveFormats []struct {
-			Itag      int    `json:"itag"`
-			URL       string `json:"url"`
-			MimeType  string `json:"mimeType"`
-			Bitrate   int    `json:"bitrate"`
-			Width     int    `json:"width,omitempty"`
-			Height    int    `json:"height,omitempty"`
-			InitRange struct {
-				Start string `json:"start"`
-				End   string `json:"end"`
-			} `json:"initRange"`
-			IndexRange struct {
-				Start string `json:"start"`
-				End   string `json:"end"`
-			} `json:"indexRange"`
-			LastModified     string `json:"lastModified"`
-			ContentLength    string `json:"contentLength"`
-			Quality          string `json:"quality"`
-			Fps              int    `json:"fps,omitempty"`
-			QualityLabel     string `json:"qualityLabel,omitempty"`
-			ProjectionType   string `json:"projectionType"`
-			AverageBitrate   int    `json:"averageBitrate"`
-			ApproxDurationMs string `json:"approxDurationMs"`
-			HighReplication  bool   `json:"highReplication,omitempty"`
-			AudioQuality     string `json:"audioQuality,omitempty"`
-			AudioSampleRate  string `json:"audioSampleRate,omitempty"`
-			AudioChannels    int    `json:"audioChannels,omitempty"`
-		} `json:"adaptiveFormats"`
-	} `json:"streamingData"`
-	PlaybackTracking struct {
-		VideostatsPlaybackURL struct {
-			BaseURL string `json:"baseUrl"`
-		} `json:"videostatsPlaybackUrl"`
-		VideostatsDelayplayURL struct {
-			BaseURL string `json:"baseUrl"`
-		} `json:"videostatsDelayplayUrl"`
-		VideostatsWatchtimeURL struct {
-			BaseURL string `json:"baseUrl"`
-		} `json:"videostatsWatchtimeUrl"`
-		PtrackingURL struct {
-			BaseURL string `json:"baseUrl"`
-		} `json:"ptrackingUrl"`
-		QoeURL struct {
-			BaseURL string `json:"baseUrl"`
-		} `json:"qoeUrl"`
-		SetAwesomeURL struct {
-			BaseURL                 string `json:"baseUrl"`
-			ElapsedMediaTimeSeconds int    `json:"elapsedMediaTimeSeconds"`
-		} `json:"setAwesomeUrl"`
-		AtrURL struct {
-			BaseURL                 string `json:"baseUrl"`
-			ElapsedMediaTimeSeconds int    `json:"elapsedMediaTimeSeconds"`
-		} `json:"atrUrl"`
-	} `json:"playbackTracking"`
-	Captions struct {
-		PlayerCaptionsRenderer struct {
-			BaseURL    string `json:"baseUrl"`
-			Visibility string `json:"visibility"`
-		} `json:"playerCaptionsRenderer"`
-		PlayerCaptionsTracklistRenderer struct {
-			CaptionTracks []struct {
-				BaseURL string `json:"baseUrl"`
-				Name    struct {
-					SimpleText string `json:"simpleText"`
-				} `json:"name"`
-				VssID          string `json:"vssId"`
-				LanguageCode   string `json:"languageCode"`
-				Kind           string `json:"kind"`
-				IsTranslatable bool   `json:"isTranslatable"`
-			} `json:"captionTracks"`
-			AudioTracks []struct {
-				CaptionTrackIndices []int  `json:"captionTrackIndices"`
-				Visibility          string `json:"visibility"`
-			} `json:"audioTracks"`
-			TranslationLanguages []struct {
-				LanguageCode string `json:"languageCode"`
-				LanguageName struct {
-					SimpleText string `json:"simpleText"`
-				} `json:"languageName"`
-			} `json:"translationLanguages"`
-			DefaultAudioTrackIndex int `json:"defaultAudioTrackIndex"`
-		} `json:"playerCaptionsTracklistRenderer"`
-	} `json:"captions"`
-	VideoDetails struct {
-		VideoID          string   `json:"videoId"`
-		Title            string   `json:"title"`
-		LengthSeconds    string   `json:"lengthSeconds"`
-		Keywords         []string `json:"keywords"`
-		ChannelID        string   `json:"channelId"`
-		IsOwnerViewing   bool     `json:"isOwnerViewing"`
-		ShortDescription string   `json:"shortDescription"`
-		IsCrawlable      bool     `json:"isCrawlable"`
-		Thumbnail        struct {
-			Thumbnails []struct {
-				URL    string `json:"url"`
-				Width  int    `json:"width"`
-				Height int    `json:"height"`
-			} `json:"thumbnails"`
-		} `json:"thumbnail"`
-		UseCipher         bool    `json:"useCipher"`
-		AverageRating     float64 `json:"averageRating"`
-		AllowRatings      bool    `json:"allowRatings"`
-		ViewCount         string  `json:"viewCount"`
-		Author            string  `json:"author"`
-		IsPrivate         bool    `json:"isPrivate"`
-		IsUnpluggedCorpus bool    `json:"isUnpluggedCorpus"`
-		IsLiveContent     bool    `json:"isLiveContent"`
-	} `json:"videoDetails"`
-	Annotations []struct {
-		PlayerAnnotationsUrlsRenderer struct {
-			InvideoURL         string `json:"invideoUrl"`
-			LoadPolicy         string `json:"loadPolicy"`
-			AllowInPlaceSwitch bool   `json:"allowInPlaceSwitch"`
-		} `json:"playerAnnotationsUrlsRenderer"`
-	} `json:"annotations"`
-	PlayerConfig struct {
-		AudioConfig struct {
-			LoudnessDb           float64 `json:"loudnessDb"`
-			PerceptualLoudnessDb float64 `json:"perceptualLoudnessDb"`
-		} `json:"audioConfig"`
-		StreamSelectionConfig struct {
-			MaxBitrate string `json:"maxBitrate"`
-		} `json:"streamSelectionConfig"`
-		MediaCommonConfig struct {
-			DynamicReadaheadConfig struct {
-				MaxReadAheadMediaTimeMs int `json:"maxReadAheadMediaTimeMs"`
-				MinReadAheadMediaTimeMs int `json:"minReadAheadMediaTimeMs"`
-				ReadAheadGrowthRateMs   int `json:"readAheadGrowthRateMs"`
-			} `json:"dynamicReadaheadConfig"`
-		} `json:"mediaCommonConfig"`
-	} `json:"playerConfig"`
-	Storyboards struct {
-		PlayerStoryboardSpecRenderer struct {
-			Spec string `json:"spec"`
-		} `json:"playerStoryboardSpecRenderer"`
-	} `json:"storyboards"`
-	Microformat struct {
-		PlayerMicroformatRenderer struct {
-			Thumbnail struct {
-				Thumbnails []struct {
-					URL    string `json:"url"`
-					Width  int    `json:"width"`
-					Height int    `json:"height"`
-				} `json:"thumbnails"`
-			} `json:"thumbnail"`
-			Embed struct {
-				IframeURL      string `json:"iframeUrl"`
-				FlashURL       string `json:"flashUrl"`
-				Width          int    `json:"width"`
-				Height         int    `json:"height"`
-				FlashSecureURL string `json:"flashSecureUrl"`
-			} `json:"embed"`
-			Title struct {
-				SimpleText string `json:"simpleText"`
-			} `json:"title"`
-			Description struct {
-				SimpleText string `json:"simpleText"`
-			} `json:"description"`
-			LengthSeconds        string   `json:"lengthSeconds"`
-			OwnerProfileURL      string   `json:"ownerProfileUrl"`
-			OwnerGplusProfileURL string   `json:"ownerGplusProfileUrl"`
-			ExternalChannelID    string   `json:"externalChannelId"`
-			AvailableCountries   []string `json:"availableCountries"`
-			IsUnlisted           bool     `json:"isUnlisted"`
-			HasYpcMetadata       bool     `json:"hasYpcMetadata"`
-			ViewCount            string   `json:"viewCount"`
-			Category             string   `json:"category"`
-			PublishDate          string   `json:"publishDate"`
-			OwnerChannelName     string   `json:"ownerChannelName"`
-			UploadDate           string   `json:"uploadDate"`
-		} `json:"playerMicroformatRenderer"`
-	} `json:"microformat"`
-	TrackingParams string `json:"trackingParams"`
-	Attestation    struct {
-		PlayerAttestationRenderer struct {
-			Challenge    string `json:"challenge"`
-			BotguardData struct {
-				Program        string `json:"program"`
-				InterpreterURL string `json:"interpreterUrl"`
-			} `json:"botguardData"`
-		} `json:"playerAttestationRenderer"`
-	} `json:"attestation"`
-	Messages []struct {
-		MealbarPromoRenderer struct {
-			MessageTexts []struct {
-				Runs []struct {
-					Text string `json:"text"`
-				} `json:"runs"`
-			} `json:"messageTexts"`
-			ActionButton struct {
-				ButtonRenderer struct {
-					Style string `json:"style"`
-					Size  string `json:"size"`
-					Text  struct {
-						Runs []struct {
-							Text string `json:"text"`
-						} `json:"runs"`
-					} `json:"text"`
-					NavigationEndpoint struct {
-						ClickTrackingParams string `json:"clickTrackingParams"`
-						URLEndpoint         struct {
-							URL    string `json:"url"`
-							Target string `json:"target"`
-						} `json:"urlEndpoint"`
-					} `json:"navigationEndpoint"`
-					TrackingParams string `json:"trackingParams"`
-				} `json:"buttonRenderer"`
-			} `json:"actionButton"`
-			DismissButton struct {
-				ButtonRenderer struct {
-					Style string `json:"style"`
-					Size  string `json:"size"`
-					Text  struct {
-						Runs []struct {
-							Text string `json:"text"`
-						} `json:"runs"`
-					} `json:"text"`
-					ServiceEndpoint struct {
-						ClickTrackingParams string `json:"clickTrackingParams"`
-						FeedbackEndpoint    struct {
-							FeedbackToken string `json:"feedbackToken"`
-							UIActions     struct {
-								HideEnclosingContainer bool `json:"hideEnclosingContainer"`
-							} `json:"uiActions"`
-						} `json:"feedbackEndpoint"`
-					} `json:"serviceEndpoint"`
-					TrackingParams string `json:"trackingParams"`
-				} `json:"buttonRenderer"`
-			} `json:"dismissButton"`
-			TriggerCondition    string `json:"triggerCondition"`
-			Style               string `json:"style"`
-			TrackingParams      string `json:"trackingParams"`
-			ImpressionEndpoints []struct {
-				ClickTrackingParams string `json:"clickTrackingParams"`
-				FeedbackEndpoint    struct {
-					FeedbackToken string `json:"feedbackToken"`
-					UIActions     struct {
-						HideEnclosingContainer bool `json:"hideEnclosingContainer"`
-					} `json:"uiActions"`
-				} `json:"feedbackEndpoint"`
-			} `json:"impressionEndpoints"`
-			IsVisible    bool `json:"isVisible"`
-			MessageTitle struct {
-				Runs []struct {
-					Text string `json:"text"`
-				} `json:"runs"`
-			} `json:"messageTitle"`
-		} `json:"mealbarPromoRenderer"`
-	} `json:"messages"`
-	AdSafetyReason struct {
-		ApmUserPreference struct {
-		} `json:"apmUserPreference"`
-		IsEmbed bool `json:"isEmbed"`
-	} `json:"adSafetyReason"`
 }
