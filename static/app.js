@@ -149,7 +149,7 @@ function displayChannels(channels) {
     console.log(channel)
     document.getElementById("accordion").innerHTML += `<div class="mb-2 p-2 card">
       <h5 class="mb-0">
-        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.ChannelURL}listElem>
+        <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.ChannelURL}listElem>
           ${channel.ChannelName}
         </button><button class="btn btn-danger float-right ml-2" id="${channel.ChannelURL +
         "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${
@@ -158,7 +158,7 @@ function displayChannels(channels) {
       </h5>
   
     <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
-      <div class="card-body">
+      <div class="panel-body ml-2">
         <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded}>Latest Download</a>
         <br>
         <p>Download Mode: ${channel.DownloadMode}</p>
