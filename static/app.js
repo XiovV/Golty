@@ -143,6 +143,7 @@ function displayWarningMessage(message) {
 }
 
 function displayChannels(channels) {
+  document.getElementById("accordion").innerHTML = ""
   console.log(channels)
   channels.forEach((channel, index) => {
     console.log(channel)
