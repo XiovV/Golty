@@ -8,7 +8,7 @@ stages:
   - test
   - build-go
   - build-docker
-#  - deploy
+ - deploy
 
 jobs:
   include:
