@@ -2,7 +2,7 @@ version: '3'
 
 services:
   go-auto-yt:
-    image: xiovv/go-auto-yt
+    image: xiovv/go-auto-yt:stable
     restart: always
     volumes:
     # Choose ONE of these
