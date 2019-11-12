@@ -29,9 +29,9 @@ jobs:
   - stage: "build-docker"
     script: 
     - docker build --no-cache -t go-auto-yt:build .
-#  - stage: "deploy"
-#    language: shell
-#    script:
-#    - docker build -t go-auto-yt .
-#    - docker tag go-auto-yt go-auto-yt:stable
-#    - docker push go-auto-yt:stable
+ - stage: "deploy"
+   language: shell
+   script:
+   - docker build -t go-auto-yt .
+   - docker tag go-auto-yt go-auto-yt:stable
+   - docker push go-auto-yt:stable
