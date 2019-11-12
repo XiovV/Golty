@@ -196,10 +196,13 @@ function changeExtension() {
     downloadQualities.options[2].value = "worst"
     downloadQualities.options[2].text = "worst"
   } else if (downloadMode == "Video And Audio") {
-    fileExtensions.options[0].value = ".mkv"
-    fileExtensions.options[0].text = ".mkv"
+    fileExtensions.options[0].value = "any"
+    fileExtensions.options[0].text = "any (recommended for now)"
     fileExtensions.options[1].value = ".mp4"
     fileExtensions.options[1].text = ".mp4"
+    fileExtensions.options[2].value = ".mkv"
+    fileExtensions.options[2].text = ".mkv"
+    
     downloadQualities.options[0].value = "best"
     downloadQualities.options[0].text = "best"
     downloadQualities.options[1] = null
