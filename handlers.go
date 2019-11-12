@@ -31,8 +31,6 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 	downloadMode := channelData.DownloadMode
 
-	log.Info(channelData)
-
 	channel, _ := GetChannelInfo(channelURL)
 
 	channelType := channel.Type
@@ -43,7 +41,6 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		res := Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"}
 		json.NewEncoder(w).Encode(res)
 	} else {
-		log.Info("Adding channel to DB")
 		AddChannelToDatabase(channelURL)
 		if channelType == "user" {
 			err := channel.Download(downloadMode)
