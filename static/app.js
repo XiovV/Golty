@@ -1,5 +1,7 @@
 let channels = [];
 function addChannel() {
+  startSpinner("add-channel-spinner")
+
   let channelURL = document.getElementById("channel-url").value
   let downloadMode = document.getElementById("download-mode").value
 
@@ -21,6 +23,7 @@ function addChannel() {
     .then(res => {
       if (res.Type == "Success") {
         displaySuccessMessage(res.Message);
+        stopSpinner("add-channel-spinner")
         getChannels()
       }
     });
@@ -155,8 +158,12 @@ function displayButtons() {
   });
 }
 
-function displaySpinner() {
-  spinner = document.getElementById("spinner");
-  console.log(spinner);
+function startSpinner(id) {
+  spinner = document.getElementById(id);
   spinner.classList.remove("d-none");
+}
+
+function stopSpinner(id) {
+  spinner = document.getElementById(id);
+  spinner.classList.add("d-none")
 }
