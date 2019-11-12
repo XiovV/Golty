@@ -4,10 +4,14 @@ function addChannel() {
 
   let channelURL = document.getElementById("channel-url").value
   let downloadMode = document.getElementById("download-mode").value
+  let fileExtension = document.getElementById("file-extension").value
+  let downloadQuality = document.getElementById("download-quality").value
 
   let channelData = {
     channelURL,
-    downloadMode
+    downloadMode,
+    fileExtension,
+    downloadQuality
   };
 
   const options = {
@@ -166,4 +170,33 @@ function startSpinner(id) {
 function stopSpinner(id) {
   spinner = document.getElementById(id);
   spinner.classList.add("d-none")
+}
+
+function changeExtension() {
+  console.log("change ext")
+  let downloadMode = document.getElementById("download-mode").value
+  let fileExtensions = document.getElementById("file-extension")
+  let downloadQualities = document.getElementById("download-quality")
+  if (downloadMode == "Audio Only") {
+    fileExtensions.options[0].value = ".m4a"
+    fileExtensions.options[0].text = ".m4a"
+    fileExtensions.options[1].value = ".mp3"
+    fileExtensions.options[1].text = ".mp3"
+    downloadQualities.options[0].value = "best"
+    downloadQualities.options[0].text = "best"
+    downloadQualities.options[1].value = "medium"
+    downloadQualities.options[1].text = "medium"
+    downloadQualities.options[2].value = "worst"
+    downloadQualities.options[2].text = "worst"
+  } else if (downloadMode == "Video And Audio") {
+    fileExtensions.options[0].value = ".mkv"
+    fileExtensions.options[0].text = ".mkv"
+    fileExtensions.options[1].value = ".mp4"
+    fileExtensions.options[1].text = ".mp4"
+    downloadQualities.options[0].value = "best"
+    downloadQualities.options[0].text = "best"
+    downloadQualities.options[1] = null
+    downloadQualities.options[2].value = "worst"
+    downloadQualities.options[2].text = "worst"
+  }
 }
