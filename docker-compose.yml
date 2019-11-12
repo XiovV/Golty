@@ -13,7 +13,6 @@ services:
     #  - config:/app/config
     ports:
     - 8080:8080
-#    network_mode: "host"
 # uncomment this if using the docker volume mapping above
 #volumes:
 #  downloads:
