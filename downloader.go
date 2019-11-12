@@ -16,7 +16,7 @@ func (c ChannelBasicInfo) Download(downloadMode string) error {
 		video := c.GetLatestVideo()
 		return video.downloadAudioOnly(channelName)
 	}
-	return fmt.Errorf("Something went seriously wrong")
+	return fmt.Errorf("From Download: Something went seriously wrong")
 }
 
 func (v Video) downloadVideoAndAudio(channelName string) error {
