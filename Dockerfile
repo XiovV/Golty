@@ -1,22 +1,27 @@
-# We specify the base image we need for our
-# go application
-FROM golang:1.13.4-alpine3.10
-# We update and add git
-RUN apk update && apk upgrade
-RUN apk add --no-cache git
-# We create an /app directory within our
-# image that will hold our application source
-# files
-RUN mkdir /app
-# We clone the repository into the app directory
-RUN git clone https://github.com/XiovV/go-auto-yt /app
-# We specify that we now wish to execute 
-# any further commands inside our /app
-# directory
+#Here we use multi-stage build to eliminate need to install git on the final image.
+#Download go-auto-yt via git and youtube-dl via curl on ubuntu temp image
+FROM ubuntu as DOWNLOAD
+WORKDIR /git
+RUN apt-get update && apt-get install git curl -y && git clone https://github.com/XiovV/go-auto-yt.git && curl -L https://yt-dl.org/downloads/latest/youtube-dl -o ./youtube-dl && chmod a+rx ./youtube-dl
+
+#Transfer git content from DOWNLOAD stage over GO stage to build application
+FROM golang:alpine as GO
 WORKDIR /app
-# we run go build to compile the binary
-# executable of our Go program
+COPY --from=DOWNLOAD /git/go-auto-yt .
 RUN go build -o main .
-# Our start command which kicks off
-# our newly created binary executable
-CMD ["/app/main"]
+
+#Use ffmpeg as base image and copy executable from other temp images
+FROM jrottenberg/ffmpeg:alpine as Base
+WORKDIR /app
+COPY --from=GO /app/main .
+COPY --from=GO /app/static ./static
+COPY --from=GO /app/channels.json .
+COPY --from=DOWNLOAD /git/youtube-dl /usr/local/bin/
+RUN apk --update add python
+
+#Set starting command
+ENTRYPOINT [ "./main" ]
+
+#Expose port and volume
+EXPOSE 8080
+VOLUME /app/downloads
