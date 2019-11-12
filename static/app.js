@@ -137,14 +137,14 @@ function displayChannels(channels) {
   let ul = document.getElementById("channels");
   ul.innerHTML = "";
 
-  channels.forEach(channel => {
-    let li = document.createElement("li");
-    li.setAttribute("class", "list-group-item");
-    li.setAttribute("id", channel.ChannelURL + "listElem");
+  // channels.forEach(channel => {
+  //   let li = document.createElement("li");
+  //   li.setAttribute("class", "list-group-item");
+  //   li.setAttribute("id", channel.ChannelURL + "listElem");
 
-    li.appendChild(document.createTextNode(channel.ChannelURL));
-    ul.appendChild(li);
-  });
+  //   li.appendChild(document.createTextNode(channel.ChannelURL));
+  //   ul.appendChild(li);
+  // });
 
   displayButtons();
 }
