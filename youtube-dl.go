@@ -8,7 +8,21 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func getUserMetadata(channelName string) Video {
+func GetChannelMetadata(channelURL string) ChannelInformation {
+	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", channelURL)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Fatal(string(out))
+	}
+	metaData := &ChannelInformation{}
+	if err = json.Unmarshal(out, metaData); err != nil {
+		log.Fatal(err)
+	}
+
+	return *metaData
+}
+
+func getLatestUserVideo(channelName string) Video {
 	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", "https://www.youtube.com/user/"+channelName)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -22,7 +36,7 @@ func getUserMetadata(channelName string) Video {
 	return Video{VideoID: metaData.ID}
 }
 
-func getChannelMetadata(channelName string) Video {
+func getLatestChannelVideo(channelName string) Video {
 	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", "https://www.youtube.com/channel/"+channelName)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -38,9 +52,9 @@ func getChannelMetadata(channelName string) Video {
 
 func (c ChannelBasicInfo) GetLatestVideo() Video {
 	if c.Type == "user" {
-		return getUserMetadata(c.Name)
+		return getLatestUserVideo(c.Name)
 	}
-	return getChannelMetadata(c.Name)
+	return getLatestChannelVideo(c.Name)
 }
 
 func (v Video) DownloadYTDL(fileExtension, downloadQuality string) error {

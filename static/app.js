@@ -159,7 +159,7 @@ function displayChannels(channels) {
   
     <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
       <div class="card-body">
-        Basic channel info
+        <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded}>Latest Download</a>
       </div>
     </div>
   </div>`
