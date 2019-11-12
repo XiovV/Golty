@@ -32,13 +32,27 @@
       <label for="channel-url">Channel URL</label>
       <input type="text" class="form-control" id="channel-url" placeholder="https://www.youtube.com/user/Example">
     </div>
-    <div class="form-group">
-      <label for="download-mode">Select What To Download</label>
-      <select class="form-control" id="download-mode">
+    <div class="form-group form-inline">
+      <select class="form-control" id="download-mode" onchange="changeExtension()">
         <option value="Audio Only">Audio Only</option>
         <option value="Video And Audio">Video And Audio</option>
       </select>
+      <div class="form-group ml-2">
+        <select class="form-control" id="file-extension">
+          <option value=".m4a">.m4a</option>
+          <option value=".mp3">.mp3</option>
+        </select>
+      </div>
+      <div class="form-group ml-2">
+        <select class="form-control" id="download-quality">
+          <option value="best">best</option>
+          <option value="medium">medium</option>
+          <option value="worst">worst</option>
+        </select>
+      </div>
     </div>
+    
+
     <div class="form-group mt-4">
       <label for="checking-interval">Checking Interval (in minutes)</label>
       <input type="number" class="form-control" id="checking-interval" placeholder="60">

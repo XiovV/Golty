@@ -27,12 +27,10 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error(err, r.Body)
 	}
+
 	channelURL := channelData.ChannelURL
-
 	downloadMode := channelData.DownloadMode
-
 	channel, _ := GetChannelInfo(channelURL)
-
 	channelType := channel.Type
 
 	doesChannelExist := DoesChannelExist(channelURL)
