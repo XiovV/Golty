@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func init() {
+func initLogFile() {
 	logFile, err := os.OpenFile("log.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Error("Error reading log file: ", err)
@@ -22,6 +22,22 @@ func init() {
 	log.SetFormatter(&log.JSONFormatter{})
 
 	log.SetOutput(mw)
+}
+
+func initChannelsDatabase() {
+	_, err := os.Stat("channels.json")
+	if os.IsNotExist(err) {
+		f, _ := os.Create("./channels.json")
+		defer f.Close()
+		n2, _ := f.WriteString("[]")
+		log.Info("Initiated channels.json: ", n2)
+		f.Sync()
+	}
+}
+
+func init() {
+	initLogFile()
+	initChannelsDatabase()
 }
 
 func uploadChecker() {

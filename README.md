@@ -38,12 +38,7 @@ Getting Started (with Docker)
 TODO: Create image and write guide
 ```
 
-## Roadmap
-* Create a youtube-dl wrapper so the backend doesn't have to rely on YouTube API and to fix failed downloads
-* Create a docker image
-
 ## Known Issues
-* Sometimes the video just doesn't want to download and I have no idea why, but I'll probably fix it eventually. When a download fails it will be displayed in a list so you can manually download the video.
 * Checking interval is hardcoded to 5 hours, at the moment you cannot change it.
 
 ## Built With
