@@ -146,6 +146,8 @@ type ChannelBasicInfo struct {
 type Channel struct {
 	ChannelURL       string
 	LatestDownloaded string
+	DownloadMode     string
+	ChannelName      string
 }
 
 type Payload struct {

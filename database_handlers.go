@@ -113,7 +113,7 @@ func UpdateLatestDownloaded(channelName, videoID string) error {
 	return writeDb(db, "channels.json")
 }
 
-func AddChannelToDatabase(channelURL string) {
+func AddChannelToDatabase(channelURL, downloadMode, channelName string) {
 	byteValue := openJSONDatabase("channels.json")
 
 	var db []Channel
@@ -121,7 +121,7 @@ func AddChannelToDatabase(channelURL string) {
 	json.Unmarshal(byteValue, &db)
 
 	log.Info("Adding channel to DB")
-	db = append(db, Channel{ChannelURL: channelURL})
+	db = append(db, Channel{ChannelURL: channelURL, LatestDownloaded: "", DownloadMode: downloadMode, ChannelName: channelName})
 	writeDb(db, "channels.json")
 }
 

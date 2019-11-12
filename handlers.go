@@ -35,13 +35,16 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	channel, _ := GetChannelInfo(channelURL)
 	channelType := channel.Type
 
+	channelMetadata := GetChannelMetadata(channelURL)
+	channelName := channelMetadata.Uploader
+
 	doesChannelExist := DoesChannelExist(channelURL)
 	if doesChannelExist == true {
 		log.Info("This channel already exists")
 		res := Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"}
 		json.NewEncoder(w).Encode(res)
 	} else {
-		AddChannelToDatabase(channelURL)
+		AddChannelToDatabase(channelURL, downloadMode, channelName)
 		if channelType == "user" {
 			err := channel.Download(downloadMode, fileExtension, downloadQuality)
 			if err != nil {
@@ -62,9 +65,11 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var channel Payload
+	var channel AddChannelPayload
 	_ = json.NewDecoder(r.Body).Decode(&channel)
 	channelURL := channel.ChannelURL
+
+	log.Info(channel)
 
 	channelName, err := GetChannelName(channelURL)
 	if err != nil {

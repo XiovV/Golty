@@ -1,4 +1,5 @@
 let channels = [];
+
 function addChannel() {
   startSpinner("add-channel-spinner")
 
@@ -70,7 +71,7 @@ function deleteChannel(id) {
       if (res.Type == "Success") {
         displaySuccessMessage(res.Message);
 
-        removeFromList(channelURL.channelURL);
+        getChannels()
       }
     });
 }
@@ -85,13 +86,21 @@ function removeFromList(channelURL) {
 }
 
 function checkChannel(id) {
-  let channelURL = {
-    channelURL: id
+  let channelURL = id
+  let downloadMode = document.getElementById("download-mode").value
+  let fileExtension = document.getElementById("file-extension").value
+  let downloadQuality = document.getElementById("download-quality").value
+
+  let channelData = {
+    channelURL,
+    downloadMode,
+    fileExtension,
+    downloadQuality
   };
 
   const options = {
     method: "POST",
-    body: JSON.stringify(channelURL),
+    body: JSON.stringify(channelData),
     headers: new Headers({
       "Content-Type": "application/json"
     })
@@ -134,32 +143,30 @@ function displayWarningMessage(message) {
 }
 
 function displayChannels(channels) {
-  let ul = document.getElementById("channels");
-  ul.innerHTML = "";
-
-  channels.forEach(channel => {
-    let li = document.createElement("li");
-    li.setAttribute("class", "list-group-item");
-    li.setAttribute("id", channel.ChannelURL + "listElem");
-
-    li.appendChild(document.createTextNode(channel.ChannelURL));
-    ul.appendChild(li);
-  });
-
-  displayButtons();
-}
-
-function displayButtons() {
-  channels = document.querySelectorAll(".list-group-item");
-  channels.forEach(channel => {
-    oldHTML = channel.innerHTML;
-    channel.innerHTML =
-      oldHTML +
-      `<button class="btn btn-danger float-right ml-2" id="${channel.innerHTML +
+  document.getElementById("accordion").innerHTML = ""
+  console.log(channels)
+  channels.forEach((channel, index) => {
+    console.log(channel)
+    document.getElementById("accordion").innerHTML += `<div class="mb-2 p-2 card">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.ChannelURL}listElem>
+          ${channel.ChannelName}
+        </button><button class="btn btn-danger float-right ml-2" id="${channel.ChannelURL +
         "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${
-        channel.innerHTML
-      }" onClick="checkChannel(this.id)">Check Now</button>`;
-  });
+        channel.ChannelURL
+      }" onClick="checkChannel(this.id)">Check Now</button>
+      </h5>
+  
+    <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
+      <div class="card-body">
+        <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded}>Latest Download</a>
+        <br>
+        <p>Download Mode: ${channel.DownloadMode}</p>
+      </div>
+    </div>
+  </div>`
+  })
+
 }
 
 function startSpinner(id) {
