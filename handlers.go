@@ -62,9 +62,11 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var channel Payload
+	var channel AddChannelPayload
 	_ = json.NewDecoder(r.Body).Decode(&channel)
 	channelURL := channel.ChannelURL
+
+	log.Info(channel)
 
 	channelName, err := GetChannelName(channelURL)
 	if err != nil {
