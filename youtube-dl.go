@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"os/exec"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -42,8 +43,9 @@ func (c ChannelBasicInfo) GetLatestVideo() Video {
 	return getChannelMetadata(c.Name)
 }
 
-func (v Video) DownloadYTDL() error {
-	cmd := exec.Command("youtube-dl", "-o", "downloads/ %(uploader)s/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+func (v Video) DownloadYTDL(fileExtension, downloadQuality string) error {
+	cmd := exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/ %(uploader)s/video/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+	log.Info(cmd.String())
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -54,8 +56,18 @@ func (v Video) DownloadYTDL() error {
 	return nil
 }
 
-func (v Video) DownloadAudioYTDL() error {
-	cmd := exec.Command("youtube-dl", "--extract-audio", "--audio-format", "mp3", "-o", "downloads/ %(uploader)s/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+func (v Video) DownloadAudioYTDL(fileExtension, downloadQuality string) error {
+	if downloadQuality == "best" {
+		downloadQuality = "0"
+	} else if downloadQuality == "medium" {
+		downloadQuality = "5"
+	} else if downloadQuality == "worst" {
+		downloadQuality = "9"
+	}
+	fileExtension = strings.Replace(fileExtension, ".", "", 1)
+	cmd := exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/ %(uploader)s/audio/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+
+	log.Info(cmd.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatal(string(out))

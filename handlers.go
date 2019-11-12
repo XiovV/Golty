@@ -30,6 +30,8 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 	channelURL := channelData.ChannelURL
 	downloadMode := channelData.DownloadMode
+	fileExtension := channelData.FileExtension
+	downloadQuality := channelData.DownloadQuality
 	channel, _ := GetChannelInfo(channelURL)
 	channelType := channel.Type
 
@@ -41,14 +43,14 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	} else {
 		AddChannelToDatabase(channelURL)
 		if channelType == "user" {
-			err := channel.Download(downloadMode)
+			err := channel.Download(downloadMode, fileExtension, downloadQuality)
 			if err != nil {
 				log.Error(err)
 			}
 			res := Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added"}
 			json.NewEncoder(w).Encode(res)
 		} else if channelType == "channel" {
-			err := channel.Download(downloadMode)
+			err := channel.Download(downloadMode, fileExtension, downloadQuality)
 			if err != nil {
 				log.Error(err)
 			}

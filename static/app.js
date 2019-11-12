@@ -4,10 +4,14 @@ function addChannel() {
 
   let channelURL = document.getElementById("channel-url").value
   let downloadMode = document.getElementById("download-mode").value
+  let fileExtension = document.getElementById("file-extension").value
+  let downloadQuality = document.getElementById("download-quality").value
 
   let channelData = {
     channelURL,
-    downloadMode
+    downloadMode,
+    fileExtension,
+    downloadQuality
   };
 
   const options = {

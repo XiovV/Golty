@@ -153,8 +153,10 @@ type Payload struct {
 }
 
 type AddChannelPayload struct {
-	ChannelURL   string
-	DownloadMode string
+	ChannelURL      string
+	DownloadMode    string
+	FileExtension   string
+	DownloadQuality string
 }
 
 type Response struct {
