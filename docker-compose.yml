@@ -9,8 +9,8 @@ services:
       - ./downloads:/app/downloads # local folder mapping
     #  - downloads:/app/downloads # docker volume mapping
     # And ONE of these
-      - ./config:/app/config
-    #  - config:/app/config
+      - ./config:/app/config # local folder mapping
+    #  - config:/app/config # docker volume mapping
     ports:
     - 8080:8080
 # uncomment this if using the docker volume mapping above
