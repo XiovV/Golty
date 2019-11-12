@@ -15,7 +15,6 @@ FROM jrottenberg/ffmpeg:alpine as BASE
 WORKDIR /app
 COPY --from=GO /app/main .
 COPY --from=GO /app/static ./static
-COPY --from=GO /app/channels.json .
 COPY --from=DOWNLOAD /git/youtube-dl /usr/local/bin/
 RUN apk --update add python
 

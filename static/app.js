@@ -1,4 +1,5 @@
 let channels = [];
+
 function addChannel() {
   startSpinner("add-channel-spinner")
 
@@ -134,17 +135,26 @@ function displayWarningMessage(message) {
 }
 
 function displayChannels(channels) {
-  let ul = document.getElementById("channels");
-  ul.innerHTML = "";
-
-  channels.forEach(channel => {
-    let li = document.createElement("li");
-    li.setAttribute("class", "list-group-item");
-    li.setAttribute("id", channel.ChannelURL + "listElem");
-
-    li.appendChild(document.createTextNode(channel.ChannelURL));
-    ul.appendChild(li);
-  });
+  console.log(channels)
+  channels.forEach((channel, index) => {
+    console.log(channel)
+    document.getElementById("accordion").innerHTML += `<div class="card">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.ChannelURL}listElem>
+          ${channel.ChannelURL}
+        </button><button class="btn btn-danger float-right ml-2" id="${channel.innerHTML +
+          "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${
+          channel.innerHTML
+        }" onClick="checkChannel(this.id)">Check Now</button>
+      </h5>
+  
+    <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
+      <div class="card-body">
+        Basic channel info
+      </div>
+    </div>
+  </div>`
+  })
 
   displayButtons();
 }
