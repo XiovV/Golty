@@ -33,5 +33,6 @@ jobs:
     language: shell
     script:
     - docker build -t go-auto-yt .
-    - docker tag go-auto-yt go-auto-yt:stable
-    - docker push go-auto-yt:stable
+    - docker tag go-auto-yt xiovv/go-auto-yt:stable
+    - docker push xiovv/go-auto-yt:stable
+

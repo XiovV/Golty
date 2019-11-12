@@ -1,6 +1,6 @@
 # GoAutoYT
 <p align="center">GoAutoYT makes it easy for you to automatically download videos from as many YouTube channels as you'd like.</p>
-
+<p align="center"><a href="https://travis-ci.com/xiovv/go-auto-yt"><img src="https://travis-ci.org/XiovV/go-auto-yt.svg?branch=master" alt="Build Status"></a><p>
 <p align="center"><img src="https://raw.githubusercontent.com/XiovV/go-auto-yt/master/demo.png" width=700 alt="Screenshot of Example Documentation created with Slate"></p>
 
 Features
