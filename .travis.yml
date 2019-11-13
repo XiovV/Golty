@@ -12,6 +12,7 @@ branches:
 stages:
   - test
   - build-go
+  - build-docker
   - deploy
 
 jobs:
@@ -30,10 +31,13 @@ jobs:
     - go get -v
     script:
     - go build -v
+  - stage: "build-docker"
+    script: 
+    - docker build --no-cache -t go-auto-yt:build .
   - stage: "deploy"
     language: shell
     script:
-    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER -password-stdin
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - docker build -t go-auto-yt .
     - docker tag go-auto-yt xiovv/go-auto-yt:stable
     - docker push xiovv/go-auto-yt:stable
