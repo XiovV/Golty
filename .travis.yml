@@ -33,7 +33,7 @@ jobs:
   - stage: "deploy"
     language: shell
     script:
-    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER -password-stdin
     - docker build -t go-auto-yt .
     - docker tag go-auto-yt xiovv/go-auto-yt:stable
     - docker push xiovv/go-auto-yt:stable
