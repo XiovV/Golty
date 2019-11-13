@@ -93,7 +93,7 @@ func InitUploadsID(channelURL string) bool {
 	return false
 }
 
-func UpdateLatestDownloaded(channelName, videoID string) error {
+func (c Channel) UpdateLatestDownloaded(videoID string) error {
 	log.Info("Updating latest downloaded video id")
 
 	byteValue := openJSONDatabase("channels.json")
@@ -103,7 +103,7 @@ func UpdateLatestDownloaded(channelName, videoID string) error {
 	json.Unmarshal(byteValue, &db)
 
 	for i, item := range db {
-		if strings.Contains(item.ChannelURL, channelName) {
+		if item.ChannelURL == c.ChannelURL {
 			db[i].LatestDownloaded = videoID
 			log.Info("Latest downloaded video id updated successfully")
 			break
@@ -113,7 +113,21 @@ func UpdateLatestDownloaded(channelName, videoID string) error {
 	return writeDb(db, "channels.json")
 }
 
-func (c Channel) AddToDatabase(downloadMode, channelName string) {
+func (c Channel) GetFromDatabase() Channel {
+	byteValue := openJSONDatabase("channels.json")
+	var db []Channel
+	json.Unmarshal(byteValue, &db)
+
+	for _, item := range db {
+		if item.ChannelURL == c.ChannelURL {
+			return item
+		}
+	}
+
+	return Channel{}
+}
+
+func (c Channel) AddToDatabase() {
 	byteValue := openJSONDatabase("channels.json")
 
 	var db []Channel
@@ -121,7 +135,7 @@ func (c Channel) AddToDatabase(downloadMode, channelName string) {
 	json.Unmarshal(byteValue, &db)
 
 	log.Info("Adding channel to DB")
-	db = append(db, Channel{ChannelURL: c.ChannelURL, LatestDownloaded: "", DownloadMode: downloadMode, Name: channelName})
+	db = append(db, c)
 	writeDb(db, "channels.json")
 }
 

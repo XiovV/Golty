@@ -32,10 +32,13 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	fileExtension := channelData.FileExtension
 	downloadQuality := channelData.DownloadQuality
 	channel := Channel{ChannelURL: channelURL}
-	channel, _ = channel.GetInformation()
-
-	channelMetadata := channel.GetChannelMetadata()
+	channelMetadata := channel.GetMetadata()
 	channelUploader := channelMetadata.Uploader
+	if downloadMode == "Audio Only" {
+		channel = Channel{ChannelURL: channelURL, DownloadMode: downloadMode, Name: channelUploader, PreferredExtensionForAudio: fileExtension}
+	} else if downloadMode == "Video And Audio" {
+		channel = Channel{ChannelURL: channelURL, DownloadMode: downloadMode, Name: channelUploader, PreferredExtensionForVideo: fileExtension}
+	}
 
 	doesChannelExist := channel.DoesExist()
 	if doesChannelExist == true {
@@ -43,7 +46,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		res := Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"}
 		json.NewEncoder(w).Encode(res)
 	} else {
-		channel.AddToDatabase(downloadMode, channelUploader)
+		channel.AddToDatabase()
 
 		err := channel.Download(downloadMode, fileExtension, downloadQuality)
 		if err != nil {
@@ -57,22 +60,13 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var channel AddChannelPayload
-	_ = json.NewDecoder(r.Body).Decode(&channel)
-	channelURL := channel.ChannelURL
+	var data AddChannelPayload
+	_ = json.NewDecoder(r.Body).Decode(&data)
+	channel := Channel{ChannelURL: data.ChannelURL}
 
-	log.Info(channel)
+	log.Info(data)
 
-	channelName, err := GetChannelName(channelURL)
-	if err != nil {
-		log.Error("There was an error getting the channel name: ", err)
-	}
-	channelType, err := GetChannelType(channelURL)
-	if err != nil {
-		log.Error("There was an error getting the channel type: ", err)
-	}
-
-	res := CheckNow(channelName, channelType)
+	res := channel.CheckNow()
 	json.NewEncoder(w).Encode(res)
 }
 

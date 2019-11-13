@@ -139,10 +139,12 @@ type FailedVideo struct {
 }
 
 type Channel struct {
-	ChannelURL       string
-	LatestDownloaded string
-	DownloadMode     string
-	Name             string
+	ChannelURL                 string
+	LatestDownloaded           string
+	DownloadMode               string
+	Name                       string
+	PreferredExtensionForAudio string
+	PreferredExtensionForVideo string
 }
 
 type Payload struct {

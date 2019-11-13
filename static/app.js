@@ -159,9 +159,11 @@ function displayChannels(channels) {
   
     <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
       <div class="panel-body ml-2">
-        <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded}>Latest Download</a>
+        Latest Download: <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded} target="_blank">https://www.youtube.com/watch?v=${channel.LatestDownloaded}</a>
         <br>
         <p>Download Mode: ${channel.DownloadMode}</p>
+        <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
+        <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
       </div>
     </div>
   </div>`

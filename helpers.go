@@ -62,7 +62,7 @@ func CheckAll() Response {
 				log.Info("New video detected for: ", item.ChannelURL)
 				foundFor = append(foundFor, item.ChannelURL)
 				go channel.Download("Audio Only", ".mp3", "best")
-				UpdateLatestDownloaded(item.ChannelURL, videoId.VideoID)
+				channel.UpdateLatestDownloaded(videoId.VideoID)
 			}
 		}
 	}
@@ -70,27 +70,29 @@ func CheckAll() Response {
 	return Response{Type: "Success", Key: "NEW_VIDEOS_FOR_CHANNELS", Message: strings.Join(foundFor, ",")}
 }
 
-func CheckNow(channelName string, channelType string) Response {
+func (c Channel) CheckNow() Response {
 	log.Info("Checking for new videos")
 	allChannelsInDb := GetChannels()
 
-	channel := Channel{Name: channelName}
+	channel := Channel{ChannelURL: c.ChannelURL}
+	channelPreferences := channel.GetFromDatabase()
+	channelURL := channel.ChannelURL
 
-	videoId := channel.GetLatestVideo()
+	channelMetadata := channel.GetMetadata()
 
 	for _, item := range allChannelsInDb {
-		if strings.Contains(item.ChannelURL, channelName) {
-			if item.LatestDownloaded == videoId.VideoID {
-				log.Info("No new videos found for: ", channelName)
+		if item.ChannelURL == channelURL {
+			if item.LatestDownloaded == channelMetadata.ID {
+				log.Info("No new videos found for: ", channelURL)
 				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected"}
 			} else {
-				log.Info("New video detected for: ", channelName)
-				err := channel.Download("Audio Only", ".mp3", "best")
+				log.Info("New video detected for: ", channelURL)
+				err := channel.Download(channelPreferences.DownloadMode, ".mp3", "best")
 				if err != nil {
 					log.Error(err)
 					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}
 				}
-				UpdateLatestDownloaded(channelName, videoId.VideoID)
+				channel.UpdateLatestDownloaded(channelMetadata.ID)
 				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected"}
 			}
 		}

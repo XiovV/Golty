@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (c Channel) GetChannelMetadata() ChannelInformation {
+func (c Channel) GetMetadata() ChannelInformation {
 	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", c.ChannelURL)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
