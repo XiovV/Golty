@@ -26,11 +26,9 @@ function addChannel() {
   fetch("/api/add-channel", options)
     .then(res => res.json())
     .then(res => {
-      if (res.Type == "Success") {
-        displaySuccessMessage(res.Message);
-        stopSpinner("add-channel-spinner")
-        getChannels()
-      }
+      handleResponse(res)
+      stopSpinner("add-channel-spinner")
+      getChannels()
     });
 }
 
@@ -39,10 +37,8 @@ function checkAll() {
   fetch("/api/check-all")
     .then(res => res.json())
     .then(res => {
-      if (res.Type == "Success") {
-        stopSpinner("check-all-spinner")
-        displaySuccessMessage(res.Message);
-      }
+      handleResponse(res)
+      stopSpinner("check-all-spinner")
     });
 }
 
@@ -52,39 +48,6 @@ function getChannels() {
     .then(channels => {
       displayChannels(channels);
     });
-}
-
-function deleteChannel(id) {
-  let channelURL = {
-    channelURL: id
-  };
-
-  const options = {
-    method: "POST",
-    body: JSON.stringify(channelURL),
-    headers: new Headers({
-      "Content-Type": "application/json"
-    })
-  };
-
-  fetch("/api/delete-channel", options)
-    .then(res => res.json())
-    .then(res => {
-      if (res.Type == "Success") {
-        displaySuccessMessage(res.Message);
-
-        getChannels()
-      }
-    });
-}
-
-function removeFromList(channelURL) {
-  channelURL = channelURL.replace("delChannel", "");
-
-  let channels = document.getElementById("channels");
-  let li = document.getElementById(channelURL + "listElem");
-  console.log(channels);
-  channels.removeChild(li);
 }
 
 function checkChannel(id) {
@@ -126,6 +89,38 @@ function checkChannel(id) {
       }
     });
 }
+
+function deleteChannel(id) {
+  let channelURL = {
+    channelURL: id
+  };
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(channelURL),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/delete-channel", options)
+    .then(res => res.json())
+    .then(res => {
+      handleResponse(res)
+      getChannels()
+    });
+}
+
+function removeFromList(channelURL) {
+  channelURL = channelURL.replace("delChannel", "");
+
+  let channels = document.getElementById("channels");
+  let li = document.getElementById(channelURL + "listElem");
+  console.log(channels);
+  channels.removeChild(li);
+}
+
+
 function displayErrorMessage(message) {
   let error = document.getElementById("error");
   error.innerHTML = ""
@@ -174,6 +169,16 @@ function displayChannels(channels) {
   </div>`
   })
 
+}
+
+function handleResponse(res) {
+  if (res.Type == "Success") {
+    displaySuccessMessage(res.Message)
+  } else if (res.Type == "Error") {
+    displayErrorMessage(res.Message)
+  } else if (res.Type == "Warning") {
+    displayWarningMessage(res.Message)
+  }
 }
 
 function startSpinner(id) {

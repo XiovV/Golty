@@ -101,7 +101,6 @@ func HandleGetChannels(w http.ResponseWriter, r *http.Request) {
 		res := Response{Type: "Error", Key: "ERROR_GETTING_CHANNELS", Message: "There was an error while getting channels: " + err.Error()}
 		json.NewEncoder(w).Encode(res)
 	}
-
 	json.NewEncoder(w).Encode(channels)
 }
 
