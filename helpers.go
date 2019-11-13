@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -10,11 +11,12 @@ import (
 )
 
 // GetChannels returns the contents of channels.json
-func GetChannels() []Channel {
+func GetChannels() ([]Channel, error) {
 	log.Info("getting all channels from channels.json")
-	jsonFile, err := os.Open("channels.json")
+	jsonFile, err := os.Open(CONFIG_ROOT + "channels.json")
 	if err != nil {
-		log.Error("There was an error reading channels.json: ", err)
+		log.Error("From GetChannels()", err)
+		return []Channel{}, fmt.Errorf("From GetChannels(): %v", err)
 	}
 
 	defer jsonFile.Close()
@@ -25,16 +27,20 @@ func GetChannels() []Channel {
 
 	err = json.Unmarshal(byteValue, &db)
 	if err != nil {
-		log.Error("There was an error unmarshalling json: ", err)
+		log.Error("From GetChannels()", err)
+		return []Channel{}, fmt.Errorf("From GetChannels(): %v", err)
 	}
 	log.Info("successfully read all channels")
-	return db
+	return db, nil
 }
 
 // CheckAll goes through channels.json and checks for new videos
-func CheckAll() Response {
+func CheckAll() (Response, error) {
 	log.Info("checking for all channels")
-	allChannelsInDb := GetChannels()
+	allChannelsInDb, err := GetChannels()
+	if err != nil {
+		return Response{}, fmt.Errorf("From CheckAll(): %v", err)
+	}
 	var foundFor []string
 	var preferredExtension string
 
@@ -48,6 +54,7 @@ func CheckAll() Response {
 
 			if item.LatestDownloaded == videoId.VideoID {
 				log.Info("no new videos found for: ", item.ChannelURL)
+				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos found."}, nil
 			} else {
 				log.Info("new video detected for: ", item.ChannelURL)
 				foundFor = append(foundFor, item.ChannelURL)
@@ -62,26 +69,32 @@ func CheckAll() Response {
 		}
 	}
 
-	return Response{Type: "Success", Key: "NEW_VIDEOS_FOR_CHANNELS", Message: strings.Join(foundFor, ",")}
+	return Response{Type: "Success", Key: "NEW_VIDEOS_FOR_CHANNELS", Message: strings.Join(foundFor, ",")}, nil
 }
 
 // CheckNow requires c.ChannelURL
-func (c Channel) CheckNow() Response {
+func (c Channel) CheckNow() (Response, error) {
 	log.Info("checking for new videos")
-	allChannelsInDb := GetChannels()
+	allChannelsInDb, err := GetChannels()
+	if err != nil {
+		return Response{}, fmt.Errorf("From CheckNow(): %v", err)
+	}
 
 	var preferredExtension string
 
 	channel := c.GetFromDatabase()
 	channelURL := c.ChannelURL
 
-	channelMetadata := channel.GetMetadata()
+	channelMetadata, err := channel.GetMetadata()
+	if err != nil {
+		return Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()}, nil
+	}
 
 	for _, item := range allChannelsInDb {
 		if item.ChannelURL == channelURL {
 			if item.LatestDownloaded == channelMetadata.ID {
 				log.Info("no new videos found for: ", channelURL)
-				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected"}
+				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected"}, nil
 			} else {
 				log.Info("new video detected for: ", channelURL)
 				if channel.DownloadMode == "Audio Only" {
@@ -92,15 +105,15 @@ func (c Channel) CheckNow() Response {
 				err := channel.Download(channel.DownloadMode, preferredExtension, "best")
 				if err != nil {
 					log.Error(err)
-					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}
+					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}, nil
 				}
 				channel.UpdateLatestDownloaded(channelMetadata.ID)
-				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected"}
+				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected"}, nil
 			}
 		}
 	}
 	log.Error("Something went terribly wrong")
-	return Response{Type: "Error", Key: "UNKNOWN_ERROR", Message: "Something went wrong"}
+	return Response{Type: "Error", Key: "UNKNOWN_ERROR", Message: "Something went wrong"}, nil
 }
 
 func CreateDirIfNotExist(dirName string) {

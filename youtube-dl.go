@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"os/exec"
 	"strings"
 
@@ -9,19 +10,21 @@ import (
 )
 
 // GetMetadata only requires c.ChannelURL, it returns ChannelMetadata{} containing all metadata for the channel.
-func (c Channel) GetMetadata() ChannelMetadata {
+func (c Channel) GetMetadata() (ChannelMetadata, error) {
 	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", c.ChannelURL)
-	log.Info("Executing youtube-dl command: ", cmd.String())
+	log.Info("executing youtube-dl command: ", cmd.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatal(string(out))
+		log.Error("From GetMetadata(): ", err)
+		return ChannelMetadata{}, fmt.Errorf("From GetMetadata(): %v", err)
 	}
 	metaData := &ChannelMetadata{}
 	if err = json.Unmarshal(out, metaData); err != nil {
-		log.Fatal(err)
+		log.Error("From GetMetadata(): ", err)
+		return ChannelMetadata{}, fmt.Errorf("From GetMetadata(): %v", err)
 	}
 
-	return *metaData
+	return *metaData, nil
 }
 
 // GetLatestVideo only requires c.ChannelURL, it returns Video{} with VideoID
