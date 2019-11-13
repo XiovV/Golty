@@ -35,10 +35,12 @@ function addChannel() {
 }
 
 function checkAll() {
+  startSpinner("check-all-spinner")
   fetch("/api/check-all")
     .then(res => res.json())
     .then(res => {
       if (res.Type == "Success") {
+        stopSpinner("check-all-spinner")
         displaySuccessMessage(res.Message);
       }
     });
@@ -126,18 +128,21 @@ function checkChannel(id) {
 }
 function displayErrorMessage(message) {
   let error = document.getElementById("error");
+  error.innerHTML = ""
   error.classList.remove("d-none");
   error.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
 }
 
 function displaySuccessMessage(message) {
   let success = document.getElementById("success");
+  success.innerHTML = ""
   success.classList.remove("d-none");
   success.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
 }
 
 function displayWarningMessage(message) {
   let warning = document.getElementById("warning");
+  warning.innerHTML = ""
   warning.classList.remove("d-none");
   warning.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
 }

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -22,81 +21,10 @@ func openJSONDatabase(dbName string) []byte {
 	return byteValue
 }
 
-func GetUploadsIDFromDatabase(channelName string) (string, bool) {
-	channelURL := USER_URL + channelName
-
-	byteValue := openJSONDatabase("uploadid.json")
-
-	var db []UploadID
-
-	json.Unmarshal(byteValue, &db)
-
-	for _, item := range db {
-		if item.ChannelURL == channelURL {
-			log.Info("Found uploads id for this user")
-			return item.UploadsID, true
-		}
-	}
-
-	return "", false
-}
-
-// UpdateUploadsID stores/updates UploadsID inside uploadid.json for a channel
-func UpdateUploadsID(channelName, uploadsId string) {
-	byteValue := openJSONDatabase("uploadid.json")
-
-	var db []UploadID
-
-	json.Unmarshal(byteValue, &db)
-
-	for i, item := range db {
-		if strings.Contains(item.ChannelURL, channelName) {
-			db[i].UploadsID = uploadsId
-			break
-		}
-	}
-
-	writeUploadsDb(db, "uploadid.json")
-}
-
-// InitUploadsID puts a channel inside uploadid.json and leaves UploadsID empty.
-func InitUploadsID(channelURL string) bool {
-	byteValue := openJSONDatabase("uploadid.json")
-
-	var db []UploadID
-
-	json.Unmarshal(byteValue, &db)
-
-	var exists bool
-
-	for _, v := range db {
-		if v.ChannelURL == channelURL {
-			exists = true
-			break
-		} else if channelURL == "" {
-			fmt.Println("channelURL can't be empty", channelURL)
-			exists = true
-			break
-		} else {
-			exists = false
-		}
-	}
-
-	if exists == true {
-		fmt.Println("channel already added", channelURL)
-		return true
-	} else {
-		fmt.Println("adding to db: ", channelURL)
-		db = append(db, UploadID{ChannelURL: channelURL})
-		writeUploadsDb(db, "uploadid.json")
-	}
-	return false
-}
-
 func (c Channel) UpdateLatestDownloaded(videoID string) error {
 	log.Info("Updating latest downloaded video id")
 
-	byteValue := openJSONDatabase("channels.json")
+	byteValue := openJSONDatabase(CONFIG_ROOT + "channels.json")
 
 	var db []Channel
 
@@ -110,11 +38,11 @@ func (c Channel) UpdateLatestDownloaded(videoID string) error {
 		}
 	}
 
-	return writeDb(db, "channels.json")
+	return writeDb(db, CONFIG_ROOT+"channels.json")
 }
 
 func (c Channel) GetFromDatabase() Channel {
-	byteValue := openJSONDatabase("channels.json")
+	byteValue := openJSONDatabase(CONFIG_ROOT + "channels.json")
 	var db []Channel
 	json.Unmarshal(byteValue, &db)
 
@@ -128,7 +56,7 @@ func (c Channel) GetFromDatabase() Channel {
 }
 
 func (c Channel) AddToDatabase() {
-	byteValue := openJSONDatabase("channels.json")
+	byteValue := openJSONDatabase(CONFIG_ROOT + "channels.json")
 
 	var db []Channel
 
@@ -136,7 +64,7 @@ func (c Channel) AddToDatabase() {
 
 	log.Info("Adding channel to DB")
 	db = append(db, c)
-	writeDb(db, "channels.json")
+	writeDb(db, CONFIG_ROOT+"channels.json")
 }
 
 func writeUploadsDb(db []UploadID, dbName string) {
@@ -170,7 +98,7 @@ func writeDb(db []Channel, dbName string) error {
 
 func (c Channel) Delete() {
 	log.Info("Removing channel from database")
-	byteValue := openJSONDatabase("channels.json")
+	byteValue := openJSONDatabase(CONFIG_ROOT + "channels.json")
 
 	var db []Channel
 
@@ -179,15 +107,15 @@ func (c Channel) Delete() {
 	for i, item := range db {
 		if item.ChannelURL == c.ChannelURL {
 			db = RemoveAtIndex(db, i)
-			log.Info("Successfully removed channel from channels.json")
+			log.Info("successfully removed channel from channels.json")
 		}
 	}
 
-	writeDb(db, "channels.json")
+	writeDb(db, CONFIG_ROOT+"channels.json")
 }
 
 func (c Channel) DoesExist() bool {
-	byteValue := openJSONDatabase("channels.json")
+	byteValue := openJSONDatabase(CONFIG_ROOT + "channels.json")
 
 	var db []Channel
 
