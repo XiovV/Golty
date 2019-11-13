@@ -31,17 +31,13 @@ func GetChannels() []Channel {
 	return db
 }
 
-func GetChannelInfo(channelURL string) (ChannelBasicInfo, error) {
-	channelName, err := GetChannelName(channelURL)
+func (c Channel) GetInformation() (Channel, error) {
+	channelName, err := GetChannelName(c.ChannelURL)
 	if err != nil {
-		return ChannelBasicInfo{}, fmt.Errorf("There was an error getting channel name: %s", err)
-	}
-	channelType, err := GetChannelType(channelURL)
-	if err != nil {
-		return ChannelBasicInfo{}, fmt.Errorf("There was an error getting channel type: %s", err)
+		return Channel{}, fmt.Errorf("There was an error getting channel name: %s", err)
 	}
 
-	return ChannelBasicInfo{Name: channelName, Type: channelType}, nil
+	return Channel{ChannelURL: c.ChannelURL, Name: channelName}, nil
 }
 
 func CheckAll() Response {
@@ -50,7 +46,8 @@ func CheckAll() Response {
 	var foundFor []string
 
 	for _, item := range allChannelsInDb {
-		channel, err := GetChannelInfo(item.ChannelURL)
+		channel := Channel{ChannelURL: item.ChannelURL}
+		channel, err := channel.GetInformation()
 		if err != nil {
 			log.Error(err)
 		}
@@ -58,7 +55,6 @@ func CheckAll() Response {
 
 		if strings.Contains(item.ChannelURL, channelName) {
 			videoId := channel.GetLatestVideo()
-			// videoId := GetLatestVideo(channelName, channelType)
 
 			if item.LatestDownloaded == videoId.VideoID {
 				log.Info("No new videos found for: ", item.ChannelURL)
@@ -78,7 +74,7 @@ func CheckNow(channelName string, channelType string) Response {
 	log.Info("Checking for new videos")
 	allChannelsInDb := GetChannels()
 
-	channel := ChannelBasicInfo{Name: channelName, Type: channelType}
+	channel := Channel{Name: channelName}
 
 	videoId := channel.GetLatestVideo()
 
@@ -108,7 +104,7 @@ func GetChannelName(channelURL string) (string, error) {
 		return strings.Split(channelURL, "/")[4], nil
 	}
 
-	return "", fmt.Errorf("channelURL string is either empty or cant be parsed properly")
+	return "", fmt.Errorf("channelURL string is either empty or can't be parsed properly")
 }
 
 func GetChannelType(channelURL string) (string, error) {
@@ -116,7 +112,7 @@ func GetChannelType(channelURL string) (string, error) {
 		return strings.Split(channelURL, "/")[3], nil
 	}
 
-	return "", fmt.Errorf("channelURL string is either empty or cant be parsed properly")
+	return "", fmt.Errorf("channelURL string is either empty or can't be parsed properly")
 }
 
 func CreateDirIfNotExist(dirName string) {

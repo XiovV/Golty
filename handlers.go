@@ -27,39 +27,31 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error(err, r.Body)
 	}
-
 	channelURL := channelData.ChannelURL
 	downloadMode := channelData.DownloadMode
 	fileExtension := channelData.FileExtension
 	downloadQuality := channelData.DownloadQuality
-	channel, _ := GetChannelInfo(channelURL)
-	channelType := channel.Type
+	channel := Channel{ChannelURL: channelURL}
+	channel, _ = channel.GetInformation()
 
-	channelMetadata := GetChannelMetadata(channelURL)
-	channelName := channelMetadata.Uploader
+	channelMetadata := channel.GetChannelMetadata()
+	channelUploader := channelMetadata.Uploader
 
-	doesChannelExist := DoesChannelExist(channelURL)
+	doesChannelExist := channel.DoesExist()
 	if doesChannelExist == true {
 		log.Info("This channel already exists")
 		res := Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"}
 		json.NewEncoder(w).Encode(res)
 	} else {
-		AddChannelToDatabase(channelURL, downloadMode, channelName)
-		if channelType == "user" {
-			err := channel.Download(downloadMode, fileExtension, downloadQuality)
-			if err != nil {
-				log.Error(err)
-			}
-			res := Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added"}
-			json.NewEncoder(w).Encode(res)
-		} else if channelType == "channel" {
-			err := channel.Download(downloadMode, fileExtension, downloadQuality)
-			if err != nil {
-				log.Error(err)
-			}
-			res := Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added"}
-			json.NewEncoder(w).Encode(res)
+		channel.AddToDatabase(downloadMode, channelUploader)
+
+		err := channel.Download(downloadMode, fileExtension, downloadQuality)
+		if err != nil {
+			log.Error(err)
 		}
+		res := Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added"}
+		json.NewEncoder(w).Encode(res)
+
 	}
 }
 
@@ -100,12 +92,13 @@ func HandleGetChannels(w http.ResponseWriter, r *http.Request) {
 
 func HandleDeleteChannel(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var channel Payload
-	_ = json.NewDecoder(r.Body).Decode(&channel)
-	channelURL := channel.ChannelURL
+	var data Payload
+	_ = json.NewDecoder(r.Body).Decode(&data)
+	channelURL := data.ChannelURL
 	channelURL = strings.Replace(channelURL, "delChannel", "", -1)
+	channel := Channel{ChannelURL: channelURL}
 
-	DeleteChannel(channelURL)
+	channel.Delete()
 
 	json.NewEncoder(w).Encode(Response{Type: "Success", Message: "Channel removed"})
 }

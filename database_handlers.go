@@ -113,7 +113,7 @@ func UpdateLatestDownloaded(channelName, videoID string) error {
 	return writeDb(db, "channels.json")
 }
 
-func AddChannelToDatabase(channelURL, downloadMode, channelName string) {
+func (c Channel) AddToDatabase(downloadMode, channelName string) {
 	byteValue := openJSONDatabase("channels.json")
 
 	var db []Channel
@@ -121,7 +121,7 @@ func AddChannelToDatabase(channelURL, downloadMode, channelName string) {
 	json.Unmarshal(byteValue, &db)
 
 	log.Info("Adding channel to DB")
-	db = append(db, Channel{ChannelURL: channelURL, LatestDownloaded: "", DownloadMode: downloadMode, ChannelName: channelName})
+	db = append(db, Channel{ChannelURL: c.ChannelURL, LatestDownloaded: "", DownloadMode: downloadMode, Name: channelName})
 	writeDb(db, "channels.json")
 }
 
@@ -154,7 +154,8 @@ func writeDb(db []Channel, dbName string) error {
 	return nil
 }
 
-func DeleteChannel(channelURL string) {
+func (c Channel) Delete() {
+	log.Info("Removing channel from database")
 	byteValue := openJSONDatabase("channels.json")
 
 	var db []Channel
@@ -162,7 +163,7 @@ func DeleteChannel(channelURL string) {
 	json.Unmarshal(byteValue, &db)
 
 	for i, item := range db {
-		if item.ChannelURL == channelURL {
+		if item.ChannelURL == c.ChannelURL {
 			db = RemoveAtIndex(db, i)
 			log.Info("Successfully removed channel from channels.json")
 		}
@@ -171,7 +172,7 @@ func DeleteChannel(channelURL string) {
 	writeDb(db, "channels.json")
 }
 
-func DoesChannelExist(channelURL string) bool {
+func (c Channel) DoesExist() bool {
 	byteValue := openJSONDatabase("channels.json")
 
 	var db []Channel
@@ -179,7 +180,7 @@ func DoesChannelExist(channelURL string) bool {
 	json.Unmarshal(byteValue, &db)
 
 	for _, channel := range db {
-		if channel.ChannelURL == channelURL {
+		if channel.ChannelURL == c.ChannelURL {
 			return true
 		}
 	}

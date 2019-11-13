@@ -5,7 +5,7 @@ import (
 )
 
 // Download downloads a the latest video based on downloadMode
-func (c ChannelBasicInfo) Download(downloadMode, fileExtension, downloadQuality string) error {
+func (c Channel) Download(downloadMode, fileExtension, downloadQuality string) error {
 	channelName := c.Name
 	if downloadMode == "Video And Audio" {
 		// Download .mp4 with audio and video in one file

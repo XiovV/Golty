@@ -150,7 +150,7 @@ function displayChannels(channels) {
     document.getElementById("accordion").innerHTML += `<div class="mb-2 p-2 card">
       <h5 class="mb-0">
         <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.ChannelURL}listElem>
-          ${channel.ChannelName}
+          ${channel.Name}
         </button><button class="btn btn-danger float-right ml-2" id="${channel.ChannelURL +
         "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${
         channel.ChannelURL
