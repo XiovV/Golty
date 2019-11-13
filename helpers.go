@@ -42,9 +42,8 @@ func CheckAll() Response {
 		channel := Channel{ChannelURL: item.ChannelURL}
 		channel = channel.GetFromDatabase()
 		// TODO: Handle errors
-		channelName := channel.Name
 
-		if strings.Contains(item.ChannelURL, channelName) {
+		if item.ChannelURL == channel.ChannelURL {
 			videoId := channel.GetLatestVideo()
 
 			if item.LatestDownloaded == videoId.VideoID {
