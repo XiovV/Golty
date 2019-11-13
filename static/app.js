@@ -3,6 +3,7 @@ let channels = [];
 function addChannel() {
   startSpinner("add-channel-spinner")
 
+  let downloadEntireChannel = document.querySelector('#download-entire-channel').checked;
   let channelURL = document.getElementById("channel-url").value
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
@@ -12,7 +13,8 @@ function addChannel() {
     channelURL,
     downloadMode,
     fileExtension,
-    downloadQuality
+    downloadQuality,
+    downloadEntireChannel
   };
 
   const options = {
@@ -160,7 +162,6 @@ function displayChannels(channels) {
     <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
       <div class="panel-body ml-2">
         Latest Download: <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded} target="_blank">https://www.youtube.com/watch?v=${channel.LatestDownloaded}</a>
-        <br>
         <p>Download Mode: ${channel.DownloadMode}</p>
         <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
         <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
@@ -212,8 +213,8 @@ function changeExtension() {
     fileExtensions.options[0].text = "any (recommended for now)"
     fileExtensions.options[1].value = ".mp4"
     fileExtensions.options[1].text = ".mp4"
-    fileExtensions.options[2].value = ".mkv"
-    fileExtensions.options[2].text = ".mkv"
+    // fileExtensions.options[2].value = ".mkv"
+    // fileExtensions.options[2].text = ".mkv"
     
     downloadQualities.options[0].value = "best"
     downloadQualities.options[0].text = "best"

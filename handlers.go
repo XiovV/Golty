@@ -31,17 +31,6 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(res)
 	}
 	channel := Channel{ChannelURL: channelData.ChannelURL}
-	channelMetadata, err := channel.GetMetadata()
-	if err != nil {
-		res := Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()}
-		json.NewEncoder(w).Encode(res)
-	}
-
-	if channelData.DownloadMode == "Audio Only" {
-		channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension}
-	} else if channelData.DownloadMode == "Video And Audio" {
-		channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension}
-	}
 
 	doesChannelExist := channel.DoesExist()
 	if doesChannelExist == true {
@@ -49,16 +38,33 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		res := Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"}
 		json.NewEncoder(w).Encode(res)
 	} else {
-		channel.AddToDatabase()
-
-		err := channel.Download(channelData.DownloadMode, channelData.FileExtension, channelData.DownloadQuality)
+		channelMetadata, err := channel.GetMetadata()
 		if err != nil {
-			log.Error(err)
-			res := Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error while downloading: " + err.Error()}
+			res := Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()}
 			json.NewEncoder(w).Encode(res)
 		}
-		res := Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added"}
-		json.NewEncoder(w).Encode(res)
+
+		if channelData.DownloadMode == "Audio Only" {
+			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension}
+		} else if channelData.DownloadMode == "Video And Audio" {
+			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension}
+		}
+
+		if channelData.DownloadEntireChannel == true {
+			channel.DownloadEntire()
+			channel.AddToDatabase()
+		} else {
+			channel.AddToDatabase()
+
+			err = channel.Download(channelData.DownloadMode, channelData.FileExtension, channelData.DownloadQuality)
+			if err != nil {
+				log.Error(err)
+				res := Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error while downloading: " + err.Error()}
+				json.NewEncoder(w).Encode(res)
+			}
+			res := Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added"}
+			json.NewEncoder(w).Encode(res)
+		}
 	}
 }
 

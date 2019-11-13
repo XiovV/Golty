@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
+	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Download downloads a the latest video based on downloadMode
@@ -17,6 +21,28 @@ func (c Channel) Download(downloadMode, fileExtension, downloadQuality string) e
 		return video.downloadAudioOnly(channelURL, fileExtension, downloadQuality)
 	}
 	return fmt.Errorf("From Download: Something went seriously wrong")
+}
+
+func (c Channel) DownloadEntire() {
+	if c.DownloadMode == "Audio Only" {
+		fileExtension := strings.Replace(c.PreferredExtensionForAudio, ".", "", 1)
+		cmd := exec.Command("youtube-dl", "-f", "bestaudio[ext="+fileExtension+"]", "-o", "downloads/ %(uploader)s/video/ %(title)s.%(ext)s", c.ChannelURL)
+		log.Info("executing youtube-dl command: ", cmd.String())
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			log.Error(string(out))
+		}
+	} else if c.DownloadMode == "Video And Audio" {
+		fileExtension := strings.Replace(c.PreferredExtensionForVideo, ".", "", 1)
+
+		cmd := exec.Command("youtube-dl", "-f", "bestvideo[ext="+fileExtension+"]", "-o", "downloads/ %(uploader)s/video/ %(title)s.%(ext)s", c.ChannelURL)
+		log.Info("executing youtube-dl command: ", cmd.String())
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			log.Error(string(out))
+		}
+	}
+
 }
 
 func (v Video) downloadVideoAndAudio(channelURL, fileExtension, downloadQuality string) error {
