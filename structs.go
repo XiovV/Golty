@@ -1,6 +1,6 @@
 package main
 
-type ChannelInformation struct {
+type ChannelMetadata struct {
 	PlaylistUploader   string      `json:"playlist_uploader"`
 	UploadDate         string      `json:"upload_date"`
 	Extractor          string      `json:"extractor"`

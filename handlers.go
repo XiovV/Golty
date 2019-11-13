@@ -22,22 +22,19 @@ func HandleLogs(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
+	log.Info("received a request to add a channel")
 	var channelData AddChannelPayload
 	err := json.NewDecoder(r.Body).Decode(&channelData)
 	if err != nil {
 		log.Error(err, r.Body)
 	}
-	channelURL := channelData.ChannelURL
-	downloadMode := channelData.DownloadMode
-	fileExtension := channelData.FileExtension
-	downloadQuality := channelData.DownloadQuality
-	channel := Channel{ChannelURL: channelURL}
+	channel := Channel{ChannelURL: channelData.ChannelURL}
 	channelMetadata := channel.GetMetadata()
-	channelUploader := channelMetadata.Uploader
-	if downloadMode == "Audio Only" {
-		channel = Channel{ChannelURL: channelURL, DownloadMode: downloadMode, Name: channelUploader, PreferredExtensionForAudio: fileExtension}
-	} else if downloadMode == "Video And Audio" {
-		channel = Channel{ChannelURL: channelURL, DownloadMode: downloadMode, Name: channelUploader, PreferredExtensionForVideo: fileExtension}
+
+	if channelData.DownloadMode == "Audio Only" {
+		channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension}
+	} else if channelData.DownloadMode == "Video And Audio" {
+		channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension}
 	}
 
 	doesChannelExist := channel.DoesExist()
@@ -48,17 +45,17 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	} else {
 		channel.AddToDatabase()
 
-		err := channel.Download(downloadMode, fileExtension, downloadQuality)
+		err := channel.Download(channelData.DownloadMode, channelData.FileExtension, channelData.DownloadQuality)
 		if err != nil {
 			log.Error(err)
 		}
 		res := Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added"}
 		json.NewEncoder(w).Encode(res)
-
 	}
 }
 
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
+	log.Info("received a request to check a channel for new uploads")
 	w.Header().Set("Content-Type", "application/json")
 	var data AddChannelPayload
 	_ = json.NewDecoder(r.Body).Decode(&data)
@@ -71,12 +68,14 @@ func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
+	log.Info("received a request to check all channels for new uploads")
 	w.Header().Set("Content-Type", "application/json")
 	res := CheckAll()
 	json.NewEncoder(w).Encode(res)
 }
 
 func HandleGetChannels(w http.ResponseWriter, r *http.Request) {
+	log.Info("received a request to get all channels")
 	w.Header().Set("Content-Type", "application/json")
 
 	channels := GetChannels()
@@ -85,6 +84,8 @@ func HandleGetChannels(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteChannel(w http.ResponseWriter, r *http.Request) {
+	log.Info("received a request to delete a channel")
+
 	w.Header().Set("Content-Type", "application/json")
 	var data Payload
 	_ = json.NewDecoder(r.Body).Decode(&data)

@@ -8,13 +8,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (c Channel) GetMetadata() ChannelInformation {
+// GetMetadata only requires c.ChannelURL, it returns ChannelMetadata{} containing all metadata for the channel.
+func (c Channel) GetMetadata() ChannelMetadata {
 	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", c.ChannelURL)
+	log.Info("Executing youtube-dl command: ", cmd.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatal(string(out))
 	}
-	metaData := &ChannelInformation{}
+	metaData := &ChannelMetadata{}
 	if err = json.Unmarshal(out, metaData); err != nil {
 		log.Fatal(err)
 	}
@@ -22,37 +24,28 @@ func (c Channel) GetMetadata() ChannelInformation {
 	return *metaData
 }
 
-func getLatestUserVideo(channelURL string) Video {
-	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", channelURL)
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		log.Fatal(string(out))
-	}
-	metaData := &ChannelInformation{}
-	if err = json.Unmarshal(out, metaData); err != nil {
-		log.Fatal(err)
-	}
-
-	return Video{VideoID: metaData.ID}
-}
-
+// GetLatestVideo only requires c.ChannelURL, it returns Video{} with VideoID
 func (c Channel) GetLatestVideo() Video {
+	log.Info("fetching latest upload")
 	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", c.ChannelURL)
+	log.Info("executing youtube-dl command: ", cmd.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatal(string(out))
+		log.Error(string(out))
 	}
-	metaData := &ChannelInformation{}
+	metaData := &ChannelMetadata{}
 	if err = json.Unmarshal(out, metaData); err != nil {
 		log.Fatal(err)
 	}
-
+	log.Info("successfully fetched latest video ")
 	return Video{VideoID: metaData.ID}
 }
 
+// DownloadYTDL downloads a video file with specified paramaters
 func (v Video) DownloadYTDL(fileExtension, downloadQuality string) error {
+	log.Info("downloading video file")
 	cmd := exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/ %(uploader)s/video/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
-	log.Info(cmd.String())
+	log.Info("executing youtube-dl command: ", cmd.String())
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -60,10 +53,13 @@ func (v Video) DownloadYTDL(fileExtension, downloadQuality string) error {
 		return err
 	}
 
+	log.Info("successfully downloaded video file")
 	return nil
 }
 
+// DownloadAudioYTDL downloads an audio file with specified paramaters
 func (v Video) DownloadAudioYTDL(fileExtension, downloadQuality string) error {
+	log.Info("downloading audio only")
 	if downloadQuality == "best" {
 		downloadQuality = "0"
 	} else if downloadQuality == "medium" {
@@ -71,15 +67,16 @@ func (v Video) DownloadAudioYTDL(fileExtension, downloadQuality string) error {
 	} else if downloadQuality == "worst" {
 		downloadQuality = "9"
 	}
+	log.Info("download quality set to: ", downloadQuality)
 	fileExtension = strings.Replace(fileExtension, ".", "", 1)
 	cmd := exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/ %(uploader)s/audio/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
-
-	log.Info(cmd.String())
+	log.Info("executing youtube-dl command: ", cmd.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatal(string(out))
+		log.Error(string(out))
 		return err
 	}
 
+	log.Info("successfully downloaded audio")
 	return nil
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -10,8 +9,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// GetChannels returns the contents of channels.json
 func GetChannels() []Channel {
-	log.Info("Getting all channels from channels.json")
+	log.Info("getting all channels from channels.json")
 	jsonFile, err := os.Open("channels.json")
 	if err != nil {
 		log.Error("There was an error reading channels.json: ", err)
@@ -27,41 +27,37 @@ func GetChannels() []Channel {
 	if err != nil {
 		log.Error("There was an error unmarshalling json: ", err)
 	}
-	log.Info("Successfully read all channels")
+	log.Info("successfully read all channels")
 	return db
 }
 
-func (c Channel) GetInformation() (Channel, error) {
-	channelName, err := GetChannelName(c.ChannelURL)
-	if err != nil {
-		return Channel{}, fmt.Errorf("There was an error getting channel name: %s", err)
-	}
-
-	return Channel{ChannelURL: c.ChannelURL, Name: channelName}, nil
-}
-
+// CheckAll goes through channels.json and checks for new videos
 func CheckAll() Response {
-	log.Info("Checking for all channels")
+	log.Info("checking for all channels")
 	allChannelsInDb := GetChannels()
 	var foundFor []string
+	var preferredExtension string
 
 	for _, item := range allChannelsInDb {
 		channel := Channel{ChannelURL: item.ChannelURL}
-		channel, err := channel.GetInformation()
-		if err != nil {
-			log.Error(err)
-		}
+		channel = channel.GetFromDatabase()
+		// TODO: Handle errors
 		channelName := channel.Name
 
 		if strings.Contains(item.ChannelURL, channelName) {
 			videoId := channel.GetLatestVideo()
 
 			if item.LatestDownloaded == videoId.VideoID {
-				log.Info("No new videos found for: ", item.ChannelURL)
+				log.Info("no new videos found for: ", item.ChannelURL)
 			} else {
-				log.Info("New video detected for: ", item.ChannelURL)
+				log.Info("new video detected for: ", item.ChannelURL)
 				foundFor = append(foundFor, item.ChannelURL)
-				go channel.Download("Audio Only", ".mp3", "best")
+				if channel.DownloadMode == "Audio Only" {
+					preferredExtension = channel.PreferredExtensionForAudio
+				} else if channel.DownloadMode == "Video And Audio" {
+					preferredExtension = channel.PreferredExtensionForVideo
+				}
+				go channel.Download(channel.DownloadMode, preferredExtension, "best")
 				channel.UpdateLatestDownloaded(videoId.VideoID)
 			}
 		}
@@ -70,24 +66,31 @@ func CheckAll() Response {
 	return Response{Type: "Success", Key: "NEW_VIDEOS_FOR_CHANNELS", Message: strings.Join(foundFor, ",")}
 }
 
+// CheckNow requires c.ChannelURL
 func (c Channel) CheckNow() Response {
-	log.Info("Checking for new videos")
+	log.Info("checking for new videos")
 	allChannelsInDb := GetChannels()
 
-	channel := Channel{ChannelURL: c.ChannelURL}
-	channelPreferences := channel.GetFromDatabase()
-	channelURL := channel.ChannelURL
+	var preferredExtension string
+
+	channel := c.GetFromDatabase()
+	channelURL := c.ChannelURL
 
 	channelMetadata := channel.GetMetadata()
 
 	for _, item := range allChannelsInDb {
 		if item.ChannelURL == channelURL {
 			if item.LatestDownloaded == channelMetadata.ID {
-				log.Info("No new videos found for: ", channelURL)
+				log.Info("no new videos found for: ", channelURL)
 				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected"}
 			} else {
-				log.Info("New video detected for: ", channelURL)
-				err := channel.Download(channelPreferences.DownloadMode, ".mp3", "best")
+				log.Info("new video detected for: ", channelURL)
+				if channel.DownloadMode == "Audio Only" {
+					preferredExtension = channel.PreferredExtensionForAudio
+				} else if channel.DownloadMode == "Video And Audio" {
+					preferredExtension = channel.PreferredExtensionForVideo
+				}
+				err := channel.Download(channel.DownloadMode, preferredExtension, "best")
 				if err != nil {
 					log.Error(err)
 					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}
@@ -101,24 +104,8 @@ func (c Channel) CheckNow() Response {
 	return Response{Type: "Error", Key: "UNKNOWN_ERROR", Message: "Something went wrong"}
 }
 
-func GetChannelName(channelURL string) (string, error) {
-	if channelURL != "" {
-		return strings.Split(channelURL, "/")[4], nil
-	}
-
-	return "", fmt.Errorf("channelURL string is either empty or can't be parsed properly")
-}
-
-func GetChannelType(channelURL string) (string, error) {
-	if channelURL != "" {
-		return strings.Split(channelURL, "/")[3], nil
-	}
-
-	return "", fmt.Errorf("channelURL string is either empty or can't be parsed properly")
-}
-
 func CreateDirIfNotExist(dirName string) {
-	log.Info("Creating channel directory")
+	log.Info("creating channel directory")
 	if _, err := os.Stat(dirName); os.IsNotExist(err) {
 		err = os.MkdirAll(dirName, 0755)
 		if err != nil {
@@ -131,22 +118,4 @@ func CreateDirIfNotExist(dirName string) {
 
 func RemoveAtIndex(s []Channel, index int) []Channel {
 	return append(s[:index], s[index+1:]...)
-}
-
-func GetFailedDownloads() []FailedVideo {
-	log.Info("Getting failed downloads")
-	jsonFile, err := os.Open("failed.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	var db []FailedVideo
-
-	json.Unmarshal(byteValue, &db)
-
-	return db
 }
