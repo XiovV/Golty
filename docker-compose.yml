@@ -2,7 +2,7 @@ version: '3'
 
 services:
   go-auto-yt:
-    build: .
+    image: xiovv/go-auto-yt:stable
     restart: always
     volumes:
     # Choose ONE of these
@@ -13,7 +13,6 @@ services:
     #  - config:/app/config
     ports:
     - 8080:8080
-#    network_mode: "host"
 # uncomment this if using the docker volume mapping above
 #volumes:
 #  downloads:
