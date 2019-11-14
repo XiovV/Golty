@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
-	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -71,7 +70,6 @@ func (v Video) DownloadAudioYTDL(fileExtension, downloadQuality string) error {
 		downloadQuality = "9"
 	}
 	log.Info("download quality set to: ", downloadQuality)
-	fileExtension = strings.Replace(fileExtension, ".", "", 1)
 	cmd := exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/ %(uploader)s/audio/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
 	log.Info("executing youtube-dl command: ", cmd.String())
 	out, err := cmd.CombinedOutput()

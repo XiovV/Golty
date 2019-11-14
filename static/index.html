@@ -11,7 +11,7 @@
 <body onload="getChannels()">
   <div class="container">
     <div class="alerts">
-      <div class="alert alert-warning alert-dismissible mt-3 d-none" id="error" role="alert">
+      <div class="alert alert-danger alert-dismissible mt-3 d-none" id="error" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -39,8 +39,8 @@
       </select>
       <div class="form-group ml-2">
         <select class="form-control" id="file-extension">
-          <option value=".m4a">.m4a</option>
-          <option value=".mp3">.mp3</option>
+          <option value="m4a">m4a (recommended for now)</option>
+          <option value="mp3">mp3</option>
         </select>
       </div>
       <div class="form-group ml-2">
@@ -51,10 +51,14 @@
         </select>
       </div>
     </div>
+    <div class="custom-control custom-checkbox">
+      <input type="checkbox" class="custom-control-input" id="download-entire-channel">
+      <label class="custom-control-label" for="download-entire-channel">Download the entire channel</label>
+    </div>
 
     <div class="form-group mt-4">
       <label for="checking-interval">Checking Interval (in minutes)</label>
-      <input type="number" class="form-control" id="checking-interval" placeholder="60">
+      <input type="number" class="form-control" id="checking-interval" placeholder="5 hours (cannot be changed yet, feature coming soon)" disabled>
     </div>
     <button class="btn btn-primary mb-2" onclick="addChannel()">Add Channel And Download<div id="add-channel-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
     

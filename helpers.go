@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"strings"
 
@@ -46,8 +47,10 @@ func CheckAll() (Response, error) {
 
 	for _, item := range allChannelsInDb {
 		channel := Channel{ChannelURL: item.ChannelURL}
-		channel = channel.GetFromDatabase()
-		// TODO: Handle errors
+		channel, err = channel.GetFromDatabase()
+		if err != nil {
+			return Response{Type: "Error", Key: "GETTING_FROM_DATABASE_ERROR", Message: "There was an error getting the channel from database" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
+		}
 
 		if item.ChannelURL == channel.ChannelURL {
 			videoId := channel.GetLatestVideo()
@@ -82,7 +85,10 @@ func (c Channel) CheckNow() (Response, error) {
 
 	var preferredExtension string
 
-	channel := c.GetFromDatabase()
+	channel, err := c.GetFromDatabase()
+	if err != nil {
+		return Response{Type: "Error", Key: "GETTING_FROM_DATABASE_ERROR", Message: "There was an error getting the channel from database" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
+	}
 	channelURL := c.ChannelURL
 
 	channelMetadata, err := channel.GetMetadata()
@@ -134,4 +140,8 @@ func RemoveAtIndex(s []Channel, index int) []Channel {
 
 func GetChannelName(channelURL string) string {
 	return strings.Split(channelURL, "/")[4]
+}
+
+func ReturnResponse(w http.ResponseWriter, res Response) {
+	json.NewEncoder(w).Encode(res)
 }
