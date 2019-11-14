@@ -61,7 +61,6 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()})
 			}
 		} else {
-			err = channel.AddToDatabase()
 			if err != nil {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
