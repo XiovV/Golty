@@ -23,7 +23,7 @@ func (c Channel) Download(downloadMode, fileExtension, downloadQuality string) e
 	return fmt.Errorf("From Download: Something went seriously wrong")
 }
 
-func (c Channel) DownloadEntire() {
+func (c Channel) DownloadEntire() error {
 	if c.DownloadMode == "Audio Only" {
 		fileExtension := strings.Replace(c.PreferredExtensionForAudio, ".", "", 1)
 		cmd := exec.Command("youtube-dl", "-f", "bestaudio[ext="+fileExtension+"]", "-o", "downloads/ %(uploader)s/video/ %(title)s.%(ext)s", c.ChannelURL)
@@ -31,6 +31,7 @@ func (c Channel) DownloadEntire() {
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			log.Error(string(out))
+			return fmt.Errorf("DownloadEntire: %s | %s", err, out)
 		}
 	} else if c.DownloadMode == "Video And Audio" {
 		fileExtension := strings.Replace(c.PreferredExtensionForVideo, ".", "", 1)
@@ -40,9 +41,10 @@ func (c Channel) DownloadEntire() {
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			log.Error(string(out))
+			return fmt.Errorf("DownloadEntire: %s | %s", err, out)
 		}
 	}
-
+	return fmt.Errorf("DownloadEntire: download mode cannot be nil")
 }
 
 func (v Video) downloadVideoAndAudio(channelURL, fileExtension, downloadQuality string) error {
