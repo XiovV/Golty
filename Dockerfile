@@ -24,3 +24,4 @@ ENTRYPOINT [ "./main" ]
 #Expose port and volume
 EXPOSE 8080
 VOLUME /app/downloads
+VOLUME /app/config
