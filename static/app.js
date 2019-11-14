@@ -3,6 +3,7 @@ let channels = [];
 function addChannel() {
   startSpinner("add-channel-spinner")
 
+  let downloadEntireChannel = document.querySelector('#download-entire-channel').checked;
   let channelURL = document.getElementById("channel-url").value
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
@@ -12,7 +13,8 @@ function addChannel() {
     channelURL,
     downloadMode,
     fileExtension,
-    downloadQuality
+    downloadQuality,
+    downloadEntireChannel
   };
 
   const options = {
@@ -26,21 +28,19 @@ function addChannel() {
   fetch("/api/add-channel", options)
     .then(res => res.json())
     .then(res => {
-      if (res.Type == "Success") {
-        displaySuccessMessage(res.Message);
-        stopSpinner("add-channel-spinner")
-        getChannels()
-      }
+      handleResponse(res)
+      stopSpinner("add-channel-spinner")
+      getChannels()
     });
 }
 
 function checkAll() {
+  startSpinner("check-all-spinner")
   fetch("/api/check-all")
     .then(res => res.json())
     .then(res => {
-      if (res.Type == "Success") {
-        displaySuccessMessage(res.Message);
-      }
+      handleResponse(res)
+      stopSpinner("check-all-spinner")
     });
 }
 
@@ -50,39 +50,6 @@ function getChannels() {
     .then(channels => {
       displayChannels(channels);
     });
-}
-
-function deleteChannel(id) {
-  let channelURL = {
-    channelURL: id
-  };
-
-  const options = {
-    method: "POST",
-    body: JSON.stringify(channelURL),
-    headers: new Headers({
-      "Content-Type": "application/json"
-    })
-  };
-
-  fetch("/api/delete-channel", options)
-    .then(res => res.json())
-    .then(res => {
-      if (res.Type == "Success") {
-        displaySuccessMessage(res.Message);
-
-        getChannels()
-      }
-    });
-}
-
-function removeFromList(channelURL) {
-  channelURL = channelURL.replace("delChannel", "");
-
-  let channels = document.getElementById("channels");
-  let li = document.getElementById(channelURL + "listElem");
-  console.log(channels);
-  channels.removeChild(li);
 }
 
 function checkChannel(id) {
@@ -124,20 +91,55 @@ function checkChannel(id) {
       }
     });
 }
+
+function deleteChannel(id) {
+  let channelURL = {
+    channelURL: id
+  };
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(channelURL),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/delete-channel", options)
+    .then(res => res.json())
+    .then(res => {
+      handleResponse(res)
+      getChannels()
+    });
+}
+
+function removeFromList(channelURL) {
+  channelURL = channelURL.replace("delChannel", "");
+
+  let channels = document.getElementById("channels");
+  let li = document.getElementById(channelURL + "listElem");
+  console.log(channels);
+  channels.removeChild(li);
+}
+
+
 function displayErrorMessage(message) {
   let error = document.getElementById("error");
+  error.innerHTML = ""
   error.classList.remove("d-none");
   error.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
 }
 
 function displaySuccessMessage(message) {
   let success = document.getElementById("success");
+  success.innerHTML = ""
   success.classList.remove("d-none");
   success.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
 }
 
 function displayWarningMessage(message) {
   let warning = document.getElementById("warning");
+  warning.innerHTML = ""
   warning.classList.remove("d-none");
   warning.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
 }
@@ -160,7 +162,6 @@ function displayChannels(channels) {
     <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
       <div class="panel-body ml-2">
         Latest Download: <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded} target="_blank">https://www.youtube.com/watch?v=${channel.LatestDownloaded}</a>
-        <br>
         <p>Download Mode: ${channel.DownloadMode}</p>
         <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
         <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
@@ -169,6 +170,16 @@ function displayChannels(channels) {
   </div>`
   })
 
+}
+
+function handleResponse(res) {
+  if (res.Type == "Success") {
+    displaySuccessMessage(res.Message)
+  } else if (res.Type == "Error") {
+    displayErrorMessage(res.Message)
+  } else if (res.Type == "Warning") {
+    displayWarningMessage(res.Message)
+  }
 }
 
 function startSpinner(id) {
@@ -187,10 +198,10 @@ function changeExtension() {
   let fileExtensions = document.getElementById("file-extension")
   let downloadQualities = document.getElementById("download-quality")
   if (downloadMode == "Audio Only") {
-    fileExtensions.options[0].value = ".m4a"
-    fileExtensions.options[0].text = ".m4a"
-    fileExtensions.options[1].value = ".mp3"
-    fileExtensions.options[1].text = ".mp3"
+    fileExtensions.options[0].value = "m4a"
+    fileExtensions.options[0].text = "m4a"
+    fileExtensions.options[1].value = "mp3"
+    fileExtensions.options[1].text = "mp3"
     downloadQualities.options[0].value = "best"
     downloadQualities.options[0].text = "best"
     downloadQualities.options[1].value = "medium"
@@ -200,10 +211,10 @@ function changeExtension() {
   } else if (downloadMode == "Video And Audio") {
     fileExtensions.options[0].value = "any"
     fileExtensions.options[0].text = "any (recommended for now)"
-    fileExtensions.options[1].value = ".mp4"
-    fileExtensions.options[1].text = ".mp4"
-    fileExtensions.options[2].value = ".mkv"
-    fileExtensions.options[2].text = ".mkv"
+    fileExtensions.options[1].value = "mp4"
+    fileExtensions.options[1].text = "mp4"
+    // fileExtensions.options[2].value = ".mkv"
+    // fileExtensions.options[2].text = ".mkv"
     
     downloadQualities.options[0].value = "best"
     downloadQualities.options[0].text = "best"

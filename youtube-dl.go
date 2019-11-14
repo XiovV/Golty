@@ -2,26 +2,28 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"os/exec"
-	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
 
 // GetMetadata only requires c.ChannelURL, it returns ChannelMetadata{} containing all metadata for the channel.
-func (c Channel) GetMetadata() ChannelMetadata {
+func (c Channel) GetMetadata() (ChannelMetadata, error) {
 	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", c.ChannelURL)
-	log.Info("Executing youtube-dl command: ", cmd.String())
+	log.Info("executing youtube-dl command: ", cmd.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatal(string(out))
+		log.Error("From GetMetadata(): ", err)
+		return ChannelMetadata{}, fmt.Errorf("From GetMetadata(): %v", err)
 	}
 	metaData := &ChannelMetadata{}
 	if err = json.Unmarshal(out, metaData); err != nil {
-		log.Fatal(err)
+		log.Error("From GetMetadata(): ", err)
+		return ChannelMetadata{}, fmt.Errorf("From GetMetadata(): %v", err)
 	}
 
-	return *metaData
+	return *metaData, nil
 }
 
 // GetLatestVideo only requires c.ChannelURL, it returns Video{} with VideoID
@@ -68,7 +70,6 @@ func (v Video) DownloadAudioYTDL(fileExtension, downloadQuality string) error {
 		downloadQuality = "9"
 	}
 	log.Info("download quality set to: ", downloadQuality)
-	fileExtension = strings.Replace(fileExtension, ".", "", 1)
 	cmd := exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/ %(uploader)s/audio/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
 	log.Info("executing youtube-dl command: ", cmd.String())
 	out, err := cmd.CombinedOutput()

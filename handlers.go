@@ -27,30 +27,53 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&channelData)
 	if err != nil {
 		log.Error(err, r.Body)
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
 	channel := Channel{ChannelURL: channelData.ChannelURL}
-	channelMetadata := channel.GetMetadata()
 
-	if channelData.DownloadMode == "Audio Only" {
-		channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension}
-	} else if channelData.DownloadMode == "Video And Audio" {
-		channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension}
+	doesChannelExist, err := channel.DoesExist()
+	if err != nil {
+		log.Info("error doesChannelExist: ", err)
+		ReturnResponse(w, Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to see if the channel already exists" + err.Error()})
 	}
-
-	doesChannelExist := channel.DoesExist()
 	if doesChannelExist == true {
-		log.Info("This channel already exists")
-		res := Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"}
-		json.NewEncoder(w).Encode(res)
+		log.Info("this channel already exists")
+		ReturnResponse(w, Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"})
 	} else {
-		channel.AddToDatabase()
-
-		err := channel.Download(channelData.DownloadMode, channelData.FileExtension, channelData.DownloadQuality)
+		channelMetadata, err := channel.GetMetadata()
 		if err != nil {
-			log.Error(err)
+			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()})
 		}
-		res := Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added"}
-		json.NewEncoder(w).Encode(res)
+
+		if channelData.DownloadMode == "Audio Only" {
+			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension}
+		} else if channelData.DownloadMode == "Video And Audio" {
+			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension}
+		}
+
+		if channelData.DownloadEntireChannel == true {
+			err := channel.DownloadEntire()
+			if err != nil {
+				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()})
+			}
+			err = channel.AddToDatabase()
+			if err != nil {
+				log.Error(err)
+				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
+			}
+		} else {
+			err = channel.Download(channelData.DownloadMode, channelData.FileExtension, channelData.DownloadQuality)
+			if err != nil {
+				log.Error(err)
+				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error while downloading: " + err.Error()})
+			}
+			err = channel.AddToDatabase()
+			if err != nil {
+				log.Error(err)
+				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
+			}
+			ReturnResponse(w, Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added and downloaded latest video"})
+		}
 	}
 }
 
@@ -58,28 +81,39 @@ func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to check a channel for new uploads")
 	w.Header().Set("Content-Type", "application/json")
 	var data AddChannelPayload
-	_ = json.NewDecoder(r.Body).Decode(&data)
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+	}
 	channel := Channel{ChannelURL: data.ChannelURL}
 
-	log.Info(data)
-
-	res := channel.CheckNow()
-	json.NewEncoder(w).Encode(res)
+	res, err := channel.CheckNow()
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_CHECKING_CHANNEL", Message: "There was an error while checking the channel: " + err.Error()})
+	}
+	ReturnResponse(w, res)
 }
 
 func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to check all channels for new uploads")
 	w.Header().Set("Content-Type", "application/json")
-	res := CheckAll()
-	json.NewEncoder(w).Encode(res)
+	res, err := CheckAll()
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_CHECKING_CHANNELS", Message: "There was an error while checking channels: " + err.Error()})
+	}
+	ReturnResponse(w, res)
 }
 
 func HandleGetChannels(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to get all channels")
 	w.Header().Set("Content-Type", "application/json")
 
-	channels := GetChannels()
-
+	channels, err := GetChannels()
+	if err != nil {
+		res := Response{Type: "Error", Key: "ERROR_GETTING_CHANNELS", Message: "There was an error while getting channels: " + err.Error()}
+		json.NewEncoder(w).Encode(res)
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_CHANNELS", Message: "There was an error while getting channels: " + err.Error()})
+	}
 	json.NewEncoder(w).Encode(channels)
 }
 
@@ -88,12 +122,15 @@ func HandleDeleteChannel(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	var data Payload
-	_ = json.NewDecoder(r.Body).Decode(&data)
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+	}
 	channelURL := data.ChannelURL
 	channelURL = strings.Replace(channelURL, "delChannel", "", -1)
 	channel := Channel{ChannelURL: channelURL}
 
 	channel.Delete()
 
-	json.NewEncoder(w).Encode(Response{Type: "Success", Message: "Channel removed"})
+	ReturnResponse(w, Response{Type: "Success", Key: "DELETE_CHANNEL_SUCCESS", Message: "Channel removed"})
 }

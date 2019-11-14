@@ -25,12 +25,12 @@ func initLogFile() {
 }
 
 func initChannelsDatabase() {
-	_, err := os.Stat("channels.json")
+	_, err := os.Stat("./config/channels.json")
 	if os.IsNotExist(err) {
-		f, _ := os.Create("./channels.json")
+		f, _ := os.Create("./config/channels.json")
 		defer f.Close()
-		n2, _ := f.WriteString("[]")
-		log.Info("Initiated channels.json: ", n2)
+		s, _ := f.WriteString("[]")
+		log.Info("initiated channels.json: ", s)
 		f.Sync()
 	}
 }
@@ -44,7 +44,7 @@ func uploadChecker() {
 	for {
 		time.Sleep(5 * time.Hour)
 
-		// go CheckAll()
+		go CheckAll()
 		log.Info("Upload Checker running...")
 	}
 }

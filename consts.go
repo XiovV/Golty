@@ -1,13 +1,5 @@
 package main
 
-import (
-	"os"
-)
-
-var (
-	API_KEY = os.Getenv("API_KEY")
-)
-
 const (
 	API_ENDPOINT_ID               = "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId="
 	API_ENDPOINT_NAME             = "https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername="
@@ -17,6 +9,7 @@ const (
 	TYPE                          = "type=video"
 	URL_META                      = "https://www.youtube.com/get_video_info?&video_id="
 	USER_URL                      = "https://www.youtube.com/user/"
+	CONFIG_ROOT                   = "./config/"
 	KB                    float64 = 1 << (10 * (iota + 1))
 	MB
 	GB
