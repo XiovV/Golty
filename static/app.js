@@ -198,10 +198,10 @@ function changeExtension() {
   let fileExtensions = document.getElementById("file-extension")
   let downloadQualities = document.getElementById("download-quality")
   if (downloadMode == "Audio Only") {
-    fileExtensions.options[0].value = ".m4a"
-    fileExtensions.options[0].text = ".m4a"
-    fileExtensions.options[1].value = ".mp3"
-    fileExtensions.options[1].text = ".mp3"
+    fileExtensions.options[0].value = "m4a"
+    fileExtensions.options[0].text = "m4a"
+    fileExtensions.options[1].value = "mp3"
+    fileExtensions.options[1].text = "mp3"
     downloadQualities.options[0].value = "best"
     downloadQualities.options[0].text = "best"
     downloadQualities.options[1].value = "medium"
@@ -211,8 +211,8 @@ function changeExtension() {
   } else if (downloadMode == "Video And Audio") {
     fileExtensions.options[0].value = "any"
     fileExtensions.options[0].text = "any (recommended for now)"
-    fileExtensions.options[1].value = ".mp4"
-    fileExtensions.options[1].text = ".mp4"
+    fileExtensions.options[1].value = "mp4"
+    fileExtensions.options[1].text = "mp4"
     // fileExtensions.options[2].value = ".mkv"
     // fileExtensions.options[2].text = ".mkv"
     

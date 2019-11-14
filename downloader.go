@@ -53,7 +53,11 @@ func (v Video) downloadVideoAndAudio(channelURL, fileExtension, downloadQuality 
 		return err
 	}
 	channel := Channel{ChannelURL: channelURL}
-	return channel.UpdateLatestDownloaded(v.VideoID)
+	err = channel.UpdateLatestDownloaded(v.VideoID)
+	if err != nil {
+		return fmt.Errorf("downloadVideoAndAudio: %s", err)
+	}
+	return nil
 }
 
 func (v Video) downloadAudioOnly(channelURL, fileExtension, downloadQuality string) error {
@@ -62,5 +66,9 @@ func (v Video) downloadAudioOnly(channelURL, fileExtension, downloadQuality stri
 		return err
 	}
 	channel := Channel{ChannelURL: channelURL}
-	return channel.UpdateLatestDownloaded(v.VideoID)
+	err = channel.UpdateLatestDownloaded(v.VideoID)
+	if err != nil {
+		return fmt.Errorf("downloadAudioOnly: %s", err)
+	}
+	return nil
 }
