@@ -50,28 +50,28 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		} else if channelData.DownloadMode == "Video And Audio" {
 			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension}
 		}
-
+		err = channel.AddToDatabase()
+		if err != nil {
+			log.Error(err)
+			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
+		}
 		if channelData.DownloadEntireChannel == true {
 			err := channel.DownloadEntire()
 			if err != nil {
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()})
 			}
+		} else {
 			err = channel.AddToDatabase()
 			if err != nil {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
 			}
-		} else {
 			err = channel.Download(channelData.DownloadMode, channelData.FileExtension, channelData.DownloadQuality)
 			if err != nil {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error while downloading: " + err.Error()})
 			}
-			err = channel.AddToDatabase()
-			if err != nil {
-				log.Error(err)
-				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
-			}
+
 			ReturnResponse(w, Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added and downloaded latest video"})
 		}
 	}
