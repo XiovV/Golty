@@ -46,7 +46,7 @@ func (c Channel) GetLatestVideo() Video {
 // DownloadYTDL downloads a video file with specified paramaters
 func (v Video) DownloadYTDL(fileExtension, downloadQuality string) error {
 	log.Info("downloading video file")
-	cmd := exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/ %(uploader)s/video/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+	cmd := exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/%(uploader)s/video/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
 	log.Info("executing youtube-dl command: ", cmd.String())
 
 	out, err := cmd.CombinedOutput()
@@ -70,7 +70,7 @@ func (v Video) DownloadAudioYTDL(fileExtension, downloadQuality string) error {
 		downloadQuality = "9"
 	}
 	log.Info("download quality set to: ", downloadQuality)
-	cmd := exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/ %(uploader)s/audio/ %(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+	cmd := exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/%(uploader)s/audio/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
 	log.Info("executing youtube-dl command: ", cmd.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
