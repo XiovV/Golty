@@ -51,15 +51,22 @@
         </select>
       </div>
     </div>
-    <div class="custom-control custom-checkbox">
+    <div class="custom-control custom-checkbox mb-3">
       <input type="checkbox" class="custom-control-input" id="download-entire-channel">
       <label class="custom-control-label" for="download-entire-channel">Download the entire channel (will ignore youtube-dl errors so it doesn't crash)</label>
     </div>
-
-    <div class="form-group mt-4">
-      <label for="checking-interval">Checking Interval (in minutes)</label>
-      <input type="number" class="form-control" id="checking-interval" placeholder="5 hours (cannot be changed yet, feature coming soon)" disabled>
+    <div class="form-group form-inline">
+      <label for="checking-interval">Checking Interval: </label>
+      <input type="number" class="form-control ml-1" id="checking-interval">
+      <div class="form-group ml-2">
+        <select class="form-control" id="time">
+          <option value="minutes">minutes</option>
+          <option value="hours">hours</option>
+          <option value="days">days</option>
+        </select>
+      </div>
     </div>
+    
     <button class="btn btn-primary mb-2" onclick="addChannel()">Add Channel And Download<div id="add-channel-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
     
     <button class="btn btn-primary float-right" onclick="checkAll()">Check All Now<div id="check-all-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
