@@ -60,8 +60,15 @@ volumes:
 
 You can view these volumes with the `docker volumes` command and view further information with `docker volume inspect VOLUME_NAME`. [Docker Volume Docs](https://docs.docker.com/storage/volumes/)
 
+The port can also be changed by modifying the `ports:` item. By default, this is set to 8080 but if you wanted to change it to port 9000, for example, modify the docker-compose.yml to reflect the below. This follows the standard [docker container networking model](https://docs.docker.com/config/containers/container-networking/) of `host:container.`
+
+```YAML
+ports:
+  - 9000:8080
+```
+
 ### Running The Container
-Once the configuration is complete, `docker-compose up -d` will pull and run the container for you in the background. The container will now be accessible from http://localhost:8080 on that machine. Using `docker logs` will show the container logs for troubleshooting.
+Once the configuration is complete, `docker-compose up -d` will pull and run the container for you in the background. The container will now be accessible from http://localhost:8080 (or whichever port you've modified it to) on that machine. Using `docker logs` will show the container logs for troubleshooting.
 
 ## Known Issues
 * Checking interval is hardcoded to 5 hours, at the moment you cannot change it.
