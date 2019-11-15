@@ -34,11 +34,11 @@ func (c Channel) GetLatestVideo() (Video, error) {
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Error(string(out))
-		log.Error("GetLatestVideo: %s | %s", err, string(out))
+		log.Errorf("GetLatestVideo: %s | %s", err, string(out))
 	}
 	metaData := &ChannelMetadata{}
 	if err = json.Unmarshal(out, metaData); err != nil {
-		log.Error("GetLatestVideo: %s", err)
+		log.Error("GetLatestVideo: ", err)
 		return Video{}, fmt.Errorf("GetLatestVideo: %s", err)
 	}
 	log.Info("successfully fetched latest video ")

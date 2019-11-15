@@ -55,7 +55,7 @@ func CheckAll() (Response, error) {
 		if item.ChannelURL == channel.ChannelURL {
 			videoId, err := channel.GetLatestVideo()
 			if err != nil {
-				log.Error("There was an error getting latest video: %s", err)
+				log.Error("There was an error getting latest video: ", err)
 				return Response{Type: "Error", Key: "GETTING_LATEST_VIDEO_ERROR", Message: "There was an error getting the latestvideo" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
 			}
 
