@@ -132,9 +132,23 @@ function displayErrorMessage(message) {
 
 function displaySuccessMessage(message) {
   let success = document.getElementById("success");
-  success.innerHTML = ""
-  success.classList.remove("d-none");
-  success.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
+
+  if (success) {
+    console.log("DISPLAY SUCCESS ALERT")
+
+    success.innerHTML = ""
+    success.classList.remove("d-none");
+    success.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
+  } else {
+    console.log("CREATE SUCCESS ALERT")
+    let alertsDiv = document.getElementById("alerts").innerHTML
+    alertsDiv += `<div class="alert alert-success alert-dismissible mt-3" id="success" role="alert">
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>`
+  }
 }
 
 function displayWarningMessage(message) {
@@ -177,18 +191,18 @@ function displayChannels(channels) {
         </div>
       </div>
     </div>`
-    // displayDownloadHistory(channel.Name, channel.DownloadHistory)
+    displayDownloadHistory(channel.Name, channel.DownloadHistory)
   })
 }
 
-// function displayDownloadHistory(channelName, downloadHistory) {
-//   let historyBox = document.getElementById("dlhistory"+channelName)
-//   console.log(historyBox)
-//   console.log("DISPLAY HISTORY")
-//   downloadHistory.forEach(video => {
-//     historyBox.innerHTML += `<br> <a href=https://www.youtube.com/watch?v=${video} target="_blank">https://www.youtube.com/watch?v=${video}</a>` 
-//   })
-// }
+function displayDownloadHistory(channelName, downloadHistory) {
+  let historyBox = document.getElementById("dlhistory"+channelName)
+  console.log(historyBox)
+  console.log("DISPLAY HISTORY")
+  downloadHistory.forEach(video => {
+    historyBox.innerHTML += `<br> <a href=https://www.youtube.com/watch?v=${video} target="_blank">https://www.youtube.com/watch?v=${video}</a>` 
+  })
+}
 
 function handleResponse(res) {
   if (res.Type == "Success") {

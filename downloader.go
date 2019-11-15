@@ -15,7 +15,8 @@ func (c Channel) Download(downloadMode, fileExtension, downloadQuality string) e
 		video := c.GetLatestVideo()
 		// video.downloadVideoAndAudio(channelURL, fileExtension, downloadQuality)
 		video.DownloadVideoYTDL(fileExtension, downloadQuality)
-		return c.UpdateLatestDownloaded(video.VideoID)
+		c.UpdateLatestDownloaded(video.VideoID)
+		return c.UpdateDownloadHistory(video.VideoID)
 	} else if downloadMode == "Audio Only" {
 		// Extract audio from the .mp4 file and remove the .mp4
 		video := c.GetLatestVideo()
