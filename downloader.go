@@ -12,17 +12,41 @@ import (
 func (c Channel) Download(downloadMode, fileExtension, downloadQuality string) error {
 	if downloadMode == "Video And Audio" {
 		// Download .mp4 with audio and video in one file
-		video := c.GetLatestVideo()
+		video, err := c.GetLatestVideo()
+		if err != nil {
+			log.Error("Download: %s", err)
+			return fmt.Errorf("Download: %s", err)
+		}
 		// video.downloadVideoAndAudio(channelURL, fileExtension, downloadQuality)
-		video.DownloadVideoYTDL(fileExtension, downloadQuality)
-		c.UpdateLatestDownloaded(video.VideoID)
+		err = video.DownloadVideoYTDL(fileExtension, downloadQuality)
+		if err != nil {
+			log.Error("Download: %s", err)
+			return fmt.Errorf("Download: %s", err)
+		}
+		err = c.UpdateLatestDownloaded(video.VideoID)
+		if err != nil {
+			log.Error("Download: %s", err)
+			return fmt.Errorf("Download: %s", err)
+		}
 		return c.UpdateDownloadHistory(video.VideoID)
 	} else if downloadMode == "Audio Only" {
 		// Extract audio from the .mp4 file and remove the .mp4
-		video := c.GetLatestVideo()
+		video, err := c.GetLatestVideo()
+		if err != nil {
+			log.Error("Download: %s", err)
+			return fmt.Errorf("Download: %s", err)
+		}
 		// video.downloadAudioOnly(channelURL, fileExtension, downloadQuality)
-		video.DownloadAudioYTDL(fileExtension, downloadQuality)
-		c.UpdateLatestDownloaded(video.VideoID)
+		err = video.DownloadAudioYTDL(fileExtension, downloadQuality)
+		if err != nil {
+			log.Error("Download: %s", err)
+			return fmt.Errorf("Download: %s", err)
+		}
+		err = c.UpdateLatestDownloaded(video.VideoID)
+		if err != nil {
+			log.Error("Download: %s", err)
+			return fmt.Errorf("Download: %s", err)
+		}
 		return c.UpdateDownloadHistory(video.VideoID)
 	}
 	return fmt.Errorf("From Download: Something went seriously wrong")

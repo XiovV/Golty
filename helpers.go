@@ -53,7 +53,12 @@ func CheckAll() (Response, error) {
 		}
 
 		if item.ChannelURL == channel.ChannelURL {
-			videoId := channel.GetLatestVideo()
+			videoId, err := channel.GetLatestVideo()
+			if err != nil {
+				log.Error("There was an error getting latest video: %s", err)
+				return Response{Type: "Error", Key: "GETTING_LATEST_VIDEO_ERROR", Message: "There was an error getting the latestvideo" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
+
+			}
 
 			if item.LatestDownloaded == videoId.VideoID {
 				log.Info("no new videos found for: ", item.ChannelURL)

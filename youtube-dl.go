@@ -27,20 +27,22 @@ func (c Channel) GetMetadata() (ChannelMetadata, error) {
 }
 
 // GetLatestVideo only requires c.ChannelURL, it returns Video{} with VideoID
-func (c Channel) GetLatestVideo() Video {
+func (c Channel) GetLatestVideo() (Video, error) {
 	log.Info("fetching latest upload")
 	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", c.ChannelURL)
 	log.Info("executing youtube-dl command: ", cmd.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Error(string(out))
+		log.Error("GetLatestVideo: %s | %s", err, string(out))
 	}
 	metaData := &ChannelMetadata{}
 	if err = json.Unmarshal(out, metaData); err != nil {
-		log.Fatal(err)
+		log.Error("GetLatestVideo: %s", err)
+		return Video{}, fmt.Errorf("GetLatestVideo: %s", err)
 	}
 	log.Info("successfully fetched latest video ")
-	return Video{VideoID: metaData.ID}
+	return Video{VideoID: metaData.ID}, nil
 }
 
 // DownloadYTDL downloads a video file with specified paramaters
@@ -52,7 +54,8 @@ func (v Video) DownloadVideoYTDL(fileExtension, downloadQuality string) error {
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatal(string(out))
-		return err
+		return fmt.Errorf("DownloadVideoYTDL: %s", err)
+
 	}
 
 	log.Info("successfully downloaded video file")
@@ -75,7 +78,7 @@ func (v Video) DownloadAudioYTDL(fileExtension, downloadQuality string) error {
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Error(string(out))
-		return err
+		return fmt.Errorf("DownloadAudioYTDL: %s", err)
 	}
 
 	log.Info("successfully downloaded audio")
