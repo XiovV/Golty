@@ -146,6 +146,7 @@ type Channel struct {
 	PreferredExtensionForAudio string
 	PreferredExtensionForVideo string
 	DownloadHistory            []string
+	LastChecked                string
 }
 
 type Payload struct {

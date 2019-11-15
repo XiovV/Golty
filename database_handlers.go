@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -45,8 +46,34 @@ func (c *Channel) UpdateDownloadHistory(videoID string) error {
 	for i, channel := range db {
 		if channel.ChannelURL == c.ChannelURL {
 			db[i].DownloadHistory = append(c.DownloadHistory, videoID)
-			// log.Info(channel.ChannelURL, channel.LatestDownloaded, channel.DownloadMode, channel.Name, channel.PreferredExtensionForAudio, channel.PreferredExtensionForVideo, c.DownloadHistory)
 			log.Info(db)
+			break
+		}
+	}
+
+	return writeDb(db, CONFIG_ROOT+"channels.json")
+}
+
+func (c Channel) UpdateLastChecked() error {
+	log.Info("updating last checked date and time for: ", c.Name)
+
+	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
+	if err != nil {
+		return fmt.Errorf("UpdateLatestDownloaded: %s", err)
+	}
+
+	var db []Channel
+
+	err = json.Unmarshal(byteValue, &db)
+	if err != nil {
+		return fmt.Errorf("UpdateLastChecked: %s", err)
+	}
+
+	for i, item := range db {
+		if item.ChannelURL == c.ChannelURL {
+			dt := time.Now()
+			db[i].LastChecked = dt.Format("01-02-2006 15:04:05")
+			log.Info("last checked date and time updated successfully")
 			break
 		}
 	}
@@ -72,7 +99,7 @@ func (c Channel) UpdateLatestDownloaded(videoID string) error {
 	for i, item := range db {
 		if item.ChannelURL == c.ChannelURL {
 			db[i].LatestDownloaded = videoID
-			log.Info("Latest downloaded video id updated successfully")
+			log.Info("latest downloaded video id updated successfully")
 			break
 		}
 	}
@@ -114,19 +141,6 @@ func (c Channel) AddToDatabase() error {
 		return fmt.Errorf("AddToDatabase: %s", err)
 	}
 	return nil
-}
-
-func writeUploadsDb(db []UploadID, dbName string) {
-	result, err := json.Marshal(db)
-	if err != nil {
-		log.Println(err)
-	}
-
-	json.Unmarshal(result, &db)
-
-	file, _ := json.MarshalIndent(db, "", " ")
-
-	_ = ioutil.WriteFile(dbName, file, 0644)
 }
 
 func writeDb(db []Channel, dbName string) error {
