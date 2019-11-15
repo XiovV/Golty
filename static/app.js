@@ -159,18 +159,36 @@ function displayChannels(channels) {
       }" onClick="checkChannel(this.id)">Check Now</button>
       </h5>
   
-    <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
-      <div class="panel-body ml-2">
-        Latest Download: <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded} target="_blank">https://www.youtube.com/watch?v=${channel.LatestDownloaded}</a>
-        <p>Download Mode: ${channel.DownloadMode}</p>
-        <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
-        <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
+      <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
+        <div class="panel-body ml-2">
+          Latest Download: <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded} target="_blank">https://www.youtube.com/watch?v=${channel.LatestDownloaded}</a>
+          <p>Download Mode: ${channel.DownloadMode}</p>
+          <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
+          <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
+          <br>
+          <button class="btn btn-link dropdown-toggle" type="button" data-toggle="collapse" data-target="#history${index}" aria-expanded="false" aria-controls="history${index}">
+            Download History
+          </button>
+          <div class="collapse" id="history${index}">
+            <div class="card card-body" id="dlhistory${channel.Name}">
+            </div>
+          </div>
+        </h5>
+        </div>
       </div>
-    </div>
-  </div>`
+    </div>`
+    // displayDownloadHistory(channel.Name, channel.DownloadHistory)
   })
-
 }
+
+// function displayDownloadHistory(channelName, downloadHistory) {
+//   let historyBox = document.getElementById("dlhistory"+channelName)
+//   console.log(historyBox)
+//   console.log("DISPLAY HISTORY")
+//   downloadHistory.forEach(video => {
+//     historyBox.innerHTML += `<br> <a href=https://www.youtube.com/watch?v=${video} target="_blank">https://www.youtube.com/watch?v=${video}</a>` 
+//   })
+// }
 
 function handleResponse(res) {
   if (res.Type == "Success") {
