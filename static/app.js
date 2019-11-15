@@ -41,6 +41,7 @@ function checkAll() {
     .then(res => {
       handleResponse(res)
       stopSpinner("check-all-spinner")
+      getChannels()
     });
 }
 
@@ -81,8 +82,10 @@ function checkChannel(id) {
       if (res.Type == "Success") {
         if (res.Key == "NO_NEW_VIDEOS") {
           displayWarningMessage(res.Message);
+          getChannels()
         } else if (res.Key == "NEW_VIDEO_DETECTED") {
           displaySuccessMessage(res.Message);
+          getChannels()
         }
       } else if (res.Type == "Error") {
         if (res.Key == "ERROR_DOWNLOADING_VIDEO") {
@@ -177,6 +180,7 @@ function displayChannels(channels) {
         <div class="panel-body ml-2">
           Latest Download: <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded} target="_blank">https://www.youtube.com/watch?v=${channel.LatestDownloaded}</a>
           <p>Download Mode: ${channel.DownloadMode}</p>
+          <p>Last Checked: ${channel.LastChecked}</p>
           <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
           <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
           <br>

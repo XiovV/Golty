@@ -53,11 +53,16 @@ func CheckAll() (Response, error) {
 		}
 
 		if item.ChannelURL == channel.ChannelURL {
-			videoId := channel.GetLatestVideo()
+			videoId, err := channel.GetLatestVideo()
+			if err != nil {
+				log.Error("There was an error getting latest video: %s", err)
+				return Response{Type: "Error", Key: "GETTING_LATEST_VIDEO_ERROR", Message: "There was an error getting the latestvideo" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
+			}
 
+			item.UpdateLastChecked()
 			if item.LatestDownloaded == videoId.VideoID {
 				log.Info("no new videos found for: ", item.ChannelURL)
-				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos found."}, nil
+				// return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos found."}, nil
 			} else {
 				log.Info("new video detected for: ", item.ChannelURL)
 				foundFor = append(foundFor, item.ChannelURL)
@@ -71,7 +76,9 @@ func CheckAll() (Response, error) {
 			}
 		}
 	}
-
+	if len(foundFor) == 0 {
+		return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos found."}, nil
+	}
 	return Response{Type: "Success", Key: "NEW_VIDEOS_FOR_CHANNELS", Message: strings.Join(foundFor, ",")}, nil
 }
 
@@ -94,6 +101,11 @@ func (c Channel) CheckNow() (Response, error) {
 	channelMetadata, err := channel.GetMetadata()
 	if err != nil {
 		return Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()}, nil
+	}
+
+	err = c.UpdateLastChecked()
+	if err != nil {
+		return Response{Type: "Error", Key: "ERROR_UPDATING_LAST_CHECKED", Message: "There was an error updating latest checked date and time: " + err.Error()}, nil
 	}
 
 	for _, item := range allChannelsInDb {
