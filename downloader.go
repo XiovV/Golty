@@ -21,7 +21,8 @@ func (c Channel) Download(downloadMode, fileExtension, downloadQuality string) e
 		video := c.GetLatestVideo()
 		// video.downloadAudioOnly(channelURL, fileExtension, downloadQuality)
 		video.DownloadAudioYTDL(fileExtension, downloadQuality)
-		return c.UpdateLatestDownloaded(video.VideoID)
+		c.UpdateLatestDownloaded(video.VideoID)
+		return c.UpdateDownloadHistory(video.VideoID)
 	}
 	return fmt.Errorf("From Download: Something went seriously wrong")
 }
@@ -29,7 +30,7 @@ func (c Channel) Download(downloadMode, fileExtension, downloadQuality string) e
 func (c Channel) DownloadEntire() error {
 	if c.DownloadMode == "Audio Only" {
 		fileExtension := strings.Replace(c.PreferredExtensionForAudio, ".", "", 1)
-		cmd := exec.Command("youtube-dl", "-f", "bestaudio[ext="+fileExtension+"]", "-o", "downloads/%(uploader)s/audio/%(title)s.%(ext)s", c.ChannelURL)
+		cmd := exec.Command("youtube-dl", "-f", "bestaudio[ext="+fileExtension+"]", "--ignore-errors", "-o", "downloads/%(uploader)s/audio/%(title)s.%(ext)s", c.ChannelURL)
 		log.Info("executing youtube-dl command: ", cmd.String())
 		out, err := cmd.CombinedOutput()
 		if err != nil {

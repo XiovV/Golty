@@ -6,15 +6,19 @@
   "Name": "Electronic Gems",
   "PreferredExtensionForAudio": "m4a",
   "PreferredExtensionForVideo": "",
-  "DownloadHistory": null
+  "DownloadHistory": [
+   "eyp-YuzhTN4"
+  ]
  },
  {
   "ChannelURL": "https://www.youtube.com/user/NewRetroWave",
   "LatestDownloaded": "7DPiIMU-6t0",
-  "DownloadMode": "Video And Audio",
+  "DownloadMode": "Audio Only",
   "Name": "NewRetroWave",
-  "PreferredExtensionForAudio": "",
-  "PreferredExtensionForVideo": "any",
-  "DownloadHistory": null
+  "PreferredExtensionForAudio": "m4a",
+  "PreferredExtensionForVideo": "",
+  "DownloadHistory": [
+   "7DPiIMU-6t0"
+  ]
  }
 ]
