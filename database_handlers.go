@@ -27,8 +27,35 @@ func openJSONDatabase(dbName string) ([]byte, error) {
 	return byteValue, nil
 }
 
+func (c *Channel) UpdateDownloadHistory(videoID string) error {
+	log.Info("updating download history")
+
+	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
+	if err != nil {
+		return fmt.Errorf("UpdateDownloadHistory: %s", err)
+	}
+
+	var db []Channel
+
+	err = json.Unmarshal(byteValue, &db)
+	if err != nil {
+		return fmt.Errorf("UpdateDownloadHistory: %s", err)
+	}
+
+	for i, channel := range db {
+		if channel.ChannelURL == c.ChannelURL {
+			db[i].DownloadHistory = append(c.DownloadHistory, videoID)
+			// log.Info(channel.ChannelURL, channel.LatestDownloaded, channel.DownloadMode, channel.Name, channel.PreferredExtensionForAudio, channel.PreferredExtensionForVideo, c.DownloadHistory)
+			log.Info(db)
+			break
+		}
+	}
+
+	return writeDb(db, CONFIG_ROOT+"channels.json")
+}
+
 func (c Channel) UpdateLatestDownloaded(videoID string) error {
-	log.Info("Updating latest downloaded video id")
+	log.Info("updating latest downloaded video id")
 
 	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
 	if err != nil {

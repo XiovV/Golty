@@ -44,7 +44,7 @@ func (c Channel) GetLatestVideo() Video {
 }
 
 // DownloadYTDL downloads a video file with specified paramaters
-func (v Video) DownloadYTDL(fileExtension, downloadQuality string) error {
+func (v Video) DownloadVideoYTDL(fileExtension, downloadQuality string) error {
 	log.Info("downloading video file")
 	cmd := exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/%(uploader)s/video/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
 	log.Info("executing youtube-dl command: ", cmd.String())

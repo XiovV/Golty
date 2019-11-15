@@ -10,15 +10,20 @@ import (
 
 // Download downloads a the latest video based on downloadMode
 func (c Channel) Download(downloadMode, fileExtension, downloadQuality string) error {
-	channelURL := c.ChannelURL
 	if downloadMode == "Video And Audio" {
 		// Download .mp4 with audio and video in one file
 		video := c.GetLatestVideo()
-		return video.downloadVideoAndAudio(channelURL, fileExtension, downloadQuality)
+		// video.downloadVideoAndAudio(channelURL, fileExtension, downloadQuality)
+		video.DownloadVideoYTDL(fileExtension, downloadQuality)
+		c.UpdateLatestDownloaded(video.VideoID)
+		return c.UpdateDownloadHistory(video.VideoID)
 	} else if downloadMode == "Audio Only" {
 		// Extract audio from the .mp4 file and remove the .mp4
 		video := c.GetLatestVideo()
-		return video.downloadAudioOnly(channelURL, fileExtension, downloadQuality)
+		// video.downloadAudioOnly(channelURL, fileExtension, downloadQuality)
+		video.DownloadAudioYTDL(fileExtension, downloadQuality)
+		c.UpdateLatestDownloaded(video.VideoID)
+		return c.UpdateDownloadHistory(video.VideoID)
 	}
 	return fmt.Errorf("From Download: Something went seriously wrong")
 }
@@ -26,7 +31,7 @@ func (c Channel) Download(downloadMode, fileExtension, downloadQuality string) e
 func (c Channel) DownloadEntire() error {
 	if c.DownloadMode == "Audio Only" {
 		fileExtension := strings.Replace(c.PreferredExtensionForAudio, ".", "", 1)
-		cmd := exec.Command("youtube-dl", "-f", "bestaudio[ext="+fileExtension+"]", "-o", "downloads/%(uploader)s/audio/%(title)s.%(ext)s", c.ChannelURL)
+		cmd := exec.Command("youtube-dl", "-f", "bestaudio[ext="+fileExtension+"]", "--ignore-errors", "-o", "downloads/%(uploader)s/audio/%(title)s.%(ext)s", c.ChannelURL)
 		log.Info("executing youtube-dl command: ", cmd.String())
 		out, err := cmd.CombinedOutput()
 		if err != nil {
@@ -45,30 +50,4 @@ func (c Channel) DownloadEntire() error {
 		}
 	}
 	return fmt.Errorf("DownloadEntire: download mode cannot be nil")
-}
-
-func (v Video) downloadVideoAndAudio(channelURL, fileExtension, downloadQuality string) error {
-	err := v.DownloadYTDL(fileExtension, downloadQuality)
-	if err != nil {
-		return err
-	}
-	channel := Channel{ChannelURL: channelURL}
-	err = channel.UpdateLatestDownloaded(v.VideoID)
-	if err != nil {
-		return fmt.Errorf("downloadVideoAndAudio: %s", err)
-	}
-	return nil
-}
-
-func (v Video) downloadAudioOnly(channelURL, fileExtension, downloadQuality string) error {
-	err := v.DownloadAudioYTDL(fileExtension, downloadQuality)
-	if err != nil {
-		return err
-	}
-	channel := Channel{ChannelURL: channelURL}
-	err = channel.UpdateLatestDownloaded(v.VideoID)
-	if err != nil {
-		return fmt.Errorf("downloadAudioOnly: %s", err)
-	}
-	return nil
 }

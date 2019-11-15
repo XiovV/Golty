@@ -143,5 +143,6 @@ func GetChannelName(channelURL string) string {
 }
 
 func ReturnResponse(w http.ResponseWriter, res Response) {
+	log.Info("returning response: ", res)
 	json.NewEncoder(w).Encode(res)
 }
