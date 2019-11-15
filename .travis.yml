@@ -5,36 +5,24 @@ env:
     - secure: "qZN8JV91mJz2sLyewz6nRVb++KsNUwstvbMPpion4kfs23m54FgMDI+bpu8pgrZyINqsFwDdKbElnUOjR7tAwtJq5zLeSuC7vy2YT/eud/D3C1kcJBjE4qYihRRRlYMQhlsZb1/3gaN9mvUx0g1UmHLug9SfSy3GFDiSKMeE6umMOLJzLzXl0aOLtREiFZMb8TmvVRzD6W1GuLBe2gxYHvsOKumhVbL0CJnocGzTlSmAgx/smPjMahTznURtmfXpEijh7FBfUz4JRhGSdNjKGLXZ/ci8b1MVYRu1FElkyub/hVgkcJEHbmBeXDQtdTCR6Xp+a4r0vRnroHwfRLHoAfXw7QexJqOZ4Xab91ExFVzHvxvasEcEuUjSMYubnW4InlcxbM7r7lNGRspbbb8FNl3MVcxcYewkafN6tcO/yaHUHyneBaXE8TwqUXwscMFy4N9lRcK2hrUL/505honlAOnABRjav2NhynThX9kBs7Wd3E4eP2kyYwOTYmCmj4n3Ses2kelxfHMq/yXAML29rYurxEcFiOcwTaL5O66wW+ecdb6mhlXyPmS/ypCtlUKOWjs3+5yoSwaT8o+3usgcllIEzStczISKMZ1+Rtgf32o1voJNn0dQSMmMNLV4WRNAl8TZjEjTrY6N2Xz/7xCXPwh+UoCaNaOlaPAYY4v0tcc="
     - secure: "J9HuGVczx8h9zNJYYn6ENDo0djQKUj6cmFx3Z2qi85quK4brJko//TW154SnKusabXJ/oGREGsO79A7RXrMki8xfYe+zmtwaAw6Ye9c09lPDI874aSUXNfWBDj76dJbyxzcYdTxjqXai2DgYmXH8ILtAwuEJmUNcjkETvrZw4f80sLizSts8u4gTjAQ36r8MCULJcIb1fJbdWtC0sENGIwyqD94CGl+dATctb3IhH0IlMVrFj+Q9g5oVd6QZlqq+ETpVDVYln47QOwlC1XNIX4jQQHA+ZI3QdUURuL6d/ZMTrIskRhlbGDHkIps34ijad7cO58HtdoGgqg6n79p4ml6oo0YIdSPXIUB8cQqL+Qv0O4lL6X9N6IEwEuh1f3ayPr0EgFZHFU3FvhcCUKo0FjRL919npC3a8kWGoTMDTrEbZ2MYL0yIbh3WWOXa0h8JDEsFUwb3y1wrpwdB+pE3WyRHirHIHV/4BNXXWa4f/f8UOKmTO6Y+OkBc9YJQfOIi/tYzJHZnshbbpH4mONTphN6KuKhFBG7s2pklLvMo4aZIn82MnSmxmyL2p3q3bILKJIvXDwIeVfw86fxBSNyw3B4EgmNqDfhq1gajdXlZxRkmMaLkDr75aPJLOUOSodKbCRRrPWPL/eXko+amgMFqSl5+lXHLJ/qFIAvF+l5Br/A="
 
-
 branches:
   only:
     - master
 
 stages:
-  - test
-  - build-go
-  - build-docker
-  - deploy
+  - go_test+build
+  - docker_build+deploy
 
 jobs:
   include:
-  - stage: "test"
+  - stage: "go_test+build"
     language: go
     go: "1.13"
     install: 
     - go get -v
     script:
     - go test -v
-  - stage: "build-go"
-    language: go
-    go: "1.13"
-    install:
-    - go get -v
-    script:
     - go build -v
-  - stage: "build-docker"
-    script: 
-    - docker build --no-cache -t go-auto-yt:build .
-  - stage: "deploy"
+  - stage: "docker_build+deploy"
     language: shell
     script: ./travis/dockerhub-deploy.sh
