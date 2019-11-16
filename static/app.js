@@ -1,20 +1,54 @@
 let channels = [];
 
+function updateCheckingInterval() {
+  startSpinner("update-checking-interval-spinner")
+  let checkingInterval
+  let checkingIntervalInput = document.getElementById("checking-interval").value
+  let time = document.getElementById("time").value
+
+  if (time == "minutes") {
+    checkingInterval = checkingIntervalInput 
+  } else if (time == "hours") {
+    checkingInterval = checkingIntervalInput * 60
+  } else if (time == "days") {
+    checkingInterval = checkingIntervalInput * 1440
+  }
+
+  interval = {
+    checkingInterval
+  }
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(interval),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/update-checking-interval", options)
+    .then(res => res.json())
+    .then(res => {
+      handleResponse(res)
+      stopSpinner("update-checking-interval-spinner")
+    });
+}
+
 function addChannel() {
   startSpinner("add-channel-spinner")
-
   let downloadEntireChannel = document.querySelector('#download-entire-channel').checked;
   let channelURL = document.getElementById("channel-url").value
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
   let downloadQuality = document.getElementById("download-quality").value
 
+
   let channelData = {
     channelURL,
     downloadMode,
     fileExtension,
     downloadQuality,
-    downloadEntireChannel
+    downloadEntireChannel,
   };
 
   const options = {
@@ -54,6 +88,7 @@ function getChannels() {
 }
 
 function checkChannel(id) {
+  startSpinner(id+"-spinner")
   let channelURL = id
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
@@ -78,7 +113,7 @@ function checkChannel(id) {
     .then(res => res.json())
     .then(res => {
       console.log(res);
-
+      stopSpinner(id+"-spinner")
       if (res.Type == "Success") {
         if (res.Key == "NO_NEW_VIDEOS") {
           displayWarningMessage(res.Message);
@@ -171,9 +206,7 @@ function displayChannels(channels) {
         <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.ChannelURL}listElem>
           ${channel.Name}
         </button><button class="btn btn-danger float-right ml-2" id="${channel.ChannelURL +
-        "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${
-        channel.ChannelURL
-      }" onClick="checkChannel(this.id)">Check Now</button>
+        "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.ChannelURL}" onClick="checkChannel(this.id)">Check Now<div id="${channel.ChannelURL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
       </h5>
   
       <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">

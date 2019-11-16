@@ -27,15 +27,17 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	var channelData AddChannelPayload
 	err := json.NewDecoder(r.Body).Decode(&channelData)
 	if err != nil {
-		log.Error(err, r.Body)
+		log.Error("HandleAddChannel: ", err)
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
+	log.Info(channelData)
+
 	channel := Channel{ChannelURL: channelData.ChannelURL}
 
 	doesChannelExist, err := channel.DoesExist()
 	if err != nil {
 		log.Info("error doesChannelExist: ", err)
-		ReturnResponse(w, Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to see if the channel already exists" + err.Error()})
+		ReturnResponse(w, Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to check if the channel already exists" + err.Error()})
 	}
 	if doesChannelExist == true {
 		log.Info("this channel already exists")
@@ -47,9 +49,9 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if channelData.DownloadMode == "Audio Only" {
-			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05")}
+			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
 		} else if channelData.DownloadMode == "Video And Audio" {
-			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05")}
+			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
 		}
 		err = channel.AddToDatabase()
 		if err != nil {
@@ -133,4 +135,21 @@ func HandleDeleteChannel(w http.ResponseWriter, r *http.Request) {
 	channel.Delete()
 
 	ReturnResponse(w, Response{Type: "Success", Key: "DELETE_CHANNEL_SUCCESS", Message: "Channel removed"})
+}
+
+func HandleUpdateCheckingInterval(w http.ResponseWriter, r *http.Request) {
+	log.Info("received a request to update the checking interval")
+	w.Header().Set("Content-Type", "application/json")
+
+	var interval CheckingIntervalPayload
+	err := json.NewDecoder(r.Body).Decode(&interval)
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+	}
+
+	res, err := UpdateCheckingInterval(interval.CheckingInterval)
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_UPDATING_CHECKING_INTERVAL", Message: "There was an updating the checking interval: " + err.Error()})
+	}
+	ReturnResponse(w, res)
 }

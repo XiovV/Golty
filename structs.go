@@ -147,10 +147,15 @@ type Channel struct {
 	PreferredExtensionForVideo string
 	DownloadHistory            []string
 	LastChecked                string
+	CheckingInterval           string
 }
 
 type Payload struct {
 	ChannelURL string
+}
+
+type CheckingIntervalPayload struct {
+	CheckingInterval string
 }
 
 type AddChannelPayload struct {
@@ -159,6 +164,7 @@ type AddChannelPayload struct {
 	FileExtension         string
 	DownloadQuality       string
 	DownloadEntireChannel bool
+	CheckingInterval      string
 }
 
 type Response struct {

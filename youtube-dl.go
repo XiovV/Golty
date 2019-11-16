@@ -45,42 +45,28 @@ func (c Channel) GetLatestVideo() (Video, error) {
 	return Video{VideoID: metaData.ID}, nil
 }
 
-// DownloadYTDL downloads a video file with specified paramaters
-func (v Video) DownloadVideoYTDL(fileExtension, downloadQuality string) error {
-	log.Info("downloading video file")
-	cmd := exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/%(uploader)s/video/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+func (v Video) Download(downloadMode, fileExtension, downloadQuality string) error {
+	log.Info("executing download")
+	var cmd *exec.Cmd
+	if downloadMode == "Audio Only" {
+		log.Info("downloading audio only")
+		if downloadQuality == "best" {
+			downloadQuality = "0"
+		} else if downloadQuality == "medium" {
+			downloadQuality = "5"
+		} else if downloadQuality == "worst" {
+			downloadQuality = "9"
+		}
+		log.Info("download quality set to: ", downloadQuality)
+		cmd = exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/%(uploader)s/audio/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+	} else if downloadMode == "Video And Audio" {
+		cmd = exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/%(uploader)s/video/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+	}
 	log.Info("executing youtube-dl command: ", cmd.String())
-
-	out, err := cmd.CombinedOutput()
+	err := cmd.Run()
 	if err != nil {
-		log.Fatal(string(out))
-		return fmt.Errorf("DownloadVideoYTDL: %s", err)
-
+		log.Error(err, cmd.String())
+		return fmt.Errorf("v.Download: %s", err)
 	}
-
-	log.Info("successfully downloaded video file")
-	return nil
-}
-
-// DownloadAudioYTDL downloads an audio file with specified paramaters
-func (v Video) DownloadAudioYTDL(fileExtension, downloadQuality string) error {
-	log.Info("downloading audio only")
-	if downloadQuality == "best" {
-		downloadQuality = "0"
-	} else if downloadQuality == "medium" {
-		downloadQuality = "5"
-	} else if downloadQuality == "worst" {
-		downloadQuality = "9"
-	}
-	log.Info("download quality set to: ", downloadQuality)
-	cmd := exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/%(uploader)s/audio/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
-	log.Info("executing youtube-dl command: ", cmd.String())
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		log.Error(string(out))
-		return fmt.Errorf("DownloadAudioYTDL: %s", err)
-	}
-
-	log.Info("successfully downloaded audio")
 	return nil
 }
