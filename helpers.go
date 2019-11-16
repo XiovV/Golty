@@ -244,7 +244,7 @@ func (p Playlist) CheckNow() (Response, error) {
 					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}, nil
 				}
 				playlist.UpdateLatestDownloaded(playlistMetadata.ID)
-				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + playlist.Name}, nil
+				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + playlist.Name + " and downloaded"}, nil
 			}
 		}
 	}

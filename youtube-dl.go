@@ -93,15 +93,41 @@ func (v Video) Download(downloadMode, fileExtension, downloadQuality string) err
 			downloadQuality = "9"
 		}
 		log.Info("download quality set to: ", downloadQuality)
-		cmd = exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/playlists/%(uploader)s/audio/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+		cmd = exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/%(uploader)s/audio/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
 	} else if downloadMode == "Video And Audio" {
-		cmd = exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/playlists/%(uploader)s/video/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+		cmd = exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/%(uploader)s/video/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
 	}
 	log.Info("executing youtube-dl command: ", cmd.String())
 	err := cmd.Run()
 	if err != nil {
 		log.Error(err, cmd.String())
 		return fmt.Errorf("v.Download: %s", err)
+	}
+	return nil
+}
+
+func (p Playlist) DownloadPlaylist(downloadMode, fileExtension, downloadQuality string) error {
+	log.Info("executing download")
+	var cmd *exec.Cmd
+	if downloadMode == "Audio Only" {
+		log.Info("downloading audio only")
+		if downloadQuality == "best" {
+			downloadQuality = "0"
+		} else if downloadQuality == "medium" {
+			downloadQuality = "5"
+		} else if downloadQuality == "worst" {
+			downloadQuality = "9"
+		}
+		log.Info("download quality set to: ", downloadQuality)
+		cmd = exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--playlist-end", "1", "--audio-quality", downloadQuality, "-o", "downloads/playlists/%(uploader)s/%(playlist)s/audio/%(title)s.%(ext)s", p.PlaylistURL)
+	} else if downloadMode == "Video And Audio" {
+		cmd = exec.Command("youtube-dl", "-f", downloadQuality, "--playlist-end", "1", "-o", "downloads/playlists/%(uploader)s/%(playlist)s/video/%(title)s.%(ext)s", p.PlaylistURL)
+	}
+	log.Info("executing youtube-dl command: ", cmd.String())
+	err := cmd.Run()
+	if err != nil {
+		log.Error(err, cmd.String())
+		return fmt.Errorf("v.DownloadPlaylist: %s", err)
 	}
 	return nil
 }

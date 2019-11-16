@@ -67,7 +67,7 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleCheckPlaylist(w http.ResponseWriter, r *http.Request) {
-	log.Info("received a request to check a channel for new uploads")
+	log.Info("received a request to check a playlist for new uploads")
 	w.Header().Set("Content-Type", "application/json")
 	var data AddPlaylistPayload
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -123,13 +123,3 @@ func HandleCheckAllPlaylists(w http.ResponseWriter, r *http.Request) {
 	}
 	ReturnResponse(w, res)
 }
-
-// func HandleCheckingIntervalPlaylists(w http.ResponseWriter, r *http.Request) {
-// 	log.Info("received a request to check a channel for new uploads")
-// 	w.Header().Set("Content-Type", "application/json")
-// 	var data AddChannelPayload
-// 	err := json.NewDecoder(r.Body).Decode(&data)
-// 	if err != nil {
-// 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
-// 	}
-// }

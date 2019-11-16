@@ -30,11 +30,12 @@ func (c Channel) Download(downloadMode, fileExtension, downloadQuality string) e
 
 func (p Playlist) Download(downloadMode, fileExtension, downloadQuality string) error {
 	video, err := p.GetLatestVideo()
+
 	if err != nil {
 		log.Error("p.Download: ", err)
 		return fmt.Errorf("p.Download: %s", err)
 	}
-	err = video.Download(downloadMode, fileExtension, downloadQuality)
+	err = p.DownloadPlaylist(downloadMode, fileExtension, downloadQuality)
 	if err != nil {
 		log.Error("p.Download: ", err)
 		return fmt.Errorf("p.Download: %s", err)
