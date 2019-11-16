@@ -63,38 +63,38 @@ function addPlaylist() {
     .then(res => {
       handleResponse(res)
       stopSpinner("add-playlist-spinner")
-      getChannels()
+      getPlaylists()
     });
 }
 
 function checkAll() {
   startSpinner("check-all-spinner")
-  fetch("/api/check-all")
+  fetch("/api/check-all-playlists")
     .then(res => res.json())
     .then(res => {
       handleResponse(res)
       stopSpinner("check-all-spinner")
-      getChannels()
+      getPlaylists()
     });
 }
 
-function getChannels() {
-  fetch("/api/get-channels")
+function getPlaylists() {
+  fetch("/api/get-playlists")
     .then(res => res.json())
-    .then(channels => {
-      displayChannels(channels);
+    .then(playlists => {
+      displayPlaylists(playlists);
     });
 }
 
-function checkChannel(id) {
+function checkPlaylist(id) {
   startSpinner(id+"-spinner")
-  let channelURL = id
+  let playlistURL = id
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
   let downloadQuality = document.getElementById("download-quality").value
 
   let channelData = {
-    channelURL,
+    playlistURL,
     downloadMode,
     fileExtension,
     downloadQuality
@@ -108,7 +108,7 @@ function checkChannel(id) {
     })
   };
 
-  fetch("/api/check-channel", options)
+  fetch("/api/check-playlist", options)
     .then(res => res.json())
     .then(res => {
       console.log(res);
@@ -116,10 +116,10 @@ function checkChannel(id) {
       if (res.Type == "Success") {
         if (res.Key == "NO_NEW_VIDEOS") {
           displayWarningMessage(res.Message);
-          getChannels()
+          getPlaylists()
         } else if (res.Key == "NEW_VIDEO_DETECTED") {
           displaySuccessMessage(res.Message);
-          getChannels()
+          getPlaylists()
         }
       } else if (res.Type == "Error") {
         if (res.Key == "ERROR_DOWNLOADING_VIDEO") {
@@ -129,36 +129,26 @@ function checkChannel(id) {
     });
 }
 
-function deleteChannel(id) {
-  let channelURL = {
-    channelURL: id
+function deletePlaylist(id) {
+  let playlistURL = {
+    playlistURL: id
   };
 
   const options = {
     method: "POST",
-    body: JSON.stringify(channelURL),
+    body: JSON.stringify(playlistURL),
     headers: new Headers({
       "Content-Type": "application/json"
     })
   };
 
-  fetch("/api/delete-channel", options)
+  fetch("/api/delete-playlist", options)
     .then(res => res.json())
     .then(res => {
       handleResponse(res)
-      getChannels()
+      getPlaylists()
     });
 }
-
-function removeFromList(channelURL) {
-  channelURL = channelURL.replace("delChannel", "");
-
-  let channels = document.getElementById("channels");
-  let li = document.getElementById(channelURL + "listElem");
-  console.log(channels);
-  channels.removeChild(li);
-}
-
 
 function displayErrorMessage(message) {
   let error = document.getElementById("error");
@@ -195,39 +185,39 @@ function displayWarningMessage(message) {
   warning.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
 }
 
-function displayChannels(channels) {
+function displayPlaylists(playlists) {
   document.getElementById("accordion").innerHTML = ""
   console.log(channels)
-  channels.forEach((channel, index) => {
-    console.log(channel)
+  playlists.forEach((playlist, index) => {
+    console.log(playlist)
     document.getElementById("accordion").innerHTML += `<div class="mb-2 p-2 card">
       <h5 class="mb-0">
-        <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.ChannelURL}listElem>
-          ${channel.Name}
-        </button><button class="btn btn-danger float-right ml-2" id="${channel.ChannelURL +
-        "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.ChannelURL}" onClick="checkChannel(this.id)">Check Now<div id="${channel.ChannelURL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
+        <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${playlist.PlaylistURL}listElem>
+          ${playlist.Name}
+        </button><button class="btn btn-danger float-right ml-2" id="${playlist.PlaylistURL +
+        "delPlaylist"}" onClick="deletePlaylist(this.id)">&times</button><button class="btn btn-primary float-right" id="${playlist.PlaylistURL}" onClick="checkPlaylist(this.id)">Check Now<div id="${playlist.PlaylistURL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
       </h5>
   
       <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
         <div class="panel-body ml-2">
-          Latest Download: <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded} target="_blank">https://www.youtube.com/watch?v=${channel.LatestDownloaded}</a>
-          <p>Download Mode: ${channel.DownloadMode}</p>
-          <p>Last Checked: ${channel.LastChecked}</p>
-          <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
-          <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
+          Latest Download: <a href=https://www.youtube.com/watch?v=${playlist.LatestDownloaded} target="_blank">https://www.youtube.com/watch?v=${playlist.LatestDownloaded}</a>
+          <p>Download Mode: ${playlist.DownloadMode}</p>
+          <p>Last Checked: ${playlist.LastChecked}</p>
+          <p>Preferred Extension For Audio: ${playlist.PreferredExtensionForAudio}
+          <p>Preferred Extension For Video: ${playlist.PreferredExtensionForVideo}
           <br>
           <button class="btn btn-link dropdown-toggle" type="button" data-toggle="collapse" data-target="#history${index}" aria-expanded="false" aria-controls="history${index}">
             Download History
           </button>
           <div class="collapse" id="history${index}">
-            <div class="card card-body" id="dlhistory${channel.Name}">
+            <div class="card card-body" id="dlhistory${playlist.Name}">
             </div>
           </div>
         </h5>
         </div>
       </div>
     </div>`
-    displayDownloadHistory(channel.Name, channel.DownloadHistory)
+    displayDownloadHistory(playlist.Name, playlist.DownloadHistory)
   })
 }
 

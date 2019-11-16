@@ -151,16 +151,6 @@ function deleteChannel(id) {
     });
 }
 
-function removeFromList(channelURL) {
-  channelURL = channelURL.replace("delChannel", "");
-
-  let channels = document.getElementById("channels");
-  let li = document.getElementById(channelURL + "listElem");
-  console.log(channels);
-  channels.removeChild(li);
-}
-
-
 function displayErrorMessage(message) {
   let error = document.getElementById("error");
   error.innerHTML = ""

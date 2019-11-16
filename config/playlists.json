@@ -1,1 +1,20 @@
-[]
+[
+ {
+  "PlaylistURL": "https://www.youtube.com/watch?v=F6NNMAoBMS4\u0026list=PL63ZO-jXFTasqvj7WdEFQ6QtG6UBrl9CR",
+  "LatestDownloaded": "F6NNMAoBMS4",
+  "DownloadMode": "Audio Only",
+  "Name": "Electronic Gems",
+  "PreferredExtensionForAudio": "m4a",
+  "PreferredExtensionForVideo": "",
+  "DownloadHistory": [
+   "F6NNMAoBMS4",
+   "F6NNMAoBMS4",
+   "F6NNMAoBMS4",
+   "F6NNMAoBMS4",
+   "F6NNMAoBMS4",
+   "F6NNMAoBMS4"
+  ],
+  "LastChecked": "11-16-2019 20:13:25",
+  "CheckingInterval": ""
+ }
+]

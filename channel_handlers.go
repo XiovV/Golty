@@ -103,7 +103,7 @@ func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to check all channels for new uploads")
 	w.Header().Set("Content-Type", "application/json")
-	res, err := CheckAll()
+	res, err := CheckAllChannels()
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_CHECKING_CHANNELS", Message: "There was an error while checking channels: " + err.Error()})
 	}
@@ -127,7 +127,7 @@ func HandleDeleteChannel(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to delete a channel")
 
 	w.Header().Set("Content-Type", "application/json")
-	var data Payload
+	var data DeleteChannelPayload
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})

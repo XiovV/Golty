@@ -29,7 +29,7 @@ func openJSONDatabase(dbName string) ([]byte, error) {
 	return byteValue, nil
 }
 
-func (c *Channel) UpdateDownloadHistory(videoID string) error {
+func (c Channel) UpdateDownloadHistory(videoID string) error {
 	log.Info("updating download history")
 
 	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
@@ -60,7 +60,7 @@ func (c Channel) UpdateLastChecked() error {
 
 	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
 	if err != nil {
-		return fmt.Errorf("UpdateLatestDownloaded: %s", err)
+		return fmt.Errorf("UpdateLastChecked: %s", err)
 	}
 
 	var db []Channel
@@ -187,7 +187,7 @@ func (c Channel) AddToDatabase() error {
 
 	json.Unmarshal(byteValue, &db)
 
-	log.Info("Adding channel to DB")
+	log.Info("adding channel to DB")
 	db = append(db, c)
 	err = writeDb(db, CONFIG_ROOT+"channels.json")
 	if err != nil {
@@ -228,7 +228,7 @@ func (c Channel) Delete() error {
 
 	for i, item := range db {
 		if item.ChannelURL == c.ChannelURL {
-			db = RemoveAtIndex(db, i)
+			db = RemoveAtIndexChannel(db, i)
 			log.Info("successfully removed channel from channels.json")
 		}
 	}
@@ -240,7 +240,7 @@ func (c Channel) Delete() error {
 func (c Channel) DoesExist() (bool, error) {
 	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
 	if err != nil {
-		return false, fmt.Errorf("AddToDatabase: %s", err)
+		return false, fmt.Errorf("DoesExist: %s", err)
 	}
 	var db []Channel
 

@@ -15,12 +15,29 @@ func (c Channel) GetMetadata() (ChannelMetadata, error) {
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Error("From GetMetadata(): ", err)
-		return ChannelMetadata{}, fmt.Errorf("From GetMetadata(): %v", err)
+		return ChannelMetadata{}, fmt.Errorf("From c.GetMetadata(): %v", err)
 	}
 	metaData := &ChannelMetadata{}
 	if err = json.Unmarshal(out, metaData); err != nil {
 		log.Error("From GetMetadata(): ", err)
-		return ChannelMetadata{}, fmt.Errorf("From GetMetadata(): %v", err)
+		return ChannelMetadata{}, fmt.Errorf("From c.GetMetadata(): %v", err)
+	}
+
+	return *metaData, nil
+}
+
+func (p Playlist) GetMetadata() (PlaylistMetadata, error) {
+	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", p.PlaylistURL)
+	log.Info("executing youtube-dl command: ", cmd.String())
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Error("From GetMetadata(): ", err)
+		return PlaylistMetadata{}, fmt.Errorf("From p.GetMetadata(): %v", err)
+	}
+	metaData := &PlaylistMetadata{}
+	if err = json.Unmarshal(out, metaData); err != nil {
+		log.Error("From GetMetadata(): ", err)
+		return PlaylistMetadata{}, fmt.Errorf("From p.GetMetadata(): %v", err)
 	}
 
 	return *metaData, nil
@@ -34,12 +51,30 @@ func (c Channel) GetLatestVideo() (Video, error) {
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Error(string(out))
-		log.Errorf("GetLatestVideo: %s | %s", err, string(out))
+		log.Errorf("c.GetLatestVideo: %s | %s", err, string(out))
 	}
 	metaData := &ChannelMetadata{}
 	if err = json.Unmarshal(out, metaData); err != nil {
-		log.Error("GetLatestVideo: ", err)
-		return Video{}, fmt.Errorf("GetLatestVideo: %s", err)
+		log.Error("c.GetLatestVideo: ", err)
+		return Video{}, fmt.Errorf("c.GetLatestVideo: %s", err)
+	}
+	log.Info("successfully fetched latest video ")
+	return Video{VideoID: metaData.ID}, nil
+}
+
+func (p Playlist) GetLatestVideo() (Video, error) {
+	log.Info("fetching latest upload")
+	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", p.PlaylistURL)
+	log.Info("executing youtube-dl command: ", cmd.String())
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Error(string(out))
+		log.Errorf("p.GetLatestVideo: %s | %s", err, string(out))
+	}
+	metaData := &PlaylistMetadata{}
+	if err = json.Unmarshal(out, metaData); err != nil {
+		log.Error("p.GetLatestVideo: ", err)
+		return Video{}, fmt.Errorf("p.GetLatestVideo: %s", err)
 	}
 	log.Info("successfully fetched latest video ")
 	return Video{VideoID: metaData.ID}, nil
@@ -58,9 +93,9 @@ func (v Video) Download(downloadMode, fileExtension, downloadQuality string) err
 			downloadQuality = "9"
 		}
 		log.Info("download quality set to: ", downloadQuality)
-		cmd = exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/%(uploader)s/audio/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+		cmd = exec.Command("youtube-dl", "--extract-audio", "--audio-format", fileExtension, "--audio-quality", downloadQuality, "-o", "downloads/playlists/%(uploader)s/audio/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
 	} else if downloadMode == "Video And Audio" {
-		cmd = exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/%(uploader)s/video/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
+		cmd = exec.Command("youtube-dl", "-f", downloadQuality, "-o", "downloads/playlists/%(uploader)s/video/%(title)s.%(ext)s", "https://www.youtube.com/watch?v="+v.VideoID)
 	}
 	log.Info("executing youtube-dl command: ", cmd.String())
 	err := cmd.Run()

@@ -52,7 +52,7 @@ func uploadChecker() {
 		for {
 			if interval != 0 {
 				time.Sleep(time.Duration(interval) * time.Minute)
-				go CheckAll()
+				go CheckAllChannels()
 				log.Infof("upload Checker running every %v minutes", interval)
 			}
 		}
@@ -74,6 +74,11 @@ func main() {
 	r.HandleFunc("/playlists", HandlePlaylists).Methods("GET")
 	r.HandleFunc("/videos", HandleVideos).Methods("GET")
 	r.HandleFunc("/api/get-channels", HandleGetChannels).Methods("GET")
+	r.HandleFunc("/api/get-playlists", HandleGetPlaylists).Methods("GET")
+	r.HandleFunc("/api/check-playlist", HandleCheckPlaylist).Methods("POST")
+	r.HandleFunc("/api/delete-playlist", HandleDeletePlaylist).Methods("POST")
+	r.HandleFunc("/api/check-all-playlists", HandleCheckAllPlaylists).Methods("GET")
+
 	r.HandleFunc("/api/add-channel", HandleAddChannel).Methods("POST")
 	r.HandleFunc("/api/check-channel", HandleCheckChannel).Methods("POST")
 	r.HandleFunc("/api/check-all", HandleCheckAll).Methods("GET")
