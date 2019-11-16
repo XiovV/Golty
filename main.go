@@ -52,7 +52,7 @@ func uploadChecker() {
 		for {
 			if interval != 0 {
 				time.Sleep(time.Duration(interval) * time.Minute)
-				go CheckAll()
+				go CheckAllChannels()
 				log.Infof("upload Checker running every %v minutes", interval)
 			}
 		}
@@ -71,14 +71,23 @@ func main() {
 
 	r.HandleFunc("/", HandleIndex).Methods("GET")
 	r.HandleFunc("/logs", HandleLogs).Methods("GET")
+	r.HandleFunc("/playlists", HandlePlaylists).Methods("GET")
+	r.HandleFunc("/videos", HandleVideos).Methods("GET")
 	r.HandleFunc("/api/get-channels", HandleGetChannels).Methods("GET")
+	r.HandleFunc("/api/get-playlists", HandleGetPlaylists).Methods("GET")
+	r.HandleFunc("/api/check-playlist", HandleCheckPlaylist).Methods("POST")
+	r.HandleFunc("/api/delete-playlist", HandleDeletePlaylist).Methods("POST")
+	r.HandleFunc("/api/check-all-playlists", HandleCheckAllPlaylists).Methods("GET")
+
 	r.HandleFunc("/api/add-channel", HandleAddChannel).Methods("POST")
 	r.HandleFunc("/api/check-channel", HandleCheckChannel).Methods("POST")
 	r.HandleFunc("/api/check-all", HandleCheckAll).Methods("GET")
 	r.HandleFunc("/api/delete-channel", HandleDeleteChannel).Methods("POST")
 	r.HandleFunc("/api/update-checking-interval", HandleUpdateCheckingInterval).Methods("POST")
+	r.HandleFunc("/api/add-playlist", HandleAddPlaylist).Methods("POST")
+	// r.HandleFunc("/api/update-checking-interval-playlists", HandleCheckingIntervalPlaylists).Methods("POST")
 
-	r.HandleFunc("/static/app.js", ServeJS).Methods("GET")
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 
 	http.ListenAndServe(":8080", handlers.CORS(headers, methods, origins)(r))
 }
