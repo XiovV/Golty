@@ -94,7 +94,7 @@ func (c Channel) CheckNow() (Response, error) {
 
 	channel, err := c.GetFromDatabase()
 	if err != nil {
-		return Response{Type: "Error", Key: "GETTING_FROM_DATABASE_ERROR", Message: "There was an error getting the channel from database" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
+		return Response{Type: "Error", Key: "GETTING_FROM_DATABASE_ERROR", Message: "There was an error getting the channel from database" + err.Error()}, fmt.Errorf("CheckNow: %s", err)
 	}
 	channelURL := c.ChannelURL
 

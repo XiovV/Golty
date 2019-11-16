@@ -9,7 +9,20 @@
   "DownloadHistory": [
    "eyp-YuzhTN4"
   ],
-  "LastChecked": "11-16-2019 15:30:22",
-  "CheckingInterval": "2"
+  "LastChecked": "11-16-2019 16:10:59",
+  "CheckingInterval": ""
+ },
+ {
+  "ChannelURL": "https://www.youtube.com/user/NewRetroWave",
+  "LatestDownloaded": "5cgHw_Fm9bM",
+  "DownloadMode": "Video And Audio",
+  "Name": "NewRetroWave",
+  "PreferredExtensionForAudio": "",
+  "PreferredExtensionForVideo": "any",
+  "DownloadHistory": [
+   "5cgHw_Fm9bM"
+  ],
+  "LastChecked": "11-16-2019 16:11:54",
+  "CheckingInterval": ""
  }
 ]

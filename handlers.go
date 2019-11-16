@@ -27,7 +27,6 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	var channelData AddChannelPayload
 	err := json.NewDecoder(r.Body).Decode(&channelData)
 	if err != nil {
-		// log.Error(err, r.Body)
 		log.Error("HandleAddChannel: ", err)
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
@@ -38,7 +37,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	doesChannelExist, err := channel.DoesExist()
 	if err != nil {
 		log.Info("error doesChannelExist: ", err)
-		ReturnResponse(w, Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to see if the channel already exists" + err.Error()})
+		ReturnResponse(w, Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to check if the channel already exists" + err.Error()})
 	}
 	if doesChannelExist == true {
 		log.Info("this channel already exists")
@@ -149,5 +148,8 @@ func HandleUpdateCheckingInterval(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res, err := UpdateCheckingInterval(interval.CheckingInterval)
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_UPDATING_CHECKING_INTERVAL", Message: "There was an updating the checking interval: " + err.Error()})
+	}
 	ReturnResponse(w, res)
 }
