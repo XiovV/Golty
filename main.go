@@ -43,7 +43,7 @@ func init() {
 func uploadChecker() {
 	interval, err := GetCheckingInterval()
 	if err != nil {
-		log.Error("uploadChecker: %s", err)
+		log.Errorf("uploadChecker: %s", err)
 	}
 	if interval == 0 {
 		time.Sleep(5 * time.Second)
@@ -53,7 +53,7 @@ func uploadChecker() {
 			if interval != 0 {
 				time.Sleep(time.Duration(interval) * time.Minute)
 				go CheckAll()
-				log.Infof("upload Checker running every %s minutes", interval)
+				log.Infof("upload Checker running every %v minutes", interval)
 			}
 		}
 	}
