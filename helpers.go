@@ -62,7 +62,6 @@ func CheckAll() (Response, error) {
 			item.UpdateLastChecked()
 			if item.LatestDownloaded == videoId.VideoID {
 				log.Info("no new videos found for: ", item.ChannelURL)
-				// return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos found."}, nil
 			} else {
 				log.Info("new video detected for: ", item.ChannelURL)
 				foundFor = append(foundFor, item.ChannelURL)
@@ -112,7 +111,7 @@ func (c Channel) CheckNow() (Response, error) {
 		if item.ChannelURL == channelURL {
 			if item.LatestDownloaded == channelMetadata.ID {
 				log.Info("no new videos found for: ", channelURL)
-				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected"}, nil
+				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected for " + item.Name}, nil
 			} else {
 				log.Info("new video detected for: ", channelURL)
 				if channel.DownloadMode == "Audio Only" {
@@ -126,7 +125,7 @@ func (c Channel) CheckNow() (Response, error) {
 					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}, nil
 				}
 				channel.UpdateLatestDownloaded(channelMetadata.ID)
-				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected"}, nil
+				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + item.Name}, nil
 			}
 		}
 	}
