@@ -1,16 +1,11 @@
 let channels = [];
 
-function addChannel() {
-  startSpinner("add-channel-spinner")
+function updateCheckingInterval() {
+  startSpinner("update-checking-interval-spinner")
   let checkingInterval
-  let downloadEntireChannel = document.querySelector('#download-entire-channel').checked;
-  let channelURL = document.getElementById("channel-url").value
-  let downloadMode = document.getElementById("download-mode").value
-  let fileExtension = document.getElementById("file-extension").value
-  let downloadQuality = document.getElementById("download-quality").value
   let checkingIntervalInput = document.getElementById("checking-interval").value
   let time = document.getElementById("time").value
-  
+
   if (time == "minutes") {
     checkingInterval = checkingIntervalInput 
   } else if (time == "hours") {
@@ -19,9 +14,44 @@ function addChannel() {
     checkingInterval = checkingIntervalInput * 1440
   }
 
-  checkingInterval.toString()
+  interval = {
+    checkingInterval
+  }
 
-  console.log(`INTERVAL: ${checkingInterval} | ${typeof(checkingInterval)}`)
+  const options = {
+    method: "POST",
+    body: JSON.stringify(interval),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/update-checking-interval", options)
+    .then(res => res.json())
+    .then(res => {
+      handleResponse(res)
+      stopSpinner("update-checking-interval-spinner")
+    });
+}
+
+function addChannel() {
+  startSpinner("add-channel-spinner")
+  // let checkingInterval
+  let downloadEntireChannel = document.querySelector('#download-entire-channel').checked;
+  let channelURL = document.getElementById("channel-url").value
+  let downloadMode = document.getElementById("download-mode").value
+  let fileExtension = document.getElementById("file-extension").value
+  let downloadQuality = document.getElementById("download-quality").value
+  // let checkingIntervalInput = document.getElementById("checking-interval").value
+  // let time = document.getElementById("time").value
+  
+  // if (time == "minutes") {
+  //   checkingInterval = checkingIntervalInput 
+  // } else if (time == "hours") {
+  //   checkingInterval = checkingIntervalInput * 60
+  // } else if (time == "days") {
+  //   checkingInterval = checkingIntervalInput * 1440
+  // }
 
   let channelData = {
     channelURL,
@@ -29,7 +59,7 @@ function addChannel() {
     fileExtension,
     downloadQuality,
     downloadEntireChannel,
-    checkingInterval: checkingInterval.toString()
+    // checkingInterval: checkingInterval.toString()
   };
 
   const options = {

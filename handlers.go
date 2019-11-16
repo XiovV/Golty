@@ -50,9 +50,9 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if channelData.DownloadMode == "Audio Only" {
-			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: channelData.CheckingInterval}
+			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
 		} else if channelData.DownloadMode == "Video And Audio" {
-			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: channelData.CheckingInterval}
+			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
 		}
 		err = channel.AddToDatabase()
 		if err != nil {
@@ -136,4 +136,18 @@ func HandleDeleteChannel(w http.ResponseWriter, r *http.Request) {
 	channel.Delete()
 
 	ReturnResponse(w, Response{Type: "Success", Key: "DELETE_CHANNEL_SUCCESS", Message: "Channel removed"})
+}
+
+func HandleUpdateCheckingInterval(w http.ResponseWriter, r *http.Request) {
+	log.Info("received a request to update the checking interval")
+	w.Header().Set("Content-Type", "application/json")
+
+	var interval CheckingIntervalPayload
+	err := json.NewDecoder(r.Body).Decode(&interval)
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+	}
+
+	res, err := UpdateCheckingInterval(interval.CheckingInterval)
+	ReturnResponse(w, res)
 }

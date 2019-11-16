@@ -41,17 +41,20 @@ func init() {
 }
 
 func uploadChecker() {
-	for {
-		interval, err := GetCheckingInterval()
-		if err != nil {
-			log.Error("uploadChecker: %s", err)
-		}
-		if interval != 0 {
-
-			time.Sleep(time.Duration(interval) * time.Minute)
-
-			go CheckAll()
-			log.Infof("upload Checker running every %s minutes", interval)
+	interval, err := GetCheckingInterval()
+	if err != nil {
+		log.Error("uploadChecker: %s", err)
+	}
+	if interval == 0 {
+		time.Sleep(5 * time.Second)
+		uploadChecker()
+	} else if interval != 0 {
+		for {
+			if interval != 0 {
+				time.Sleep(time.Duration(interval) * time.Minute)
+				go CheckAll()
+				log.Infof("upload Checker running every %s minutes", interval)
+			}
 		}
 	}
 }
@@ -73,6 +76,7 @@ func main() {
 	r.HandleFunc("/api/check-channel", HandleCheckChannel).Methods("POST")
 	r.HandleFunc("/api/check-all", HandleCheckAll).Methods("GET")
 	r.HandleFunc("/api/delete-channel", HandleDeleteChannel).Methods("POST")
+	r.HandleFunc("/api/update-checking-interval", HandleUpdateCheckingInterval).Methods("POST")
 
 	r.HandleFunc("/static/app.js", ServeJS).Methods("GET")
 

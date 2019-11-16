@@ -154,6 +154,10 @@ type Payload struct {
 	ChannelURL string
 }
 
+type CheckingIntervalPayload struct {
+	CheckingInterval string
+}
+
 type AddChannelPayload struct {
 	ChannelURL            string
 	DownloadMode          string

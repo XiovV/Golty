@@ -55,8 +55,12 @@
       <input type="checkbox" class="custom-control-input" id="download-entire-channel">
       <label class="custom-control-label" for="download-entire-channel">Download the entire channel (will ignore youtube-dl errors so it doesn't crash)</label>
     </div>
+    
+    
+    <button class="btn btn-primary mb-2" onclick="addChannel()">Add Channel And Download<div id="add-channel-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
+    
     <div class="form-group form-inline">
-      <label for="checking-interval">Checking Interval: </label>
+      <label for="checking-interval">Check All Channels Every: </label>
       <input type="number" class="form-control ml-1" id="checking-interval">
       <div class="form-group ml-2">
         <select class="form-control" id="time">
@@ -65,10 +69,9 @@
           <option value="days">days</option>
         </select>
       </div>
+      <button class="btn btn-primary ml-2" onclick="updateCheckingInterval()">Save<div id="update-checking-interval-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
+
     </div>
-    
-    <button class="btn btn-primary mb-2" onclick="addChannel()">Add Channel And Download<div id="add-channel-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
-    
     <button class="btn btn-primary float-right" onclick="checkAll()">Check All Now<div id="check-all-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
 
     <h2 class="mt-2">Listening to these channels: </h2>
@@ -76,9 +79,9 @@
     </div>
 
     <a href="/logs" class="btn btn-primary mt-3">Read Logs</a>
-    <p class="float-right">v1.1.0</p>
+    <p class="float-right">v1.2.0</p>
   </div>
-  
+
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
