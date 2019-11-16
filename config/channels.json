@@ -1,1 +1,16 @@
-[]
+[
+ {
+  "ChannelURL": "https://www.youtube.com/user/HungOverGargoyle",
+  "LatestDownloaded": "eyp-YuzhTN4",
+  "DownloadMode": "Audio Only",
+  "Name": "Electronic Gems",
+  "PreferredExtensionForAudio": "m4a",
+  "PreferredExtensionForVideo": "",
+  "DownloadHistory": [
+   "eyp-YuzhTN4",
+   "eyp-YuzhTN4"
+  ],
+  "LastChecked": "11-16-2019 11:22:40",
+  "CheckingInterval": "1"
+ }
+]

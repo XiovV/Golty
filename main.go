@@ -42,15 +42,22 @@ func init() {
 
 func uploadChecker() {
 	for {
-		time.Sleep(5 * time.Hour)
+		interval, err := GetCheckingInterval()
+		if err != nil {
+			log.Error("uploadChecker: %s", err)
+		}
+		if interval != 0 {
 
-		go CheckAll()
-		log.Info("Upload Checker running...")
+			time.Sleep(time.Duration(interval) * time.Minute)
+
+			go CheckAll()
+			log.Infof("upload Checker running every %s minutes", interval)
+		}
 	}
 }
 
 func main() {
-	log.Info("Server running on port 8080")
+	log.Info("server running on port 8080")
 
 	go uploadChecker()
 

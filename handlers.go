@@ -27,9 +27,12 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	var channelData AddChannelPayload
 	err := json.NewDecoder(r.Body).Decode(&channelData)
 	if err != nil {
-		log.Error(err, r.Body)
+		// log.Error(err, r.Body)
+		log.Error("HandleAddChannel: ", err)
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
+	log.Info(channelData)
+
 	channel := Channel{ChannelURL: channelData.ChannelURL}
 
 	doesChannelExist, err := channel.DoesExist()
@@ -47,9 +50,9 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if channelData.DownloadMode == "Audio Only" {
-			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05")}
+			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: channelData.CheckingInterval}
 		} else if channelData.DownloadMode == "Video And Audio" {
-			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05")}
+			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: channelData.CheckingInterval}
 		}
 		err = channel.AddToDatabase()
 		if err != nil {

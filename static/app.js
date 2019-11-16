@@ -2,19 +2,34 @@ let channels = [];
 
 function addChannel() {
   startSpinner("add-channel-spinner")
-
+  let checkingInterval
   let downloadEntireChannel = document.querySelector('#download-entire-channel').checked;
   let channelURL = document.getElementById("channel-url").value
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
   let downloadQuality = document.getElementById("download-quality").value
+  let checkingIntervalInput = document.getElementById("checking-interval").value
+  let time = document.getElementById("time").value
+  
+  if (time == "minutes") {
+    checkingInterval = checkingIntervalInput 
+  } else if (time == "hours") {
+    checkingInterval = checkingIntervalInput * 60
+  } else if (time == "days") {
+    checkingInterval = checkingIntervalInput * 1440
+  }
+
+  checkingInterval.toString()
+
+  console.log(`INTERVAL: ${checkingInterval} | ${typeof(checkingInterval)}`)
 
   let channelData = {
     channelURL,
     downloadMode,
     fileExtension,
     downloadQuality,
-    downloadEntireChannel
+    downloadEntireChannel,
+    checkingInterval: checkingInterval.toString()
   };
 
   const options = {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -79,6 +80,29 @@ func (c Channel) UpdateLastChecked() error {
 	}
 
 	return writeDb(db, CONFIG_ROOT+"channels.json")
+}
+
+func GetCheckingInterval() (int, error) {
+	log.Info("getting checking interval")
+
+	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
+	if err != nil {
+		return 0, fmt.Errorf("GetCheckingInterval: %s", err)
+	}
+
+	var db []Channel
+
+	err = json.Unmarshal(byteValue, &db)
+	if err != nil {
+		return 0, fmt.Errorf("GetCheckingInterval: %s", err)
+	}
+	checkingInterval, err := strconv.Atoi(db[0].CheckingInterval)
+	if err != nil {
+		return 0, fmt.Errorf("GetCheckingInterval: %s", err)
+	}
+
+	log.Info("got checking interval successfully")
+	return checkingInterval, nil
 }
 
 func (c Channel) UpdateLatestDownloaded(videoID string) error {
