@@ -15,13 +15,16 @@ FROM jrottenberg/ffmpeg:alpine as BASE
 WORKDIR /app
 COPY --from=GO /app/main .
 COPY --from=GO /app/static ./static
+COPY --from=GO /app/entrypoint.sh .
 COPY --from=DOWNLOAD /git/youtube-dl /usr/local/bin/
-RUN apk --update add python
+RUN apk --update add python shadow
+RUN addgroup -S goautoyt
+RUN adduser --system goautoyt --ingroup goautoyt 
 
 #Set starting command
-ENTRYPOINT [ "./main" ]
+ENTRYPOINT ["./entrypoint.sh"]
 
-#Expose port and volume
+#Expose port and volumes
 EXPOSE 8080
 VOLUME /app/downloads
 VOLUME /app/config
