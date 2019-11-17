@@ -1,1 +1,29 @@
-[]
+[
+ {
+  "ChannelURL": "https://www.youtube.com/user/HungOverGargoyle",
+  "LatestDownloaded": "eyp-YuzhTN4",
+  "DownloadMode": "Audio Only",
+  "Name": "Electronic Gems",
+  "PreferredExtensionForAudio": "m4a",
+  "PreferredExtensionForVideo": "",
+  "DownloadHistory": [
+   "eyp-YuzhTN4"
+  ],
+  "LastChecked": "11-17-2019 17:44:37",
+  "CheckingInterval": "1"
+ },
+ {
+  "ChannelURL": "https://www.youtube.com/user/NewRetroWave",
+  "LatestDownloaded": "5cgHw_Fm9bM",
+  "DownloadMode": "Video And Audio",
+  "Name": "NewRetroWave",
+  "PreferredExtensionForAudio": "",
+  "PreferredExtensionForVideo": "any",
+  "DownloadHistory": [
+   "5cgHw_Fm9bM",
+   "5cgHw_Fm9bM"
+  ],
+  "LastChecked": "11-17-2019 17:44:40",
+  "CheckingInterval": ""
+ }
+]
