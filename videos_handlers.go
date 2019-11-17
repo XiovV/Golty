@@ -15,11 +15,13 @@ func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
 
-	err = videoData.Download()
-	if err != nil {
-		log.Error("HandleDownloadVideo: ", err)
-		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: "There was an error downloading the video: " + err.Error()})
-	}
+	// video := Video{}
+	// Download(videoData, videoData
+	//err = videoData.Download()
+	//if err != nil {
+	//	log.Error("HandleDownloadVideo: ", err)
+	//	ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: "There was an error downloading the video: " + err.Error()})
+	//}
 
 	ReturnResponse(w, Response{Type: "Success", Key: "DOWNLOAD_VIDEO_SUCCESS", Message: "Video successfully downloaded."})
 

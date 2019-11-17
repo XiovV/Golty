@@ -332,6 +332,9 @@ type Response struct {
 
 type Video struct {
 	VideoID string
+	DownloadMode string
+	DownloadQuality string
+	FileExtension string
 }
 
 type VideoInDatabase struct {

@@ -35,6 +35,7 @@ function updateCheckingInterval() {
 }
 
 function addChannel() {
+  console.log("CALLING ADD CHANNEl")
   startSpinner("add-channel-spinner")
   let downloadEntireChannel = document.querySelector('#download-entire-channel').checked;
   let channelURL = document.getElementById("channel-url").value

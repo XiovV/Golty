@@ -11,6 +11,10 @@ services:
     # And ONE of these
       - ./config:/app/config
     #  - config:/app/config
+    environment:
+      - PUID=1234
+      - PGID=5678
+      - UMASK_SET=022
     ports:
     - 8080:8080
 # uncomment this if using the docker volume mapping above

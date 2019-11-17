@@ -46,7 +46,7 @@ func uploadChecker() {
 		log.Errorf("uploadChecker: %s", err)
 	}
 	if interval == 0 {
-		time.Sleep(5 * time.Second)
+		time.Sleep(5 * time.Minute)
 		uploadChecker()
 	} else if interval != 0 {
 		for {
@@ -61,7 +61,24 @@ func uploadChecker() {
 
 func main() {
 	log.Info("server running on port 8080")
-
+	//channel := Channel{
+	//	ChannelURL:                 "https://www.youtube.com/user/HungOverGargoyle/videos",
+	//	LatestDownloaded:           "",
+	//	DownloadMode:               "",
+	//	Name:                       "",
+	//	PreferredExtensionForAudio: "",
+	//	PreferredExtensionForVideo: "",
+	//	DownloadHistory:            nil,
+	//	LastChecked:                "",
+	//	CheckingInterval:           "",
+	//}
+	//
+	//channelMetadata, _ := GetMetadata(channel)
+	//switch channelMetadata := channelMetadata.(type) {
+	//case ChannelMetadata:
+	//	fmt.Println(channelMetadata)
+	//}
+	
 	go uploadChecker()
 
 	r := mux.NewRouter()

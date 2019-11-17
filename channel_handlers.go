@@ -38,7 +38,8 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 	channel := Channel{ChannelURL: channelData.ChannelURL}
 
-	doesChannelExist, err := channel.DoesExist()
+	log.Info("CHECKING IF CHANNEL ALREADY EXISTS")
+	doesChannelExist, err := DoesExist(channel)
 	if err != nil {
 		log.Info("error doesChannelExist: ", err)
 		ReturnResponse(w, Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to check if the channel already exists" + err.Error()})
@@ -47,32 +48,37 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		log.Info("this channel already exists")
 		ReturnResponse(w, Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"})
 	} else {
-		channelMetadata, err := channel.GetMetadata()
+		log.Info("channel doesn't exist")
+		channelMetadata, err := GetMetadata(channel)
 		if err != nil {
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()})
 		}
-
-		if channelData.DownloadMode == "Audio Only" {
-			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
-		} else if channelData.DownloadMode == "Video And Audio" {
-			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
+		switch channelMetadata := channelMetadata.(type) {
+		case ChannelMetadata:
+			if channelData.DownloadMode == "Audio Only" {
+				channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
+			}	else if channelData.DownloadMode == "Video And Audio" {
+				channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
+			}
 		}
-		err = channel.AddToDatabase()
+
+		err = AddToDatabase(channel)
 		if err != nil {
 			log.Error(err)
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
 		}
 		if channelData.DownloadEntireChannel == true {
-			err := channel.DownloadEntire()
-			if err != nil {
-				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()})
-			}
+			//err := channel.DownloadEntire()
+			//if err != nil {
+			//	ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()})
+			//}
 		} else {
 			if err != nil {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
 			}
-			err = channel.Download(channelData.DownloadMode, channelData.FileExtension, channelData.DownloadQuality)
+
+			err = Download(channel, channelData.DownloadQuality, channelData.FileExtension)
 			if err != nil {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error while downloading: " + err.Error()})
@@ -136,7 +142,7 @@ func HandleDeleteChannel(w http.ResponseWriter, r *http.Request) {
 	channelURL = strings.Replace(channelURL, "delChannel", "", -1)
 	channel := Channel{ChannelURL: channelURL}
 
-	channel.Delete()
+	Delete(channel)
 
 	ReturnResponse(w, Response{Type: "Success", Key: "DELETE_CHANNEL_SUCCESS", Message: "Channel removed"})
 }

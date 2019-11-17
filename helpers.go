@@ -3,12 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // GetChannels returns the contents of channels.json
@@ -76,14 +75,14 @@ func CheckAllChannels() (Response, error) {
 		}
 
 		if item.ChannelURL == channel.ChannelURL {
-			videoId, err := channel.GetLatestVideo()
+			videoId, err := GetLatestVideo(channel)
 			if err != nil {
 				log.Error("There was an error getting latest video: ", err)
 				return Response{Type: "Error", Key: "GETTING_LATEST_VIDEO_ERROR", Message: "There was an error getting the latestvideo" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
 			}
 
-			item.UpdateLastChecked()
-			if item.LatestDownloaded == videoId.VideoID {
+			UpdateLastChecked(item)
+			if item.LatestDownloaded == videoId {
 				log.Info("no new videos found for: ", item.ChannelURL)
 			} else {
 				log.Info("new video detected for: ", item.ChannelURL)
@@ -93,8 +92,8 @@ func CheckAllChannels() (Response, error) {
 				} else if channel.DownloadMode == "Video And Audio" {
 					preferredExtension = channel.PreferredExtensionForVideo
 				}
-				go channel.Download(channel.DownloadMode, preferredExtension, "best")
-				channel.UpdateLatestDownloaded(videoId.VideoID)
+				go Download(channel, "best", preferredExtension)
+				UpdateLatestDownloaded(channel, videoId)
 			}
 		}
 	}
@@ -121,14 +120,14 @@ func CheckAllPlaylists() (Response, error) {
 		}
 
 		if playlist.PlaylistURL == p.PlaylistURL {
-			videoId, err := p.GetLatestVideo()
+			videoId, err := GetLatestVideo(p)
 			if err != nil {
 				log.Error("There was an error getting latest video: ", err)
 				return Response{Type: "Error", Key: "GETTING_LATEST_VIDEO_ERROR", Message: "There was an error getting the latestvideo" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
 			}
 
-			playlist.UpdateLastChecked()
-			if playlist.LatestDownloaded == videoId.VideoID {
+			UpdateLastChecked(playlist)
+			if playlist.LatestDownloaded == videoId {
 				log.Info("no new videos found for: ", playlist.PlaylistURL)
 			} else {
 				log.Info("new video detected for: ", playlist.PlaylistURL)
@@ -138,8 +137,8 @@ func CheckAllPlaylists() (Response, error) {
 				} else if p.DownloadMode == "Video And Audio" {
 					preferredExtension = p.PreferredExtensionForVideo
 				}
-				go p.Download(p.DownloadMode, preferredExtension, "best")
-				p.UpdateLatestDownloaded(videoId.VideoID)
+				go Download(playlist, "best", preferredExtension)
+				UpdateLatestDownloaded(p, videoId)
 			}
 		}
 	}
@@ -165,35 +164,38 @@ func (c Channel) CheckNow() (Response, error) {
 	}
 	channelURL := c.ChannelURL
 
-	channelMetadata, err := channel.GetMetadata()
+	channelMetadata, err := GetMetadata(channel)
 	if err != nil {
 		return Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()}, nil
 	}
 
-	err = c.UpdateLastChecked()
+	err = UpdateLastChecked(c)
 	if err != nil {
 		return Response{Type: "Error", Key: "ERROR_UPDATING_LAST_CHECKED", Message: "There was an error updating latest checked date and time: " + err.Error()}, nil
 	}
 
 	for _, item := range allChannelsInDb {
 		if item.ChannelURL == channelURL {
-			if item.LatestDownloaded == channelMetadata.ID {
-				log.Info("no new videos found for: ", channelURL)
-				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected for " + item.Name}, nil
-			} else {
-				log.Info("new video detected for: ", channelURL)
-				if channel.DownloadMode == "Audio Only" {
-					preferredExtension = channel.PreferredExtensionForAudio
-				} else if channel.DownloadMode == "Video And Audio" {
-					preferredExtension = channel.PreferredExtensionForVideo
+			switch channelMetadata := channelMetadata.(type) {
+			case ChannelMetadata:
+				if item.LatestDownloaded == channelMetadata.ID {
+					log.Info("no new videos found for: ", channelURL)
+					return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected for " + item.Name}, nil
+				} else {
+					log.Info("new video detected for: ", channelURL)
+					if channel.DownloadMode == "Audio Only" {
+						preferredExtension = channel.PreferredExtensionForAudio
+					} else if channel.DownloadMode == "Video And Audio" {
+						preferredExtension = channel.PreferredExtensionForVideo
+					}
+					err := Download(channel, channel.DownloadMode, preferredExtension)
+					if err != nil {
+						log.Error(err)
+						return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}, nil
+					}
+					UpdateLatestDownloaded(channel, channelMetadata.ID)
+					return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + item.Name}, nil
 				}
-				err := channel.Download(channel.DownloadMode, preferredExtension, "best")
-				if err != nil {
-					log.Error(err)
-					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}, nil
-				}
-				channel.UpdateLatestDownloaded(channelMetadata.ID)
-				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + item.Name}, nil
 			}
 		}
 	}
@@ -216,35 +218,38 @@ func (p Playlist) CheckNow() (Response, error) {
 	}
 	playlistURL := p.PlaylistURL
 
-	playlistMetadata, err := playlist.GetMetadata()
+	playlistMetadata, err := GetMetadata(playlist)
 	if err != nil {
 		return Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting playlist metadata: " + err.Error()}, nil
 	}
 
-	err = p.UpdateLastChecked()
+	err = UpdateLastChecked(p)
 	if err != nil {
 		return Response{Type: "Error", Key: "ERROR_UPDATING_LAST_CHECKED", Message: "There was an error updating latest checked date and time: " + err.Error()}, nil
 	}
 
 	for _, playlist := range allPlaylistsInDb {
 		if playlist.PlaylistURL == playlistURL {
-			if playlist.LatestDownloaded == playlistMetadata.ID {
-				log.Info("no new videos found for: ", playlistURL)
-				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected for " + playlist.Name}, nil
-			} else {
-				log.Info("new video detected for: ", playlistURL)
-				if playlist.DownloadMode == "Audio Only" {
-					preferredExtension = playlist.PreferredExtensionForAudio
-				} else if playlist.DownloadMode == "Video And Audio" {
-					preferredExtension = playlist.PreferredExtensionForVideo
+			switch playlistMetadata := playlistMetadata.(type) {
+			case PlaylistMetadata:
+				if playlist.LatestDownloaded == playlistMetadata.ID {
+					log.Info("no new videos found for: ", playlistURL)
+					return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected for " + playlist.Name}, nil
+				} else {
+					log.Info("new video detected for: ", playlistURL)
+					if playlist.DownloadMode == "Audio Only" {
+						preferredExtension = playlist.PreferredExtensionForAudio
+					} else if playlist.DownloadMode == "Video And Audio" {
+						preferredExtension = playlist.PreferredExtensionForVideo
+					}
+					err := Download(playlist, "best", preferredExtension)
+					if err != nil {
+						log.Error(err)
+						return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}, nil
+					}
+					UpdateLatestDownloaded(playlist, playlistMetadata.ID)
+					return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + playlist.Name + " and downloaded"}, nil
 				}
-				err := playlist.Download(playlist.DownloadMode, preferredExtension, "best")
-				if err != nil {
-					log.Error(err)
-					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}, nil
-				}
-				playlist.UpdateLatestDownloaded(playlistMetadata.ID)
-				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + playlist.Name + " and downloaded"}, nil
 			}
 		}
 	}
