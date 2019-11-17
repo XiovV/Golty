@@ -317,6 +317,13 @@ type AddChannelPayload struct {
 	CheckingInterval      string
 }
 
+type DownloadVideoPayload struct {
+	 VideoURL 			   string
+	 DownloadMode          string
+	 FileExtension         string
+	 DownloadQuality       string
+}
+
 type Response struct {
 	Type    string
 	Key     string
@@ -325,4 +332,8 @@ type Response struct {
 
 type Video struct {
 	VideoID string
+}
+
+type VideoInDatabase struct {
+	VideoURL string
 }

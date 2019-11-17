@@ -83,6 +83,7 @@ function getPlaylists() {
     .then(res => res.json())
     .then(playlists => {
       displayPlaylists(playlists);
+      getVersion();
     });
 }
 
