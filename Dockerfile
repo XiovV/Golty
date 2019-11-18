@@ -2,7 +2,9 @@
 #Download go-auto-yt via git and youtube-dl via curl on ubuntu temp image
 FROM ubuntu as DOWNLOAD
 WORKDIR /git
-RUN apt-get update && apt-get install git curl -y && git clone https://github.com/XiovV/go-auto-yt.git && curl -L https://yt-dl.org/downloads/latest/youtube-dl -o ./youtube-dl && chmod a+rx ./youtube-dl
+RUN apt-get update && apt-get install git curl -y 
+RUN git clone https://github.com/XiovV/go-auto-yt.git
+RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o ./youtube-dl && chmod a+rx ./youtube-dl
 
 #Transfer git content from DOWNLOAD stage over GO stage to build application
 FROM golang:alpine as GO
