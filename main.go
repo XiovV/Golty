@@ -1,14 +1,13 @@
 package main
 
 import (
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 	"os"
 	"time"
-
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
 )
 
 func initLogFile() {
@@ -52,7 +51,7 @@ func uploadChecker() {
 		for {
 			if interval != 0 {
 				time.Sleep(time.Duration(interval) * time.Minute)
-				go CheckAllChannels()
+				go CheckAll("channels")
 				log.Infof("upload Checker running every %v minutes", interval)
 			}
 		}
@@ -61,7 +60,7 @@ func uploadChecker() {
 
 func main() {
 	log.Info("server running on port 8080")
-
+	
 	go uploadChecker()
 
 	r := mux.NewRouter()

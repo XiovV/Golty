@@ -2,11 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
@@ -36,9 +35,10 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Info(channelData)
 
-	channel := Channel{ChannelURL: channelData.ChannelURL}
+	channel := DownloadTarget{URL: channelData.URL, Type: "Channel"}
 
-	doesChannelExist, err := channel.DoesExist()
+	log.Info("CHECKING IF CHANNEL ALREADY EXISTS")
+	doesChannelExist, err := DoesExist(channel)
 	if err != nil {
 		log.Info("error doesChannelExist: ", err)
 		ReturnResponse(w, Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to check if the channel already exists" + err.Error()})
@@ -47,23 +47,25 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		log.Info("this channel already exists")
 		ReturnResponse(w, Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"})
 	} else {
-		channelMetadata, err := channel.GetMetadata()
+		log.Info("channel doesn't exist")
+		channelMetadata, err := GetMetadata(channel)
 		if err != nil {
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()})
 		}
 
 		if channelData.DownloadMode == "Audio Only" {
-			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
-		} else if channelData.DownloadMode == "Video And Audio" {
-			channel = Channel{ChannelURL: channelData.ChannelURL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
+			channel = DownloadTarget{URL: channelData.URL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForAudio: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: "Channel"}
+		}	else if channelData.DownloadMode == "Video And Audio" {
+			channel = DownloadTarget{URL: channelData.URL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: "Channel"}
 		}
-		err = channel.AddToDatabase()
+
+		err = AddToDatabase(channel)
 		if err != nil {
 			log.Error(err)
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
 		}
-		if channelData.DownloadEntireChannel == true {
-			err := channel.DownloadEntire()
+		if channelData.DownloadEntire == true {
+			err := Download(channel, channelData.DownloadQuality, channelData.FileExtension, true)
 			if err != nil {
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()})
 			}
@@ -72,7 +74,8 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
 			}
-			err = channel.Download(channelData.DownloadMode, channelData.FileExtension, channelData.DownloadQuality)
+
+			err = Download(channel, channelData.DownloadQuality, channelData.FileExtension, false)
 			if err != nil {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error while downloading: " + err.Error()})
@@ -91,7 +94,7 @@ func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
-	channel := Channel{ChannelURL: data.ChannelURL}
+	channel := DownloadTarget{URL: data.URL, Type: "Channel"}
 
 	res, err := channel.CheckNow()
 	if err != nil {
@@ -103,7 +106,7 @@ func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to check all channels for new uploads")
 	w.Header().Set("Content-Type", "application/json")
-	res, err := CheckAllChannels()
+	res, err := CheckAll("channels")
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_CHECKING_CHANNELS", Message: "There was an error while checking channels: " + err.Error()})
 	}
@@ -114,7 +117,7 @@ func HandleGetChannels(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to get all channels")
 	w.Header().Set("Content-Type", "application/json")
 
-	channels, err := GetChannels()
+	channels, err := GetAll("channels")
 	if err != nil {
 		res := Response{Type: "Error", Key: "ERROR_GETTING_CHANNELS", Message: "There was an error while getting channels: " + err.Error()}
 		json.NewEncoder(w).Encode(res)
@@ -132,11 +135,11 @@ func HandleDeleteChannel(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
-	channelURL := data.ChannelURL
+	channelURL := data.URL
 	channelURL = strings.Replace(channelURL, "delChannel", "", -1)
-	channel := Channel{ChannelURL: channelURL}
+	channel := DownloadTarget{URL: channelURL, Type: "Channel"}
 
-	channel.Delete()
+	Delete(channel)
 
 	ReturnResponse(w, Response{Type: "Success", Key: "DELETE_CHANNEL_SUCCESS", Message: "Channel removed"})
 }
