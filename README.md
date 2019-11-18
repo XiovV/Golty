@@ -67,12 +67,13 @@ ports:
   - 9000:8080
 ```
 
-The container runs with PID and GID of 1000 by default. This can be changed by passing environment variables to the container like so:
+The container runs with PID/GID of 1000 and UMASK of 022 by default. This can be changed by passing environment variables to the container like so:
 
 ```YAML
 environment:
   - PUID=1001
   - PGID=1001
+  - UMASK_SET=0044
 ```
 
 ### Running The Container
