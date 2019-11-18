@@ -18,7 +18,7 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
 
-	playlist := Playlist{PlaylistURL: playlistData.PlaylistURL}
+	playlist := DownloadTarget{URL: playlistData.URL, Type: "Playlist"}
 
 	doesPlaylistExist, err := DoesExist(playlist)
 	if err != nil {
@@ -35,13 +35,10 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()})
 		}
 
-		switch playlistMetadata := playlistMetadata.(type) {
-		case PlaylistMetadata:
-			if playlistData.DownloadMode == "Audio Only" {
-				playlist = Playlist{PlaylistURL: playlistData.PlaylistURL, DownloadMode: playlistData.DownloadMode, Name: playlistMetadata.Playlist, PreferredExtensionForAudio: playlistData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
-			} else if playlistData.DownloadMode == "Video And Audio" {
-				playlist = Playlist{PlaylistURL: playlistData.PlaylistURL, DownloadMode: playlistData.DownloadMode, Name: playlistMetadata.Playlist, PreferredExtensionForVideo: playlistData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: ""}
-			}
+		if playlistData.DownloadMode == "Audio Only" {
+			playlist = DownloadTarget{URL: playlistData.URL, DownloadMode: playlistData.DownloadMode, Name: playlistMetadata.Playlist, PreferredExtensionForAudio: playlistData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: "Playlist"}
+		} else if playlistData.DownloadMode == "Video And Audio" {
+			playlist = DownloadTarget{URL: playlistData.URL, DownloadMode: playlistData.DownloadMode, Name: playlistMetadata.Playlist, PreferredExtensionForVideo: playlistData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: "Playlist"}
 		}
 
 		err = AddToDatabase(playlist)
@@ -49,17 +46,17 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 			log.Error(err)
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()})
 		}
-		if playlistData.DownloadEntireChannel == true {
-			//err := playlist.DownloadEntire()
-			//if err != nil {
-			//	ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_PLAYLIST", Message: "There was an error downloading the entire playlist" + err.Error()})
-			//}
+		if playlistData.DownloadEntire == true {
+			err := Download(playlist, playlistData.DownloadQuality, playlistData.FileExtension, true)
+			if err != nil {
+				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_PLAYLIST", Message: "There was an error downloading the entire playlist" + err.Error()})
+			}
 		} else {
 			if err != nil {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()})
 			}
-			err = Download(playlist, playlistData.DownloadQuality, playlistData.FileExtension)
+			err = Download(playlist, playlistData.DownloadQuality, playlistData.FileExtension, false)
 			if err != nil {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error while downloading: " + err.Error()})
@@ -78,7 +75,7 @@ func HandleCheckPlaylist(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
-	playlist := Playlist{PlaylistURL: data.PlaylistURL}
+	playlist := DownloadTarget{URL: data.URL, Type: "Playlist"}
 
 	res, err := playlist.CheckNow()
 	if err != nil {
@@ -91,7 +88,7 @@ func HandleGetPlaylists(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to get all playlists")
 	w.Header().Set("Content-Type", "application/json")
 
-	playlists, err := GetPlaylists()
+	playlists, err := GetAll("playlists")
 	if err != nil {
 		res := Response{Type: "Error", Key: "ERROR_GETTING_PLAYLISTS", Message: "There was an error while getting playlists: " + err.Error()}
 		json.NewEncoder(w).Encode(res)
@@ -109,9 +106,9 @@ func HandleDeletePlaylist(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
-	playlistURL := data.PlaylistURL
+	playlistURL := data.URL
 	playlistURL = strings.Replace(playlistURL, "delPlaylist", "", -1)
-	playlist := Playlist{PlaylistURL: playlistURL}
+	playlist := DownloadTarget{URL: playlistURL, Type: "Playlist"}
 
 	Delete(playlist)
 
@@ -121,7 +118,7 @@ func HandleDeletePlaylist(w http.ResponseWriter, r *http.Request) {
 func HandleCheckAllPlaylists(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to check all playlists for new uploads")
 	w.Header().Set("Content-Type", "application/json")
-	res, err := CheckAllPlaylists()
+	res, err := CheckAll("playlists")
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLISTS", Message: "There was an error while checking playlists: " + err.Error()})
 	}

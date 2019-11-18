@@ -8,20 +8,21 @@ import (
 
 func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to download a video")
+	var ytdlCommand string
 	var videoData DownloadVideoPayload
 	err := json.NewDecoder(r.Body).Decode(&videoData)
 	if err != nil {
 		log.Error("HandleDownloadVideo: ", err)
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 	}
+	if videoData.DownloadMode == "Audio Only" {
+		ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o downloads/videos/%(uploader)s/audio/%(title)s.%(ext)s "+videoData.VideoURL
+	} else if videoData.DownloadMode == "Audio And Video" {
+		ytdlCommand = "youtube-dl -f bestvideo[ext="+videoData.FileExtension+"] -o downloads/videos/%(uploader)s/video/%(title)s.%(ext)s "+videoData.VideoURL
+	}
+	DownloadVideo(ytdlCommand)
 
-	// video := Video{}
-	// Download(videoData, videoData
-	//err = videoData.Download()
-	//if err != nil {
-	//	log.Error("HandleDownloadVideo: ", err)
-	//	ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: "There was an error downloading the video: " + err.Error()})
-	//}
+	videoData.AddToDatabase()
 
 	ReturnResponse(w, Response{Type: "Success", Key: "DOWNLOAD_VIDEO_SUCCESS", Message: "Video successfully downloaded."})
 

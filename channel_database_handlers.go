@@ -35,7 +35,7 @@ func GetCheckingInterval() (int, error) {
 		return 0, fmt.Errorf("GetCheckingInterval: %s", err)
 	}
 
-	var db []Channel
+	var db []DownloadTarget
 
 	err = json.Unmarshal(byteValue, &db)
 	if err != nil {
@@ -53,24 +53,7 @@ func GetCheckingInterval() (int, error) {
 	return 0, nil
 }
 
-func (c Channel) GetFromDatabase() (Channel, error) {
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
-	if err != nil {
-		return Channel{}, fmt.Errorf("GetFromDatabase: %s", err)
-	}
-	var db []Channel
-	json.Unmarshal(byteValue, &db)
-
-	for _, item := range db {
-		if item.ChannelURL == c.ChannelURL {
-			return item, nil
-		}
-	}
-
-	return Channel{}, fmt.Errorf("Couldn't find channel in the database: %s", c.ChannelURL)
-}
-
-func writeDb(db []Channel, dbName string) error {
+func writeDb(db []DownloadTarget, dbName string) error {
 	result, err := json.Marshal(db)
 	if err != nil {
 		log.Error("There was an error writing to database: ", err)

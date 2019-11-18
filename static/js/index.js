@@ -37,19 +37,19 @@ function updateCheckingInterval() {
 function addChannel() {
   console.log("CALLING ADD CHANNEl")
   startSpinner("add-channel-spinner")
-  let downloadEntireChannel = document.querySelector('#download-entire-channel').checked;
-  let channelURL = document.getElementById("channel-url").value
+  let downloadEntire = document.querySelector('#download-entire-channel').checked;
+  let URL = document.getElementById("channel-url").value
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
   let downloadQuality = document.getElementById("download-quality").value
 
 
   let channelData = {
-    channelURL,
+    URL,
     downloadMode,
     fileExtension,
     downloadQuality,
-    downloadEntireChannel,
+    downloadEntire,
   };
 
   const options = {
@@ -91,13 +91,13 @@ function getChannels() {
 
 function checkChannel(id) {
   startSpinner(id+"-spinner")
-  let channelURL = id
+  let URL = id
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
   let downloadQuality = document.getElementById("download-quality").value
 
   let channelData = {
-    channelURL,
+    URL,
     downloadMode,
     fileExtension,
     downloadQuality
@@ -134,7 +134,7 @@ function checkChannel(id) {
 
 function deleteChannel(id) {
   let channelURL = {
-    channelURL: id
+    URL: id
   };
 
   const options = {
@@ -195,10 +195,10 @@ function displayChannels(channels) {
     console.log(channel)
     document.getElementById("accordion").innerHTML += `<div class="mb-2 p-2 card">
       <h5 class="mb-0">
-        <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.ChannelURL}listElem>
+        <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.URL}listElem>
           ${channel.Name}
-        </button><button class="btn btn-danger float-right ml-2" id="${channel.ChannelURL +
-        "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.ChannelURL}" onClick="checkChannel(this.id)">Check Now<div id="${channel.ChannelURL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
+        </button><button class="btn btn-danger float-right ml-2" id="${channel.URL +
+        "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.URL}" onClick="checkChannel(this.id)">Check Now<div id="${channel.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
       </h5>
   
       <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
