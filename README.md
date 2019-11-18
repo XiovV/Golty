@@ -67,6 +67,15 @@ ports:
   - 9000:8080
 ```
 
+The container runs with PID/GID of 1000 and UMASK of 022 by default. This can be changed by passing environment variables to the container like so:
+
+```YAML
+environment:
+  - PUID=1001
+  - PGID=1001
+  - UMASK_SET=0044
+```
+
 ### Running The Container
 Once the configuration is complete, `docker-compose up -d` will pull and run the container for you in the background. The container will now be accessible from http://localhost:8080 (or whichever port you've modified it to) on that machine. Using `docker logs` will show the container logs for troubleshooting.
 
