@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install git curl -y
 RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o ./youtube-dl && chmod a+rx ./youtube-dl
 RUN git clone https://github.com/XiovV/go-auto-yt.git
 RUN cd go-auto-yt
-RUN if [ ${TRAVIS_PULL REQUEST} != false ] ; then git fetch origin +refs/pull/${TRAVIS_PULL REQUEST}/merge && git checkout FETCH_HEAD ; fi
+RUN if [ $TRAVIS_PULL_REQUEST != false ] ; then git fetch origin +refs/pull/$TRAVIS_PULL_REQUEST/merge && git checkout FETCH_HEAD ; fi
 
 #Transfer git content from DOWNLOAD stage over GO stage to build application
 FROM golang:alpine as GO
