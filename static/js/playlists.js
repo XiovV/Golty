@@ -196,7 +196,7 @@ function displayPlaylists(playlists) {
         <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${playlist.URL}listElem>
           ${playlist.Name}
         </button><button class="btn btn-danger float-right ml-2" id="${playlist.URL +
-        "delPlaylist"}" onClick="deletePlaylist(this.id)">&times</button><button class="btn btn-primary float-right" id="${playlist.URL}" onClick="checkPlaylist(this.id)">Check Now<div id="${playlist.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
+        "delPlaylist"}" onClick="deletePlaylist(this.id)">&times</button><button class="btn btn-primary float-right" id="${playlist.URL}" onClick="checkPlaylist(this.id)">Check<div id="${playlist.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
       </h5>
   
       <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">

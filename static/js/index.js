@@ -198,7 +198,7 @@ function displayChannels(channels) {
         <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.URL}listElem>
           ${channel.Name}
         </button><button class="btn btn-danger float-right ml-2" id="${channel.URL +
-        "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.URL}" onClick="checkChannel(this.id)">Check Now<div id="${channel.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
+        "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.URL}" onClick="checkChannel(this.id)">Check<div id="${channel.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
       </h5>
   
       <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
@@ -270,7 +270,7 @@ function changeExtension() {
     downloadQualities.options[2].text = "worst"
   } else if (downloadMode == "Video And Audio") {
     fileExtensions.options[0].value = "any"
-    fileExtensions.options[0].text = "mp4 (recommended for now)"
+    fileExtensions.options[0].text = "any (recommended for now)"
     fileExtensions.options[1].value = "mkv"
     fileExtensions.options[1].text = "mkv"
     // fileExtensions.options[2].value = ".mkv"

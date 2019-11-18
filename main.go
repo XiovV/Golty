@@ -45,7 +45,7 @@ func uploadChecker() {
 		log.Errorf("uploadChecker: %s", err)
 	}
 	if interval == 0 {
-		time.Sleep(5 * time.Minute)
+		time.Sleep(5 * time.Second)
 		uploadChecker()
 	} else if interval != 0 {
 		for {

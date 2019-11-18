@@ -66,9 +66,9 @@ func Download(target DownloadTarget, downloadQuality, fileExtension string, down
 			}
 		} else if target.DownloadMode == "Video And Audio" {
 			if downloadEntire == false {
-				ytdlCommand = "youtube-dl --playlist-end 1 -f bestvideo[ext=mp4] -o downloads/channels/%(uploader)s/video/%(title)s.%(ext)s "+target.URL
+				ytdlCommand = "youtube-dl --playlist-end 1 -o downloads/channels/%(uploader)s/video/%(title)s.%(ext)s "+target.URL
 			} else {
-				ytdlCommand = "youtube-dl --ignore-errors -f bestvideo[ext=mp4] -o downloads/channels/%(uploader)s/video/%(title)s.%(ext)s "+target.URL
+				ytdlCommand = "youtube-dl --ignore-errors -o downloads/channels/%(uploader)s/video/%(title)s.%(ext)s "+target.URL
 			}
 		}
 	} else if target.Type == "Playlist" {
@@ -80,9 +80,9 @@ func Download(target DownloadTarget, downloadQuality, fileExtension string, down
 			}
 		} else if target.DownloadMode == "Video And Audio" {
 			if downloadEntire == false {
-				ytdlCommand = "youtube-dl --playlist-end 1 -f bestvideo[ext="+fileExtension+"] -o downloads/playlists/%(uploader)s/%(playlist)s/video/%(title)s.%(ext)s" +target.URL
+				ytdlCommand = "youtube-dl --playlist-end 1 -o downloads/playlists/%(uploader)s/%(playlist)s/video/%(title)s.%(ext)s " +target.URL
 			} else {
-				ytdlCommand = "youtube-dl --ignore-errors -f bestvideo[ext="+fileExtension+"] -o downloads/playlists/%(uploader)s/%(playlist)s/video/%(title)s.%(ext)s" +target.URL
+				ytdlCommand = "youtube-dl --ignore-errors -o downloads/playlists/%(uploader)s/%(playlist)s/video/%(title)s.%(ext)s " +target.URL
 			}
 		}
 	}

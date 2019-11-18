@@ -17,8 +17,8 @@ func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 	}
 	if videoData.DownloadMode == "Audio Only" {
 		ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o downloads/videos/%(uploader)s/audio/%(title)s.%(ext)s "+videoData.VideoURL
-	} else if videoData.DownloadMode == "Audio And Video" {
-		ytdlCommand = "youtube-dl -f bestvideo[ext="+videoData.FileExtension+"] -o downloads/videos/%(uploader)s/video/%(title)s.%(ext)s "+videoData.VideoURL
+	} else if videoData.DownloadMode == "Video And Audio" {
+		ytdlCommand = "youtube-dl -o downloads/videos/%(uploader)s/video/%(title)s.%(ext)s "+videoData.VideoURL
 	}
 	DownloadVideo(ytdlCommand)
 

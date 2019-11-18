@@ -87,7 +87,7 @@ func CheckAll(target string) (Response, error) {
 	if len(foundFor) == 0 {
 		return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos found."}, nil
 	}
-	return Response{Type: "Success", Key: "NEW_VIDEOS", Message: strings.Join(foundFor, ",")}, nil
+	return Response{Type: "Success", Key: "NEW_VIDEOS", Message: "New videos detected for: " + strings.Join(foundFor, ",")}, nil
 }
 
 func (target DownloadTarget) CheckNow() (Response, error) {
