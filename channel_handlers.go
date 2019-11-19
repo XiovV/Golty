@@ -48,7 +48,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, Response{Type: "Success", Key: "CHANNEL_ALREADY_EXISTS", Message: "This channel already exists"})
 	} else {
 		log.Info("channel doesn't exist")
-		channelMetadata, err := GetMetadata(channel)
+		channelMetadata, err := channel.GetMetadata()
 		if err != nil {
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()})
 		}
@@ -65,7 +65,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
 		}
 		if channelData.DownloadEntire == true {
-			err := Download(channel, channelData.DownloadQuality, channelData.FileExtension, true)
+			err := channel.Download(channelData.DownloadQuality, channelData.FileExtension, true)
 			if err != nil {
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()})
 			}
@@ -75,7 +75,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
 			}
 
-			err = Download(channel, channelData.DownloadQuality, channelData.FileExtension, false)
+			err = channel.Download(channelData.DownloadQuality, channelData.FileExtension, false)
 			if err != nil {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error while downloading: " + err.Error()})

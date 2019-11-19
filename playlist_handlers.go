@@ -30,7 +30,7 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 		log.Info("this playlist already exists")
 		ReturnResponse(w, Response{Type: "Success", Key: "PLAYLIST_ALREADY_EXISTS", Message: "This playlists already exists"})
 	} else {
-		playlistMetadata, err := GetMetadata(playlist)
+		playlistMetadata, err := playlist.GetMetadata()
 		if err != nil {
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()})
 		}
@@ -47,7 +47,7 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()})
 		}
 		if playlistData.DownloadEntire == true {
-			err := Download(playlist, playlistData.DownloadQuality, playlistData.FileExtension, true)
+			err := playlist.Download(playlistData.DownloadQuality, playlistData.FileExtension, true)
 			if err != nil {
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_PLAYLIST", Message: "There was an error downloading the entire playlist" + err.Error()})
 			}
@@ -56,7 +56,7 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()})
 			}
-			err = Download(playlist, playlistData.DownloadQuality, playlistData.FileExtension, false)
+			err = playlist.Download(playlistData.DownloadQuality, playlistData.FileExtension, false)
 			if err != nil {
 				log.Error(err)
 				ReturnResponse(w, Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error while downloading: " + err.Error()})

@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func GetMetadata(target DownloadTarget) (TargetMetadata, error) {
+func (target DownloadTarget) GetMetadata() (TargetMetadata, error) {
 	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", target.URL)
 	log.Info("executing youtube-dl command: ", cmd.String())
 	out, err := cmd.CombinedOutput()
@@ -25,7 +25,7 @@ func GetMetadata(target DownloadTarget) (TargetMetadata, error) {
 	return *metaData, nil
 }
 
-func GetLatestVideo(target DownloadTarget) (string, error) {
+func (target DownloadTarget) GetLatestVideo() (string, error) {
 	log.Info("fetching latest upload")
 	cmd := exec.Command("youtube-dl", "-j", "--playlist-end", "1", target.URL)
 	log.Info("executing youtube-dl command: ", cmd.String())
@@ -43,7 +43,7 @@ func GetLatestVideo(target DownloadTarget) (string, error) {
 	return metaData.ID, nil
 }
 
-func Download(target DownloadTarget, downloadQuality, fileExtension string, downloadEntire bool) error {
+func (target DownloadTarget) Download(downloadQuality, fileExtension string, downloadEntire bool) error {
 	var ytdlCommand string
 	if target.DownloadMode == "Audio Only" {
 		log.Info("downloading audio only")
@@ -88,7 +88,7 @@ func Download(target DownloadTarget, downloadQuality, fileExtension string, down
 	}
 
 	DownloadVideo(ytdlCommand)
-	videoId, err := GetLatestVideo(target)
+	videoId, err := target.GetLatestVideo()
 	if err != nil {
 		log.Error("c.Download: ", err)
 		return fmt.Errorf("c.Download: %s", err)

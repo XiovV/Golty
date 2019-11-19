@@ -62,7 +62,7 @@ func CheckAll(target string) (Response, error) {
 		}
 
 		if item.URL == target.URL {
-			videoId, err := GetLatestVideo(target)
+			videoId, err := target.GetLatestVideo()
 			if err != nil {
 				log.Error("There was an error getting latest video: ", err)
 				return Response{Type: "Error", Key: "GETTING_LATEST_VIDEO_ERROR", Message: "There was an error getting the latestvideo" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
@@ -79,7 +79,7 @@ func CheckAll(target string) (Response, error) {
 				} else if target.DownloadMode == "Video And Audio" {
 					preferredExtension = target.PreferredExtensionForVideo
 				}
-				go Download(target, "best", preferredExtension, false)
+				go target.Download("best", preferredExtension, false)
 				target.UpdateLatestDownloaded(videoId)
 			}
 		}
@@ -113,7 +113,7 @@ func (target DownloadTarget) CheckNow() (Response, error) {
 	}
 	targetURL := target.URL
 
-	targetMetadata, err := GetMetadata(targets)
+	targetMetadata, err := targets.GetMetadata()
 	if err != nil {
 		return Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting playlist metadata: " + err.Error()}, nil
 	}
@@ -135,7 +135,7 @@ func (target DownloadTarget) CheckNow() (Response, error) {
 				} else if target.DownloadMode == "Video And Audio" {
 					preferredExtension = target.PreferredExtensionForVideo
 				}
-				err := Download(target, "best", preferredExtension, false)
+				err := target.Download("best", preferredExtension, false)
 				if err != nil {
 					log.Error(err)
 					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}, nil
