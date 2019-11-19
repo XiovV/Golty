@@ -44,6 +44,7 @@ func (target DownloadTarget) GetLatestVideo() (string, error) {
 }
 
 func (target DownloadTarget) Download(downloadQuality, fileExtension string, downloadEntire bool) error {
+	log.Info("DOWNLOAD: ", target)
 	var ytdlCommand string
 	if target.DownloadMode == "Audio Only" {
 		log.Info("downloading audio only")
@@ -87,19 +88,24 @@ func (target DownloadTarget) Download(downloadQuality, fileExtension string, dow
 		}
 	}
 
-	DownloadVideo(ytdlCommand)
-	videoId, err := target.GetLatestVideo()
+	err := DownloadVideo(ytdlCommand)
 	if err != nil {
-		log.Error("c.Download: ", err)
-		return fmt.Errorf("c.Download: %s", err)
+		return fmt.Errorf(err.Error())
+		fmt.Errorf("Download: %s", err)
 	}
-	video := Video{VideoID: videoId}
-	err = target.UpdateLatestDownloaded(video.VideoID)
-	if err != nil {
-		log.Error("p.Download: ", err)
-		return fmt.Errorf("p.Download: %s", err)
-	}
-	return target.UpdateDownloadHistory(video.VideoID)
+	//videoId, err := target.GetLatestVideo()
+	//if err != nil {
+	//	log.Error("c.Download: ", err)
+	//	return fmt.Errorf("c.Download: %s", err)
+	//}
+	//video := Video{VideoID: videoId}
+	//err = target.UpdateLatestDownloaded(video.VideoID)
+	//if err != nil {
+	//	log.Error("p.Download: ", err)
+	//	return fmt.Errorf("p.Download: %s", err)
+	//}
+	//return target.UpdateDownloadHistory(video.VideoID)
+	return nil
 }
 
 func DownloadVideo(command string) error {

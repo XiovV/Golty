@@ -1,1 +1,30 @@
-[]
+[
+ {
+  "URL": "https://www.youtube.com/watch?v=rDBbaGCCIhk\u0026list=PLyIFQr1wryPKEzgoT30OgiY7oNzQP5wK1",
+  "LatestDownloaded": "rDBbaGCCIhk",
+  "DownloadMode": "Audio Only",
+  "Name": "💵 NewRetroWave Millions List 💵",
+  "PreferredExtensionForAudio": "m4a",
+  "PreferredExtensionForVideo": "",
+  "DownloadHistory": [
+   "rDBbaGCCIhk"
+  ],
+  "LastChecked": "11-19-2019 20:42:23",
+  "CheckingInterval": "",
+  "Type": "Playlist"
+ },
+ {
+  "URL": "https://www.youtube.com/watch?v=P7f2fEoM6Kw\u0026list=PLyIFQr1wryPKulMOzAKzBt8EoQD6vMPzA",
+  "LatestDownloaded": "P7f2fEoM6Kw",
+  "DownloadMode": "Audio Only",
+  "Name": "Essential Smooth Jams 👀 ✔",
+  "PreferredExtensionForAudio": "m4a",
+  "PreferredExtensionForVideo": "",
+  "DownloadHistory": [
+   "P7f2fEoM6Kw"
+  ],
+  "LastChecked": "11-19-2019 20:42:26",
+  "CheckingInterval": "",
+  "Type": "Playlist"
+ }
+]
