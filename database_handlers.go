@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"io/ioutil"
+	"os"
+	"strconv"
 
 	"time"
 )
@@ -34,102 +37,7 @@ func UpdateCheckingInterval(interval string) (Response, error) {
 	return Response{Type: "Error", Key: "DATABASE_EMPTY", Message: "There has to be at least one channel in the database before updating the checking interval."}, nil
 }
 
-
-
-//func DoesExist(target interface{}) (bool, error) {
-//	switch target := target.(type) {
-//	case Channel:
-//		byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
-//		if err != nil {
-//			return false, fmt.Errorf("DoesExist: %s", err)
-//		}
-//		var db []Channel
-//
-//		json.Unmarshal(byteValue, &db)
-//
-//		for _, channel := range db {
-//			if channel.URL == target.URL {
-//				fmt.Println(channel.URL, target.URL)
-//				return true, nil
-//			}
-//		}
-//		return false, nil
-//	case Playlist:
-//		byteValue, err := openJSONDatabase(CONFIG_ROOT + "playlists.json")
-//		if err != nil {
-//			return false, fmt.Errorf("DoesExist: %s", err)
-//		}
-//		var playlists []Playlist
-//
-//		json.Unmarshal(byteValue, &playlists)
-//
-//		for _, playlist := range playlists {
-//			if playlist.URL == target.URL {
-//				return true, nil
-//			}
-//		}
-//		return false, nil
-//	}
-//	return true, nil
-//}
-
-//func UpdateLastChecked(target interface{}) error {
-//	switch target := target.(type) {
-//	case Channel:
-//		log.Info("updating last checked date and time for: ", target.Name)
-//
-//		byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
-//		if err != nil {
-//			return fmt.Errorf("UpdateLastChecked: %s", err)
-//		}
-//
-//		var db []Channel
-//
-//		err = json.Unmarshal(byteValue, &db)
-//		if err != nil {
-//			return fmt.Errorf("UpdateLastChecked: %s", err)
-//		}
-//
-//		for i, item := range db {
-//			if item.URL == target.URL {
-//				dt := time.Now()
-//				db[i].LastChecked = dt.Format("01-02-2006 15:04:05")
-//				log.Info("last checked date and time updated successfully")
-//				break
-//			}
-//		}
-//
-//	case Playlist:
-//		log.Info("updating last checked date and time for: ", target.Name)
-//
-//		byteValue, err := openJSONDatabase(CONFIG_ROOT + "playlists.json")
-//		if err != nil {
-//			return fmt.Errorf("p.UpdateLastChecked: %s", err)
-//		}
-//
-//		var playlists []Playlist
-//
-//		err = json.Unmarshal(byteValue, &playlists)
-//		if err != nil {
-//			return fmt.Errorf("p.UpdateLastChecked: %s", err)
-//		}
-//
-//		for i, playlist := range playlists {
-//			if playlist.URL == target.URL {
-//				dt := time.Now()
-//				playlists[i].LastChecked = dt.Format("01-02-2006 15:04:05")
-//				log.Info("last checked date and time updated successfully")
-//				break
-//			}
-//		}
-//
-//		return writeToPlaylistsDb(playlists, CONFIG_ROOT+"playlists.json")
-//	}
-//
-//	return nil
-//}
-
-func UpdateLastChecked(target DownloadTarget) error {
+func (target DownloadTarget) UpdateLastChecked() error {
 	log.Info("UPDATING LAST CHECKED FOR: ", target.URL)
 	var db []DownloadTarget
 	var dbName string
@@ -163,7 +71,7 @@ func UpdateLastChecked(target DownloadTarget) error {
 	return writeDb(db, CONFIG_ROOT+dbName)
 }
 
-func DoesExist(target DownloadTarget) (bool, error) {
+func (target DownloadTarget) DoesExist() (bool, error) {
 	var db []DownloadTarget
 	var dbName string
 
@@ -189,7 +97,7 @@ func DoesExist(target DownloadTarget) (bool, error) {
 	return false, nil
 }
 
-func UpdateLatestDownloaded(target DownloadTarget, videoId string) error {
+func (target DownloadTarget) UpdateLatestDownloaded(videoId string) error {
 	log.Info("updating latest downloaded video id")
 	var db []DownloadTarget
 	var dbName string
@@ -219,7 +127,7 @@ func UpdateLatestDownloaded(target DownloadTarget, videoId string) error {
 	return writeDb(db, CONFIG_ROOT+dbName)
 }
 
-func AddToDatabase(target DownloadTarget) error {
+func (target DownloadTarget) AddToDatabase() error {
 	var db []DownloadTarget
 	var dbName string
 	if target.Type == "Channel" {
@@ -243,7 +151,7 @@ func AddToDatabase(target DownloadTarget) error {
 	return nil
 }
 
-func UpdateDownloadHistory(target DownloadTarget, videoId string) error {
+func (target DownloadTarget) UpdateDownloadHistory(videoId string) error {
 	log.Info("updating download history")
 	var db []DownloadTarget
 	var dbName string
@@ -274,7 +182,7 @@ func UpdateDownloadHistory(target DownloadTarget, videoId string) error {
 	return writeDb(db, CONFIG_ROOT+dbName)
 }
 
-func Delete(target DownloadTarget) error {
+func (target DownloadTarget) Delete() error {
 	var db []DownloadTarget
 	var dbName string
 	if target.Type == "Channel" {
@@ -302,7 +210,7 @@ func Delete(target DownloadTarget) error {
 	return writeDb(db, CONFIG_ROOT+dbName)
 }
 
-func GetFromDatabase(target DownloadTarget) (DownloadTarget, error) {
+func (target DownloadTarget) GetFromDatabase() (DownloadTarget, error) {
 	var db []DownloadTarget
 	var dbName string
 	if target.Type == "Channel" {
@@ -323,4 +231,68 @@ func GetFromDatabase(target DownloadTarget) (DownloadTarget, error) {
 	}
 
 	return DownloadTarget{}, fmt.Errorf("Couldn't find channel/playlist in the database: %s", target.URL)
+}
+
+func openJSONDatabase(dbName string) ([]byte, error) {
+	jsonFile, err := os.Open(dbName)
+	if err != nil {
+		log.Errorf("openJSONDatabase: %s", err)
+		return nil, fmt.Errorf("openJSONDatabase: %s", err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		log.Errorf("openJSONDatabase: %s", err)
+		return nil, fmt.Errorf("openJSONDatabase: %s", err)
+	}
+
+	return byteValue, nil
+}
+
+func GetCheckingInterval() (int, error) {
+	log.Info("getting checking interval")
+
+	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
+	if err != nil {
+		return 0, fmt.Errorf("GetCheckingInterval: %s", err)
+	}
+
+	var db []DownloadTarget
+
+	err = json.Unmarshal(byteValue, &db)
+	if err != nil {
+		return 0, fmt.Errorf("GetCheckingInterval: %s", err)
+	}
+	if len(db) > 0 && db[0].CheckingInterval != "" {
+		checkingInterval, err := strconv.Atoi(db[0].CheckingInterval)
+		if err != nil {
+			return 0, fmt.Errorf("GetCheckingInterval: %s", err)
+		}
+		log.Info("got checking interval successfully")
+		return checkingInterval, nil
+	}
+	log.Info("checking interval not yet specified")
+	return 0, nil
+}
+
+func writeDb(db []DownloadTarget, dbName string) error {
+	result, err := json.Marshal(db)
+	if err != nil {
+		log.Error("There was an error writing to database: ", err)
+		return fmt.Errorf("writeDb: %s", err)
+	}
+
+	json.Unmarshal(result, &db)
+
+	file, _ := json.MarshalIndent(db, "", " ")
+
+	err = ioutil.WriteFile(dbName, file, 0644)
+	if err != nil {
+		log.Error("There was an error writing to database: ", err)
+		return fmt.Errorf("writeDb: %s", err)
+	}
+
+	return nil
 }

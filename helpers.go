@@ -56,7 +56,7 @@ func CheckAll(target string) (Response, error) {
 	}
 	for _, item := range allInInDb {
 		target := DownloadTarget{URL: item.URL, Type: targetType}
-		target, err = GetFromDatabase(target)
+		target, err = target.GetFromDatabase()
 		if err != nil {
 			return Response{Type: "Error", Key: "GETTING_FROM_DATABASE_ERROR", Message: "There was an error getting the channel from database" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
 		}
@@ -68,7 +68,7 @@ func CheckAll(target string) (Response, error) {
 				return Response{Type: "Error", Key: "GETTING_LATEST_VIDEO_ERROR", Message: "There was an error getting the latestvideo" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
 			}
 
-			UpdateLastChecked(item)
+			item.UpdateLastChecked()
 			if item.LatestDownloaded == videoId {
 				log.Info("no new videos found for: ", item.URL)
 			} else {
@@ -80,7 +80,7 @@ func CheckAll(target string) (Response, error) {
 					preferredExtension = target.PreferredExtensionForVideo
 				}
 				go Download(target, "best", preferredExtension, false)
-				UpdateLatestDownloaded(target, videoId)
+				target.UpdateLatestDownloaded(videoId)
 			}
 		}
 	}
@@ -107,7 +107,7 @@ func (target DownloadTarget) CheckNow() (Response, error) {
 	}
 	var preferredExtension string
 
-	targets, err := GetFromDatabase(target)
+	targets, err := target.GetFromDatabase()
 	if err != nil {
 		return Response{Type: "Error", Key: "GETTING_FROM_DATABASE_ERROR", Message: "There was an error getting the playlist from database" + err.Error()}, fmt.Errorf("CheckNow: %s", err)
 	}
@@ -118,7 +118,7 @@ func (target DownloadTarget) CheckNow() (Response, error) {
 		return Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting playlist metadata: " + err.Error()}, nil
 	}
 
-	err = UpdateLastChecked(target)
+	err = target.UpdateLastChecked()
 	if err != nil {
 		return Response{Type: "Error", Key: "ERROR_UPDATING_LAST_CHECKED", Message: "There was an error updating latest checked date and time: " + err.Error()}, nil
 	}
@@ -140,7 +140,7 @@ func (target DownloadTarget) CheckNow() (Response, error) {
 					log.Error(err)
 					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}, nil
 				}
-				UpdateLatestDownloaded(target, targetMetadata.ID)
+				target.UpdateLatestDownloaded(targetMetadata.ID)
 				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + target.Name + " and downloaded"}, nil
 			}
 		}

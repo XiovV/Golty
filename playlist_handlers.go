@@ -20,7 +20,7 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 
 	playlist := DownloadTarget{URL: playlistData.URL, Type: "Playlist"}
 
-	doesPlaylistExist, err := DoesExist(playlist)
+	doesPlaylistExist, err := playlist.DoesExist()
 	if err != nil {
 		log.Info("error doesChannelExist: ", err)
 		ReturnResponse(w, Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to check if the channel already exists" + err.Error()})
@@ -41,7 +41,7 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 			playlist = DownloadTarget{URL: playlistData.URL, DownloadMode: playlistData.DownloadMode, Name: playlistMetadata.Playlist, PreferredExtensionForVideo: playlistData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: "Playlist"}
 		}
 
-		err = AddToDatabase(playlist)
+		err = playlist.AddToDatabase()
 		if err != nil {
 			log.Error(err)
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()})
@@ -110,7 +110,7 @@ func HandleDeletePlaylist(w http.ResponseWriter, r *http.Request) {
 	playlistURL = strings.Replace(playlistURL, "delPlaylist", "", -1)
 	playlist := DownloadTarget{URL: playlistURL, Type: "Playlist"}
 
-	Delete(playlist)
+	playlist.Delete()
 
 	ReturnResponse(w, Response{Type: "Success", Key: "DELETE_PLAYLIST_SUCCESS", Message: "Playlist removed"})
 }

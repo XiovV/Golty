@@ -94,12 +94,12 @@ func Download(target DownloadTarget, downloadQuality, fileExtension string, down
 		return fmt.Errorf("c.Download: %s", err)
 	}
 	video := Video{VideoID: videoId}
-	err = UpdateLatestDownloaded(target, video.VideoID)
+	err = target.UpdateLatestDownloaded(video.VideoID)
 	if err != nil {
 		log.Error("p.Download: ", err)
 		return fmt.Errorf("p.Download: %s", err)
 	}
-	return UpdateDownloadHistory(target, video.VideoID)
+	return target.UpdateDownloadHistory(video.VideoID)
 }
 
 func DownloadVideo(command string) error {

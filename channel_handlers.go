@@ -38,7 +38,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	channel := DownloadTarget{URL: channelData.URL, Type: "Channel"}
 
 	log.Info("CHECKING IF CHANNEL ALREADY EXISTS")
-	doesChannelExist, err := DoesExist(channel)
+	doesChannelExist, err := channel.DoesExist()
 	if err != nil {
 		log.Info("error doesChannelExist: ", err)
 		ReturnResponse(w, Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to check if the channel already exists" + err.Error()})
@@ -59,7 +59,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 			channel = DownloadTarget{URL: channelData.URL, DownloadMode: channelData.DownloadMode, Name: channelMetadata.Uploader, PreferredExtensionForVideo: channelData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: "Channel"}
 		}
 
-		err = AddToDatabase(channel)
+		err = channel.AddToDatabase()
 		if err != nil {
 			log.Error(err)
 			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_CHANNEL", Message: "There was an error adding the channel to the database" + err.Error()})
@@ -139,7 +139,7 @@ func HandleDeleteChannel(w http.ResponseWriter, r *http.Request) {
 	channelURL = strings.Replace(channelURL, "delChannel", "", -1)
 	channel := DownloadTarget{URL: channelURL, Type: "Channel"}
 
-	Delete(channel)
+	channel.Delete()
 
 	ReturnResponse(w, Response{Type: "Success", Key: "DELETE_CHANNEL_SUCCESS", Message: "Channel removed"})
 }
