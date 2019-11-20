@@ -22,8 +22,7 @@ jobs:
     install: 
     - sudo apt-get update
     - sudo apt-get install -y curl ffmpeg
-    - curl -L https://yt-dl.org/downloads/latest/youtube-dl -o ./youtube-dl && chmod a+rx ./youtube-dl && export PATH=$PATH:$PWD
-    - echo "$PATH"
+    - curl -L https://yt-dl.org/downloads/latest/youtube-dl -o ./youtube-dl && chmod a+rx ./youtube-dl && sudo cp youtube-dl /usr/local/bin && export PATH=$PATH:$PWD
     - go get -v
     script:
     - go test -v
