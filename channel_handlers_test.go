@@ -65,7 +65,33 @@ var testChannels = []AddChannelPayload{
 	},
 }
 
-func TestHandleAddChannel(t *testing.T) {
+func TestHandleAddChannelWithChannelsInDatabase(t *testing.T) {
+	// 1. Add channel to db
+	// 2. Make request to /api/add-channel/ to see if it's going to return a response saying that the channel already exists
+	assert := assert.New(t)
+	var res Response
+	for _, testChannel := range testChannels {
+		// Adding a channel into db
+		channel := DownloadTarget{URL: testChannel.URL, Type:"Channel"}
+		err := channel.AddToDatabase()
+		assert.Nil(err)
+		// Marshalling the json object and making POST request
+		channelJson, _ := json.Marshal(testChannel)
+		request, _ := http.NewRequest("POST", "/api/add-channel", bytes.NewBuffer(channelJson))
+		response := httptest.NewRecorder()
+		Router().ServeHTTP(response, request)
+		err = json.NewDecoder(response.Body).Decode(&res)
+		assert.Nil(err)
+		// Checking the response
+		assert.Equal("Success", res.Type, "res.Type should be success")
+		assert.Equal("CHANNEL_ALREADY_EXISTS", res.Key)
+
+		err = channel.Delete()
+		assert.Nil(err)
+	}
+}
+
+func TestHandleAddChannelWithoutAnyChannelsInDatabase(t *testing.T) {
 	assert := assert.New(t)
 	var res Response
 	for _, testChannel := range testChannels {
@@ -75,10 +101,9 @@ func TestHandleAddChannel(t *testing.T) {
 		Router().ServeHTTP(response, request)
 		err := json.NewDecoder(response.Body).Decode(&res)
 		channel := DownloadTarget{URL: testChannel.URL, Type:"Channel"}
-
 		assert.Nil(err)
-		assert.Equal("ADD_CHANNEL_SUCCESS", res.Key)
 		assert.Equal("Success", res.Type, "res.Type should be success")
+		assert.Equal("ADD_CHANNEL_SUCCESS", res.Key)
 		addedChannel, err := channel.GetFromDatabase()
 		assert.Nil(err)
 		if testChannel.URL == testChannels[0].URL {
