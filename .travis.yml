@@ -8,6 +8,7 @@ env:
 branches:
   only:
     - master
+    - dev
 
 stages:
   - go_test+build
@@ -24,5 +25,6 @@ jobs:
     - go test -v
     - go build -v
   - stage: "docker_build+deploy"
+    if: branch = master
     language: shell
     script: ./travis/dockerhub-deploy.sh
