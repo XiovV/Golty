@@ -82,8 +82,9 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 			ReturnResponse(w, res)
 		}
 		res = Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added and downloaded latest video"}
-		ReturnResponse(w, res)
+		//ReturnResponse(w, res)
 	}
+	ReturnResponse(w, res)
 }
 
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
