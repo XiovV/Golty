@@ -2,5 +2,5 @@ package main
 
 const (
 	CONFIG_ROOT                   = "./config/"
-	VERSION                       = "v0.3.2"
+	VERSION                       = "v0.3.3"
 )

@@ -63,7 +63,12 @@
         </select>
       </div>
     </div>
-    
+    <div class="custom-control custom-checkbox mb-3">
+      <input type="checkbox" class="custom-control-input" id="custom-ytdl" onclick="customYtdl()">
+      <label class="custom-control-label" for="custom-ytdl">Enter custom youtube-dl output: </label>
+    </div>
+    <input type="checkbox" class="custom-control-input" id="custom-ytdl">
+    <input type="text" class="form-control mb-3" id="download-path" placeholder="default: videos/%(uploader)s/audio/%(title)s.%(ext)s" disabled>
     <button class="btn btn-primary mb-3" onclick="downloadVideo()">Download Video<div id="download-video-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
     
     <h2 class="mt-2">Download History: </h2>

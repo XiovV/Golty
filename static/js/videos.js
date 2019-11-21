@@ -4,13 +4,16 @@ function downloadVideo() {
     let downloadMode = document.getElementById("download-mode").value
     let fileExtension = document.getElementById("file-extension").value
     let downloadQuality = document.getElementById("download-quality").value
+    let downloadPath = document.getElementById("download-path").value
 
+    console.log(downloadPath)
 
     let videoData = {
         videoURL,
         downloadMode,
         fileExtension,
         downloadQuality,
+        downloadPath,
     };
 
     const options = {
@@ -28,6 +31,12 @@ function downloadVideo() {
             stopSpinner("download-video-spinner")
             getVideos()
         });
+}
+
+function customYtdl() {
+    var isDisabled = document.getElementById("download-path").disabled
+    isDisabled = !isDisabled
+    document.getElementById("download-path").disabled = isDisabled
 }
 
 function getVideos() {
@@ -117,10 +126,13 @@ function stopSpinner(id) {
 
 function changeExtension() {
     console.log("change ext")
+
     let downloadMode = document.getElementById("download-mode").value
     let fileExtensions = document.getElementById("file-extension")
     let downloadQualities = document.getElementById("download-quality")
     if (downloadMode == "Audio Only") {
+        document.getElementById("download-path").placeholder = "default: videos/%(uploader)s/audio/%(title)s.%(ext)s"
+
         fileExtensions.options[0].value = "m4a"
         fileExtensions.options[0].text = "m4a"
         fileExtensions.options[1].value = "mp3"
@@ -131,7 +143,10 @@ function changeExtension() {
         downloadQualities.options[1].text = "medium"
         downloadQualities.options[2].value = "worst"
         downloadQualities.options[2].text = "worst"
+
     } else if (downloadMode == "Video And Audio") {
+        document.getElementById("download-path").placeholder = "default: videos/%(uploader)s/video/%(title)s.%(ext)s"
+
         fileExtensions.options[0].value = "any"
         fileExtensions.options[0].text = "any (recommended for now)"
         fileExtensions.options[1].value = "mp4"
