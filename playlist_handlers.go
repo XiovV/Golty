@@ -12,7 +12,7 @@ import (
 func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to add a playlist")
 	w.Header().Set("Content-Type", "application/json")
-	var playlistData AddPlaylistPayload
+	var playlistData AddTargetPayload
 	var res Response
 	err := json.NewDecoder(r.Body).Decode(&playlistData)
 	if err != nil {
@@ -70,7 +70,7 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 func HandleCheckPlaylist(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to check a playlist for new uploads")
 	w.Header().Set("Content-Type", "application/json")
-	var data AddPlaylistPayload
+	var data AddTargetPayload
 	var res Response
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {

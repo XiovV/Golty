@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -21,6 +23,15 @@ import (
 //	DownloadEntire bool
 //	CheckingInterval      string
 //}
+
+func getFileNames(path string) string {
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return files[0].Name()
+}
 
 func readDownloadsChannelsDir() []string {
 	var channels []string
@@ -46,7 +57,7 @@ func Router() *mux.Router {
 	return router
 }
 
-var testChannels = []AddChannelPayload{
+var testChannels = []AddTargetPayload{
 	{
 		URL:              "https://www.youtube.com/user/HungOverGargoyle",
 		DownloadMode:     "Audio Only",
@@ -66,8 +77,6 @@ var testChannels = []AddChannelPayload{
 }
 
 func TestHandleAddChannelWithChannelsInDatabase(t *testing.T) {
-	// 1. Add channel to db
-	// 2. Make request to /api/add-channel/ to see if it's going to return a response saying that the channel already exists
 	assert := assert.New(t)
 	var res Response
 	for _, testChannel := range testChannels {
@@ -111,11 +120,17 @@ func TestHandleAddChannelWithoutAnyChannelsInDatabase(t *testing.T) {
 			assert.Equal("Audio Only", addedChannel.DownloadMode)
 			assert.Equal("m4a", addedChannel.PreferredExtensionForAudio)
 			assert.Equal(1, len(addedChannel.DownloadHistory))
+			videoName := getFileNames("./downloads/channels/Electronic Gems/audio/")
+			videoExtension := strings.Split(videoName, ".")[1]
+			assert.Equal("m4a", videoExtension)
 		} else if testChannel.URL == testChannels[1].URL {
 			assert.Equal("https://www.youtube.com/user/NewRetroWave", addedChannel.URL)
 			assert.Equal("Video And Audio", addedChannel.DownloadMode)
 			assert.Equal("mp4", addedChannel.PreferredExtensionForVideo)
 			assert.Equal(1, len(addedChannel.DownloadHistory))
+			videoName := getFileNames("./downloads/channels/NewRetroWave/video/")
+			videoExtension := strings.Split(videoName, ".")[1]
+			assert.Equal("mkv", videoExtension)
 		}
 		err = channel.Delete()
 		assert.Nil(err)

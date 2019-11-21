@@ -154,17 +154,8 @@ type CheckingIntervalPayload struct {
 	CheckingInterval string
 }
 
-type AddPlaylistPayload struct {
+type AddTargetPayload struct {
 	URL           string
-	DownloadMode          string
-	FileExtension         string
-	DownloadQuality       string
-	DownloadEntire bool
-	CheckingInterval      string
-}
-
-type AddChannelPayload struct {
-	URL            string
 	DownloadMode          string
 	FileExtension         string
 	DownloadQuality       string

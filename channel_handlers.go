@@ -27,7 +27,7 @@ func HandleVideos(w http.ResponseWriter, r *http.Request) {
 
 func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to add a channel")
-	var channelData AddChannelPayload
+	var channelData AddTargetPayload
 	var res Response
 	err := json.NewDecoder(r.Body).Decode(&channelData)
 	if err != nil {
@@ -90,7 +90,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 func HandleCheckChannel(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to check a channel for new uploads")
 	w.Header().Set("Content-Type", "application/json")
-	var data AddChannelPayload
+	var data AddTargetPayload
 	var res Response
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
