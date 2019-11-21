@@ -1,1 +1,16 @@
-[]
+[
+ {
+  "URL": "https://www.youtube.com/user/HungOverGargoyle",
+  "LatestDownloaded": "PzJtShkAkwA",
+  "DownloadMode": "Audio Only",
+  "Name": "Electronic Gems",
+  "PreferredExtensionForAudio": "m4a",
+  "PreferredExtensionForVideo": "",
+  "DownloadHistory": [
+   "PzJtShkAkwA"
+  ],
+  "LastChecked": "11-21-2019 19:50:23",
+  "CheckingInterval": "",
+  "Type": "Channel"
+ }
+]
