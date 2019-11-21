@@ -33,12 +33,6 @@ function downloadVideo() {
         });
 }
 
-function customYtdl() {
-    var isDisabled = document.getElementById("download-path").disabled
-    isDisabled = !isDisabled
-    document.getElementById("download-path").disabled = isDisabled
-}
-
 function getVideos() {
     fetch("/api/get-videos")
         .then(res => res.json())
@@ -99,6 +93,7 @@ function displayVideos(videos) {
         <div class="panel-body ml-2">
           <p>Downloaded As: ${video.DownloadMode}</p>
           <p>File Extension: ${video.FileExtension}</p>
+          <p>Download Path: ${video.DownloadPath}</p>
         </div>
       </div>
     </div>`

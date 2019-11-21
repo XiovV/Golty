@@ -55,3 +55,11 @@ function stopSpinner(id) {
     spinner = document.getElementById(id);
     spinner.classList.add("d-none")
 }
+
+function customYtdl(checkboxId) {
+    if (checkboxId == "custom-download-output") {
+        document.getElementById("download-path").placeholder = "default: /channels/"
+    } else if (checkboxId == "custom-ytdl-output") {
+        document.getElementById("download-path").placeholder = "default: /videos/%(uploader)s/audio/%(title)s.%(ext)s"
+    }
+}

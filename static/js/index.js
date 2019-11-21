@@ -35,14 +35,27 @@ function updateCheckingInterval() {
 }
 
 function addChannel() {
-  console.log("CALLING ADD CHANNEl")
   startSpinner("add-channel-spinner")
   let downloadEntire = document.querySelector('#download-entire-channel').checked;
   let URL = document.getElementById("channel-url").value
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
   let downloadQuality = document.getElementById("download-quality").value
+  let downloadPath = document.getElementById("download-path").value
 
+  if (downloadPath[0] != "/" && downloadPath[downloadPath.length - 1] != "/") {
+    displayErrorMessage("Please add a / at the beginning AND end of the output string.")
+    stopSpinner("add-channel-spinner")
+    return
+  } else if (downloadPath[downloadPath.length - 1] != "/") {
+    displayErrorMessage("Please add a / at the end of the output string.")
+    stopSpinner("add-channel-spinner")
+    return
+  } else if (downloadPath[0] != "/") {
+    displayErrorMessage("Please add a / at the beginning of the output string.")
+    stopSpinner("add-channel-spinner")
+    return
+  }
 
   let channelData = {
     URL,
@@ -50,6 +63,7 @@ function addChannel() {
     fileExtension,
     downloadQuality,
     downloadEntire,
+    downloadPath,
   };
 
   const options = {
@@ -208,12 +222,13 @@ function displayChannels(channels) {
           <p>Last Checked: ${channel.LastChecked}</p>
           <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
           <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
+          <p class="m-0 p-0">Download Path: ${channel.DownloadPath}</p>
           <br>
-          <button class="btn btn-link dropdown-toggle" type="button" data-toggle="collapse" data-target="#history${index}" aria-expanded="false" aria-controls="history${index}">
+          <button class="btn btn-link dropdown-toggle m-0 p-0" type="button" data-toggle="collapse" data-target="#history${index}" aria-expanded="false" aria-controls="history${index}">
             Download History
           </button>
-          <div class="collapse" id="history${index}">
-            <div class="card card-body" id="dlhistory${channel.Name}">
+          <div class="collapse m-0 p-0" id="history${index}">
+            <div class="card card-body p-2" id="dlhistory${channel.Name}">
             </div>
           </div>
         </div>

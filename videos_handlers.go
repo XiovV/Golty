@@ -25,9 +25,9 @@ func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		if videoData.DownloadMode == "Audio Only" {
-			ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o downloads" + videoData.DownloadPath+ "/%(title)s.%(ext)s "+videoData.VideoURL
+			ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o downloads" + videoData.DownloadPath+ "%(title)s.%(ext)s "+videoData.VideoURL
 		} else if videoData.DownloadMode == "Video And Audio" {
-			ytdlCommand = "youtube-dl -o downloads" + videoData.DownloadPath+ "/%(title)s.%(ext)s "+videoData.VideoURL
+			ytdlCommand = "youtube-dl -o downloads" + videoData.DownloadPath+ "%(title)s.%(ext)s "+videoData.VideoURL
 		}
 	}
 
