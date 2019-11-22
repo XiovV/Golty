@@ -72,11 +72,11 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		}
 		err = channel.UpdateLatestDownloaded(channelMetadata.ID)
 		if err != nil {
-			errRes = Response{Type: "Error", Key: "ERROR_CHECKING_CHANNEL", Message: "There was an error while checking the channel: " + err.Error()}
+			errRes = Response{Type: "Error", Key: "ERROR_UPDATING_LATEST_DOWNLOADED", Message: "There was an error while updating the channel's latest downloaded video id: " + err.Error()}
 		}
 		err = channel.UpdateDownloadHistory(channelMetadata.ID)
 		if err != nil {
-			errRes = Response{Type: "Error", Key: "ERROR_CHECKING_CHANNEL", Message: "There was an error while checking the channel: " + err.Error()}
+			errRes = Response{Type: "Error", Key: "ERROR_ERROR_UPDATING_DOWNLOAD_HISTORY", Message: "There was an error while updating the channel's download history: " + err.Error()}
 		}
 		okRes = Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added and downloaded latest video"}
 	}
@@ -132,7 +132,6 @@ func HandleCheckAll(w http.ResponseWriter, r *http.Request) {
 	okRes, err := CheckAll("channels")
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_CHECKING_CHANNELS", Message: "There was an error while checking channels: " + err.Error()}
-		//ReturnResponse(w, Response{Type: "Error", Key: "ERROR_CHECKING_CHANNELS", Message: "There was an error while checking channels: " + err.Error()})
 	}
 	if errRes.Type == "Error" {
 		ReturnResponse(w, errRes)

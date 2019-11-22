@@ -13,10 +13,9 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to add a playlist")
 	w.Header().Set("Content-Type", "application/json")
 	var playlistData AddTargetPayload
-	var res Response
 	err := json.NewDecoder(r.Body).Decode(&playlistData)
 	if err != nil {
-		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
 	}
 
 	playlist := DownloadTarget{URL: playlistData.URL, Type: "Playlist"}
@@ -24,46 +23,47 @@ func HandleAddPlaylist(w http.ResponseWriter, r *http.Request) {
 	doesPlaylistExist, err := playlist.DoesExist()
 	if err != nil {
 		log.Info("error doesChannelExist: ", err)
-		ReturnResponse(w, Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to check if the channel already exists" + err.Error()})
+		errRes = Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to check if the channel already exists" + err.Error()}
 	}
 
 	if doesPlaylistExist == true {
 		log.Info("this playlist already exists")
-		ReturnResponse(w, Response{Type: "Success", Key: "PLAYLIST_ALREADY_EXISTS", Message: "This playlists already exists"})
+		okRes = Response{Type: "Success", Key: "PLAYLIST_ALREADY_EXISTS", Message: "This playlists already exists"}
 	} else {
 		playlistMetadata, err := playlist.GetMetadata()
 		if err != nil {
-			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()})
+			errRes = Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()}
 		}
 
 		if playlistData.DownloadMode == "Audio Only" {
-			playlist = DownloadTarget{URL: playlistData.URL, DownloadMode: playlistData.DownloadMode, Name: playlistMetadata.Playlist, PreferredExtensionForAudio: playlistData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: "Playlist"}
+			playlist = DownloadTarget{URL: playlistData.URL, DownloadMode: playlistData.DownloadMode, Name: playlistMetadata.Playlist, PreferredExtensionForAudio: playlistData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: "Playlist", DownloadPath: playlistData.DownloadPath}
 		} else if playlistData.DownloadMode == "Video And Audio" {
-			playlist = DownloadTarget{URL: playlistData.URL, DownloadMode: playlistData.DownloadMode, Name: playlistMetadata.Playlist, PreferredExtensionForVideo: playlistData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: "Playlist"}
+			playlist = DownloadTarget{URL: playlistData.URL, DownloadMode: playlistData.DownloadMode, Name: playlistMetadata.Playlist, PreferredExtensionForVideo: playlistData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: "Playlist", DownloadPath: playlistData.DownloadPath}
 		}
 
 		err = playlist.AddToDatabase()
 		if err != nil {
 			log.Error(err)
-			ReturnResponse(w, Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()})
+			errRes =  Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()}
 		}
 		err = playlist.Download(playlistData.DownloadQuality, playlistData.FileExtension, playlistData.DownloadEntire)
 		if err != nil {
-			res = Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()}
-			ReturnResponse(w, res)
+			errRes = Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()}
 		}
 		err = playlist.UpdateLatestDownloaded(playlistMetadata.ID)
 		if err != nil {
-			res = Response{Type: "Error", Key: "ERROR_CHECKING_CHANNEL", Message: "There was an error while checking the channel: " + err.Error()}
-			ReturnResponse(w, res)
+			errRes = Response{Type: "Error", Key: "ERROR_UPDATING_LATEST_DOWNLOADED", Message: "There was an error while updating the playlist's latest downloaded video id: " + err.Error()}
 		}
 		err = playlist.UpdateDownloadHistory(playlistMetadata.ID)
 		if err != nil {
-			res = Response{Type: "Error", Key: "ERROR_CHECKING_CHANNEL", Message: "There was an error while checking the channel: " + err.Error()}
-			ReturnResponse(w, res)
+			errRes = Response{Type: "Error", Key: "ERROR_ERROR_UPDATING_DOWNLOAD_HISTORY", Message: "There was an error while updating the playlist's download history: " + err.Error()}
 		}
-		res = Response{Type: "Success", Key: "ADD_CHANNEL_SUCCESS", Message: "Channel successfully added and downloaded latest video"}
-		ReturnResponse(w, res)
+		okRes = Response{Type: "Success", Key: "ADD_PLAYLIST_SUCCESS", Message: "Playlist successfully added and downloaded latest video"}
+	}
+	if errRes.Type == "Error" {
+		ReturnResponse(w, errRes)
+	} else if okRes.Type == "Success" {
+		ReturnResponse(w, okRes)
 	}
 }
 
@@ -71,36 +71,39 @@ func HandleCheckPlaylist(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to check a playlist for new uploads")
 	w.Header().Set("Content-Type", "application/json")
 	var data AddTargetPayload
-	var res Response
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
 	}
 	playlist := DownloadTarget{URL: data.URL, Type: "Playlist"}
 	playlist, _ = playlist.GetFromDatabase()
 
 	newVideoFound, videoId, err := playlist.CheckNow()
 	if err != nil {
-		res = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the playlist: " + err.Error()}
+		errRes = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the playlist: " + err.Error()}
 	}
 	if newVideoFound == true {
 		err = playlist.Download("best", data.FileExtension, false)
 		if err != nil {
-			res = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the channel: " + err.Error()}
+			errRes = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the channel: " + err.Error()}
 		}
 		err = playlist.UpdateLatestDownloaded(videoId)
 		if err != nil {
-			res = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the channel: " + err.Error()}
+			errRes = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the channel: " + err.Error()}
 		}
 		err = playlist.UpdateDownloadHistory(videoId)
 		if err != nil {
-			res = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the channel: " + err.Error()}
+			errRes = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the channel: " + err.Error()}
 		}
-		res = Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + playlist.Name + " and downloaded"}
+		okRes = Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + playlist.Name + " and downloaded"}
 	} else {
-		res = Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected for " + playlist.Name}
+		okRes = Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected for " + playlist.Name}
 	}
-	ReturnResponse(w, res)
+	if errRes.Type == "Error" {
+		ReturnResponse(w, errRes)
+	} else if okRes.Type == "Success" {
+		ReturnResponse(w, okRes)
+	}
 }
 
 func HandleGetPlaylists(w http.ResponseWriter, r *http.Request) {
