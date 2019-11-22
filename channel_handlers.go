@@ -34,7 +34,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 		log.Error("HandleAddChannel: ", err)
 		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
 	}
-	log.Info(channelData)
+	log.Info("received this data: ", channelData)
 
 	channel := DownloadTarget{URL: channelData.URL, Type: "Channel"}
 
@@ -68,7 +68,7 @@ func HandleAddChannel(w http.ResponseWriter, r *http.Request) {
 
 		err = channel.Download(channelData.DownloadQuality, channelData.FileExtension, channelData.DownloadEntire)
 		if err != nil {
-			errRes = Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()}
+			errRes = Response{Type: "Error", Key: "ERROR_DOWNLOADING_CHANNEL", Message: "There was an error downloading the entire channel. Make sure you don't have any spaces in the custom output input box." + err.Error()}
 		}
 		err = channel.UpdateLatestDownloaded(channelMetadata.ID)
 		if err != nil {

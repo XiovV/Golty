@@ -62,30 +62,30 @@ func (target DownloadTarget) Download(downloadQuality, fileExtension string, dow
 			if target.DownloadMode == "Audio Only" {
 				// Downloads only latest video
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext="+fileExtension+"] -o downloads/channels/%(uploader)s/audio/%(title)s.%(ext)s "+target.URL
+					ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath +" "+ target.URL
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext="+fileExtension+"] -o downloads/channels/%(uploader)s/audio/%(title)s.%(ext)s "+target.URL
+					ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext="+fileExtension+"] -o downloads" +target.DownloadPath + " "+ target.URL
 				}
 			} else if target.DownloadMode == "Video And Audio" {
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -o downloads/channels/%(uploader)s/video/%(title)s.%(ext)s "+target.URL
+					ytdlCommand = "youtube-dl --playlist-end 1 -o downloads" + target.DownloadPath + " "+ target.URL
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -o downloads/channels/%(uploader)s/video/%(title)s.%(ext)s "+target.URL
+					ytdlCommand = "youtube-dl --ignore-errors -o downloads" + target.DownloadPath + " "+ target.URL
 				}
 			}
 		} else {
 			if target.DownloadMode == "Audio Only" {
 				// Downloads only latest video
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath + "%(title)s.%(ext)s "+target.URL
+					ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath + " "+target.URL
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath + "%(title)s.%(ext)s "+target.URL
+					ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath + " "+target.URL
 				}
 			} else if target.DownloadMode == "Video And Audio" {
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -o downloads" + target.DownloadPath + "%(title)s.%(ext)s "+target.URL
+					ytdlCommand = "youtube-dl --playlist-end 1 -o downloads" + target.DownloadPath + " "+target.URL
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -o downloads" + target.DownloadPath + "%(title)s.%(ext)s "+target.URL
+					ytdlCommand = "youtube-dl --ignore-errors -o downloads" + target.DownloadPath + " "+target.URL
 				}
 			}
 		}

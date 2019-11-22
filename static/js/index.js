@@ -41,21 +41,21 @@ function addChannel() {
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
   let downloadQuality = document.getElementById("download-quality").value
-  let downloadPath = document.getElementById("download-path").value
+  let downloadPath = document.getElementById("output-path-indicator").innerText
 
-  if (downloadPath[0] != "/" && downloadPath[downloadPath.length - 1] != "/") {
-    displayErrorMessage("Please add a / at the beginning AND end of the output string.")
-    stopSpinner("add-channel-spinner")
-    return
-  } else if (downloadPath[downloadPath.length - 1] != "/") {
-    displayErrorMessage("Please add a / at the end of the output string.")
-    stopSpinner("add-channel-spinner")
-    return
-  } else if (downloadPath[0] != "/") {
-    displayErrorMessage("Please add a / at the beginning of the output string.")
-    stopSpinner("add-channel-spinner")
-    return
-  }
+  // if (downloadPath[0] != "/" && downloadPath[downloadPath.length - 1] != "/") {
+  //   displayErrorMessage("Please add a / at the beginning AND end of the output string.")
+  //   stopSpinner("add-channel-spinner")
+  //   return
+  // } else if (downloadPath[downloadPath.length - 1] != "/") {
+  //   displayErrorMessage("Please add a / at the end of the output string.")
+  //   stopSpinner("add-channel-spinner")
+  //   return
+  // } else if (downloadPath[0] != "/") {
+  //   displayErrorMessage("Please add a / at the beginning of the output string.")
+  //   stopSpinner("add-channel-spinner")
+  //   return
+  // }
 
   let channelData = {
     URL,
