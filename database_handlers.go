@@ -14,13 +14,6 @@ import (
 var db []DownloadTarget
 var databaseName string
 
-
-func openDatabaseAndUnmarshalJSON(databaseName string) []DownloadTarget {
-	byteValue, _ := openJSONDatabase(CONFIG_ROOT + databaseName)
-	json.Unmarshal(byteValue, &db)
-	return db
-}
-
 func UpdateCheckingInterval(interval string) (Response, error) {
 	log.Info("updating checking interval")
 
@@ -118,9 +111,9 @@ func writeDb(db []DownloadTarget, dbName string) error {
 func getItemFromDatabase(databaseName, targetURL string) (DownloadTarget, error) {
 	db = openDatabaseAndUnmarshalJSON(databaseName)
 
-	for _, item := range db {
-		if item.URL == targetURL {
-			return item, nil
+	for i := range db {
+		if db[i].URL == targetURL {
+			return db[i], nil
 		}
 	}
 	return DownloadTarget{}, fmt.Errorf("Couldn't find target")
@@ -141,8 +134,8 @@ func setDatabaseName(targetType string) string {
 func removeItem(targetURL, databaseName string) error {
 	db = openDatabaseAndUnmarshalJSON(databaseName)
 
-	for i, item := range db {
-		if item.URL == targetURL {
+	for i := range db {
+		if db[i].URL == targetURL {
 			db = RemoveAtIndex(db, i)
 			log.Info("successfully removed channel from channels.json")
 			break
@@ -156,8 +149,8 @@ func removeItem(targetURL, databaseName string) error {
 func appendToDownloadHistory(target DownloadTarget, videoId, databaseName string) error {
 	db = openDatabaseAndUnmarshalJSON(databaseName)
 
-	for i, item := range db {
-		if item.URL == target.URL {
+	for i:= range db {
+		if db[i].URL == target.URL {
 			db[i].DownloadHistory = append(target.DownloadHistory, videoId)
 			log.Info(db)
 			break
@@ -178,24 +171,22 @@ func addTargetToDatabase(target DownloadTarget, databaseName string) error {
 func updateLastCheckedDateAndTime(target DownloadTarget, databaseName string) error {
 	openDatabaseAndUnmarshalJSON(databaseName)
 
-	for i, item := range db {
-		log.Info("LOOPING THROUGH: ", item)
-		if item.URL == target.URL {
+	for i:= range db {
+		if db[i].URL == target.URL {
 			dt := time.Now()
 			db[i].LastChecked = dt.Format("01-02-2006 15:04:05")
 			log.Info("last checked date and time updated successfully")
 			break
 		}
 	}
-
 	return writeDb(db, CONFIG_ROOT+databaseName)
 }
 
 func updateLatestDownloadedVideoId(target DownloadTarget, videoId, databaseName string) error {
 	db = openDatabaseAndUnmarshalJSON(databaseName)
 
-	for i, item := range db {
-		if item.URL == target.URL {
+	for i := range db {
+		if db[i].URL == target.URL {
 			db[i].LatestDownloaded = videoId
 			log.Info("latest downloaded video id updated successfully")
 			break
@@ -207,9 +198,9 @@ func updateLatestDownloadedVideoId(target DownloadTarget, videoId, databaseName 
 func checkIfTargetExists(target DownloadTarget, databaseName string) (bool, error) {
 	db = openDatabaseAndUnmarshalJSON(databaseName)
 
-	for _, item := range db {
-		if item.URL == target.URL {
-			fmt.Println(item.URL, target.URL)
+	for i := range db {
+		if db[i].URL == target.URL {
+			fmt.Println(db[i].URL, target.URL)
 			return true, nil
 		}
 	}
@@ -233,4 +224,10 @@ func openJSONDatabase(dbName string) ([]byte, error) {
 	}
 
 	return byteValue, nil
+}
+
+func openDatabaseAndUnmarshalJSON(databaseName string) []DownloadTarget {
+	byteValue, _ := openJSONDatabase(CONFIG_ROOT + databaseName)
+	json.Unmarshal(byteValue, &db)
+	return db
 }

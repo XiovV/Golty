@@ -24,8 +24,7 @@ func HandlePlaylists(w http.ResponseWriter, r *http.Request) {
 func HandleVideos(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/videos.html")
 }
-var errRes Response
-var okRes Response
+
 
 func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to add a playlist")

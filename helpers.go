@@ -12,15 +12,15 @@ import (
 
 func GetAll(target string) ([]DownloadTarget, error) {
 	var db []DownloadTarget
-	var dbName string
+	var databaseName string
 	if target == "channels" {
-		dbName = "channels.json"
+		databaseName = "channels.json"
 	} else if target == "playlists" {
-		dbName = "playlists.json"
+		databaseName = "playlists.json"
 	}
 
 	log.Info("getting all channels from channels.json")
-	jsonFile, err := os.Open(CONFIG_ROOT + dbName)
+	jsonFile, err := os.Open(CONFIG_ROOT + databaseName)
 	if err != nil {
 		log.Error("From GetAll()", err)
 		return []DownloadTarget{}, fmt.Errorf("From GetAll(): %v", err)
