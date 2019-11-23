@@ -9,7 +9,22 @@
   "DownloadHistory": [
    "au5Ap5qAWa8"
   ],
-  "LastChecked": "11-23-2019 15:25:10",
+  "LastChecked": "11-23-2019 15:34:29",
+  "CheckingInterval": "",
+  "Type": "Channel",
+  "DownloadPath": "/channels/%(uploader)s/audio/%(title)s.%(ext)s"
+ },
+ {
+  "URL": "https://www.youtube.com/user/NewRetroWave",
+  "LatestDownloaded": "7rCzIwlX8Dg",
+  "DownloadMode": "Audio Only",
+  "Name": "Uploads from NewRetroWave",
+  "PreferredExtensionForAudio": "m4a",
+  "PreferredExtensionForVideo": "",
+  "DownloadHistory": [
+   "7rCzIwlX8Dg"
+  ],
+  "LastChecked": "11-23-2019 15:34:22",
   "CheckingInterval": "",
   "Type": "Channel",
   "DownloadPath": "/channels/%(uploader)s/audio/%(title)s.%(ext)s"

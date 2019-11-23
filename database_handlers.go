@@ -15,22 +15,20 @@ var db []DownloadTarget
 var databaseName string
 
 
+func openDatabaseAndUnmarshalJSON(databaseName string) []DownloadTarget {
+	byteValue, _ := openJSONDatabase(CONFIG_ROOT + databaseName)
+	json.Unmarshal(byteValue, &db)
+	return db
+}
+
 func UpdateCheckingInterval(interval string) (Response, error) {
 	log.Info("updating checking interval")
 
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
-	if err != nil {
-		return Response{Type: "Error", Key: "ERROR_OPENING_DATABASE", Message: "There was an error opening channels.json: " + err.Error()}, fmt.Errorf("UpdateCheckingInterval: %s", err)
-	}
-
-	err = json.Unmarshal(byteValue, &db)
-	if err != nil {
-		return Response{Type: "Error", Key: "ERROR_UNMRASHALLING_JSON", Message: "There was an error unmarshalling json: " + err.Error()}, fmt.Errorf("UpdateCheckingInterval: %s", err)
-	}
+	db = openDatabaseAndUnmarshalJSON("channels.json")
 
 	if len(db) > 0 {
 		db[0].CheckingInterval = interval
-		err = writeDb(db, CONFIG_ROOT+"channels.json")
+		err := writeDb(db, CONFIG_ROOT+"channels.json")
 		if err != nil {
 			return Response{Type: "Error", Key: "ERROR_WRITING_TO_DATABASE", Message: "There was an error writing to channels.json: " + err.Error()}, fmt.Errorf("UpdateCheckingInterval: %s", err)
 		}
@@ -79,36 +77,12 @@ func (target DownloadTarget) GetFromDatabase() (DownloadTarget, error) {
 	return getItemFromDatabase(databaseName, target.URL)
 }
 
-func openJSONDatabase(dbName string) ([]byte, error) {
-	jsonFile, err := os.Open(dbName)
-	if err != nil {
-		log.Errorf("openJSONDatabase: %s", err)
-		return nil, fmt.Errorf("openJSONDatabase: %s", err)
-	}
 
-	defer jsonFile.Close()
-
-	byteValue, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		log.Errorf("openJSONDatabase: %s", err)
-		return nil, fmt.Errorf("openJSONDatabase: %s", err)
-	}
-
-	return byteValue, nil
-}
 
 func GetCheckingInterval() (int, error) {
 	log.Info("getting checking interval")
 
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + "channels.json")
-	if err != nil {
-		return 0, fmt.Errorf("GetCheckingInterval: %s", err)
-	}
-
-	err = json.Unmarshal(byteValue, &db)
-	if err != nil {
-		return 0, fmt.Errorf("GetCheckingInterval: %s", err)
-	}
+	db = openDatabaseAndUnmarshalJSON("channels.json")
 	if len(db) > 0 && db[0].CheckingInterval != "" {
 		checkingInterval, err := strconv.Atoi(db[0].CheckingInterval)
 		if err != nil {
@@ -141,12 +115,8 @@ func writeDb(db []DownloadTarget, dbName string) error {
 	return nil
 }
 
-func getItemFromDatabase(dbName, targetURL string) (DownloadTarget, error) {
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + dbName)
-	if err != nil {
-		return DownloadTarget{}, fmt.Errorf("GetFromDatabase: %s", err)
-	}
-	json.Unmarshal(byteValue, &db)
+func getItemFromDatabase(databaseName, targetURL string) (DownloadTarget, error) {
+	db = openDatabaseAndUnmarshalJSON(databaseName)
 
 	for _, item := range db {
 		if item.URL == targetURL {
@@ -168,13 +138,8 @@ func setDatabaseName(targetType string) string {
 	return ""
 }
 
-func removeItem(targetURL, dbName string) error {
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + dbName)
-	if err != nil {
-		return fmt.Errorf("Delete: %s", err)
-	}
-
-	json.Unmarshal(byteValue, &db)
+func removeItem(targetURL, databaseName string) error {
+	db = openDatabaseAndUnmarshalJSON(databaseName)
 
 	for i, item := range db {
 		if item.URL == targetURL {
@@ -184,20 +149,12 @@ func removeItem(targetURL, dbName string) error {
 		}
 	}
 
-	return writeDb(db, CONFIG_ROOT+dbName)
+	return writeDb(db, CONFIG_ROOT+databaseName)
 }
 
 
 func appendToDownloadHistory(target DownloadTarget, videoId, databaseName string) error {
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + databaseName)
-	if err != nil {
-		return fmt.Errorf("UpdateDownloadHistory: %s", err)
-	}
-
-	err = json.Unmarshal(byteValue, &db)
-	if err != nil {
-		return fmt.Errorf("UpdateDownloadHistory: %s", err)
-	}
+	db = openDatabaseAndUnmarshalJSON(databaseName)
 
 	for i, item := range db {
 		if item.URL == target.URL {
@@ -211,11 +168,7 @@ func appendToDownloadHistory(target DownloadTarget, videoId, databaseName string
 }
 
 func addTargetToDatabase(target DownloadTarget, databaseName string) error {
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + databaseName)
-	if err != nil {
-		return fmt.Errorf("AddToDatabase: %s", err)
-	}
-	json.Unmarshal(byteValue, &db)
+	openDatabaseAndUnmarshalJSON(databaseName)
 
 	log.Info("adding channel to DB")
 	db = append(db, target)
@@ -223,15 +176,7 @@ func addTargetToDatabase(target DownloadTarget, databaseName string) error {
 }
 
 func updateLastCheckedDateAndTime(target DownloadTarget, databaseName string) error {
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + databaseName)
-	if err != nil {
-		return fmt.Errorf("UpdateLastChecked: %s", err)
-	}
-
-	err = json.Unmarshal(byteValue, &db)
-	if err != nil {
-		return fmt.Errorf("UpdateLastChecked: %s", err)
-	}
+	openDatabaseAndUnmarshalJSON(databaseName)
 
 	for i, item := range db {
 		log.Info("LOOPING THROUGH: ", item)
@@ -247,15 +192,7 @@ func updateLastCheckedDateAndTime(target DownloadTarget, databaseName string) er
 }
 
 func updateLatestDownloadedVideoId(target DownloadTarget, videoId, databaseName string) error {
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + databaseName)
-	if err != nil {
-		return fmt.Errorf("UpdateLatestDownloaded: %s", err)
-	}
-
-	err = json.Unmarshal(byteValue, &db)
-	if err != nil {
-		return fmt.Errorf("UpdateLatestDownloaded: %s", err)
-	}
+	db = openDatabaseAndUnmarshalJSON(databaseName)
 
 	for i, item := range db {
 		if item.URL == target.URL {
@@ -268,12 +205,7 @@ func updateLatestDownloadedVideoId(target DownloadTarget, videoId, databaseName 
 }
 
 func checkIfTargetExists(target DownloadTarget, databaseName string) (bool, error) {
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + databaseName)
-	if err != nil {
-		return false, fmt.Errorf("DoesExist: %s", err)
-	}
-
-	json.Unmarshal(byteValue, &db)
+	db = openDatabaseAndUnmarshalJSON(databaseName)
 
 	for _, item := range db {
 		if item.URL == target.URL {
@@ -283,4 +215,22 @@ func checkIfTargetExists(target DownloadTarget, databaseName string) (bool, erro
 	}
 
 	return false, nil
+}
+
+func openJSONDatabase(dbName string) ([]byte, error) {
+	jsonFile, err := os.Open(dbName)
+	if err != nil {
+		log.Errorf("openJSONDatabase: %s", err)
+		return nil, fmt.Errorf("openJSONDatabase: %s", err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		log.Errorf("openJSONDatabase: %s", err)
+		return nil, fmt.Errorf("openJSONDatabase: %s", err)
+	}
+
+	return byteValue, nil
 }
