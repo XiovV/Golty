@@ -81,7 +81,6 @@ func main() {
 
 	r.HandleFunc("/api/update-checking-interval", HandleUpdateCheckingInterval).Methods("POST")
 
-
 	r.HandleFunc("/api/get-videos", HandleGetVideos).Methods("GET")
 	r.HandleFunc("/api/download-video", HandleDownloadVideo).Methods("POST")
 

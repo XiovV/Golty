@@ -70,8 +70,6 @@ func (target DownloadTarget) GetFromDatabase() (DownloadTarget, error) {
 	return getItemFromDatabase(databaseName, target.URL)
 }
 
-
-
 func GetCheckingInterval() (int, error) {
 	log.Info("getting checking interval")
 

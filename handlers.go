@@ -25,7 +25,6 @@ func HandleVideos(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/videos.html")
 }
 
-
 func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to add a playlist")
 	w.Header().Set("Content-Type", "application/json")
@@ -155,14 +154,12 @@ func HandleGetTargets(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(res)
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_CHANNELS", Message: "There was an error while getting playlists: " + err.Error()})
 	}
-	log.Info("targets: ", targets)
 	json.NewEncoder(w).Encode(targets)
 }
 
 func HandleCheckAllTargets(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var targetData GetTargetPayload
-	log.Info("DATA: ", targetData)
 	err := json.NewDecoder(r.Body).Decode(&targetData)
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
