@@ -45,7 +45,7 @@ func uploadChecker() {
 		log.Errorf("uploadChecker: %s", err)
 	}
 	if interval == 0 {
-		time.Sleep(5 * time.Second)
+		time.Sleep(5 * time.Minute)
 		uploadChecker()
 	} else if interval != 0 {
 		for {
@@ -73,18 +73,13 @@ func main() {
 	r.HandleFunc("/playlists", HandlePlaylists).Methods("GET")
 	r.HandleFunc("/videos", HandleVideos).Methods("GET")
 
-	r.HandleFunc("/api/get-channels", HandleGetChannels).Methods("GET")
-	r.HandleFunc("/api/add-channel", HandleAddChannel).Methods("POST")
-	r.HandleFunc("/api/check-channel", HandleCheckChannel).Methods("POST")
-	r.HandleFunc("/api/check-all", HandleCheckAll).Methods("GET")
-	r.HandleFunc("/api/delete-channel", HandleDeleteChannel).Methods("POST")
-	r.HandleFunc("/api/update-checking-interval", HandleUpdateCheckingInterval).Methods("POST")
+	r.HandleFunc("/api/add", HandleAddTarget).Methods("POST")
+	r.HandleFunc("/api/check", HandleCheckTarget).Methods("POST")
+	r.HandleFunc("/api/delete", HandleDeleteTarget).Methods("POST")
+	r.HandleFunc("/api/get", HandleGetTargets).Methods("POST")
+	r.HandleFunc("/api/check-all", HandleCheckAllTargets).Methods("POST")
 
-	r.HandleFunc("/api/get-playlists", HandleGetPlaylists).Methods("GET")
-	r.HandleFunc("/api/add-playlist", HandleAddPlaylist).Methods("POST")
-	r.HandleFunc("/api/check-playlist", HandleCheckPlaylist).Methods("POST")
-	r.HandleFunc("/api/check-all-playlists", HandleCheckAllPlaylists).Methods("GET")
-	r.HandleFunc("/api/delete-playlist", HandleDeletePlaylist).Methods("POST")
+	r.HandleFunc("/api/update-checking-interval", HandleUpdateCheckingInterval).Methods("POST")
 
 	r.HandleFunc("/api/get-videos", HandleGetVideos).Methods("GET")
 	r.HandleFunc("/api/download-video", HandleDownloadVideo).Methods("POST")

@@ -66,8 +66,20 @@
       <input type="checkbox" class="custom-control-input" id="download-entire-channel">
       <label class="custom-control-label" for="download-entire-channel">Download the entire channel (will ignore youtube-dl errors so it doesn't crash)</label>
     </div>
-    
-    
+
+    <div class="custom-control custom-radio">
+      <input type="radio" onclick="customYtdl(this.id)" name="custom-output" id="custom-download-output" class="custom-control-input">
+      <label class="custom-control-label" for="custom-download-output">Enter custom download path</label>
+    </div>
+    <div class="custom-control custom-radio">
+      <input type="radio" onclick="customYtdl(this.id)" name="custom-output" id="custom-ytdl-output"  class="custom-control-input">
+      <label class="custom-control-label mb-2" for="custom-ytdl-output">Enter custom youtube-dl output</label>
+    </div>
+    <input type="text" class="form-control mb-1" id="download-path" oninput="changeOutputPathIndicator(this.id)" placeholder="" disabled>
+    <div class="form-group form-inline">
+      <p class="pr-1">Output path: </p><p class="mb-3 text-muted" id="output-path-indicator">/channels/%(uploader)s/audio/%(title)s.%(ext)s</p>
+    </div>
+
     <button class="btn btn-primary mb-3" onclick="addChannel()">Add Channel And Download<div id="add-channel-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
     
     <div class="form-group form-inline">
@@ -89,7 +101,7 @@
     <div id="accordion">
     </div>
 
-    <a href="/logs" class="btn btn-primary mt-3">Read Logs</a>
+    <a href="/logs" class="btn btn-primary mt-3 mb-5">Read Logs</a>
     <p class="float-right" id="version-number"></p>
   </div>
 

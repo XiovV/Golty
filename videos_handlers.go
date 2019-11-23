@@ -10,22 +10,40 @@ func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to download a video")
 	var ytdlCommand string
 	var videoData DownloadVideoPayload
+	var errRes Response
 	err := json.NewDecoder(r.Body).Decode(&videoData)
 	if err != nil {
 		log.Error("HandleDownloadVideo: ", err)
-		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
 	}
-	if videoData.DownloadMode == "Audio Only" {
-		ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o downloads/videos/%(uploader)s/audio/%(title)s.%(ext)s "+videoData.VideoURL
-	} else if videoData.DownloadMode == "Video And Audio" {
-		ytdlCommand = "youtube-dl -o downloads/videos/%(uploader)s/video/%(title)s.%(ext)s "+videoData.VideoURL
+	log.Info(videoData)
+	if videoData.DownloadPath == "" {
+		if videoData.DownloadMode == "Audio Only" {
+			ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o downloads/videos/%(uploader)s/audio/%(title)s.%(ext)s "+videoData.VideoURL
+		} else if videoData.DownloadMode == "Video And Audio" {
+			ytdlCommand = "youtube-dl -o downloads/videos/%(uploader)s/video/%(title)s.%(ext)s "+videoData.VideoURL
+		}
+	} else {
+		if videoData.DownloadMode == "Audio Only" {
+			ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o downloads" + videoData.DownloadPath+ "%(title)s.%(ext)s "+videoData.VideoURL
+		} else if videoData.DownloadMode == "Video And Audio" {
+			ytdlCommand = "youtube-dl -o downloads" + videoData.DownloadPath+ "%(title)s.%(ext)s "+videoData.VideoURL
+		}
 	}
-	DownloadVideo(ytdlCommand)
 
-	videoData.AddToDatabase()
-
-	ReturnResponse(w, Response{Type: "Success", Key: "DOWNLOAD_VIDEO_SUCCESS", Message: "Video successfully downloaded."})
-
+	err = DownloadVideo(ytdlCommand)
+	if err != nil {
+		errRes = Response{Type: "Error", Key: "DOWNLOAD_VIDEO_ERROR", Message: "There was an error while downloading the video: "+err.Error()}
+	}
+	err = videoData.AddToDatabase()
+	if err != nil {
+		errRes = Response{Type: "Error", Key: "ADDING_TO_DATABASE_ERROR", Message: "There was an error while adding the video into the database: "+err.Error()}
+	}
+	if errRes.Type == "Error" {
+		ReturnResponse(w, errRes)
+	} else if errRes.Type == "" {
+		ReturnResponse(w, Response{Type: "Success", Key: "DOWNLOAD_VIDEO_SUCCESS", Message: "Video successfully downloaded."})
+	}
 }
 
 func HandleGetVideos(w http.ResponseWriter, r *http.Request) {

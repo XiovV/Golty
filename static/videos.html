@@ -63,7 +63,12 @@
         </select>
       </div>
     </div>
-    
+    <div class="custom-control custom-checkbox mb-3">
+      <input type="checkbox" class="custom-control-input" id="custom-ytdl" onclick="customYtdl()">
+      <label class="custom-control-label" for="custom-ytdl">Enter custom youtube-dl output: </label>
+    </div>
+    <input type="checkbox" class="custom-control-input" id="custom-ytdl">
+    <input type="text" class="form-control mb-3" id="download-path" placeholder="default: videos/%(uploader)s/audio/%(title)s.%(ext)s" disabled>
     <button class="btn btn-primary mb-3" onclick="downloadVideo()">Download Video<div id="download-video-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
     
     <h2 class="mt-2">Download History: </h2>
@@ -71,10 +76,10 @@
     </div>
 
     <a href="/logs" class="btn btn-primary mt-3">Read Logs</a>
-    <p class="float-right" id="version-number" onload="getVersion()"></p>
+    <p class="float-right" id="version-number"></p>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <script src="/static/js/videos.js"></script>

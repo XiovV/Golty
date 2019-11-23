@@ -4,13 +4,16 @@ function downloadVideo() {
     let downloadMode = document.getElementById("download-mode").value
     let fileExtension = document.getElementById("file-extension").value
     let downloadQuality = document.getElementById("download-quality").value
+    let downloadPath = document.getElementById("download-path").value
 
+    console.log(downloadPath)
 
     let videoData = {
         videoURL,
         downloadMode,
         fileExtension,
         downloadQuality,
+        downloadPath,
     };
 
     const options = {
@@ -90,59 +93,9 @@ function displayVideos(videos) {
         <div class="panel-body ml-2">
           <p>Downloaded As: ${video.DownloadMode}</p>
           <p>File Extension: ${video.FileExtension}</p>
+          <p>Download Path: ${video.DownloadPath}</p>
         </div>
       </div>
     </div>`
     })
-}
-function handleResponse(res) {
-    if (res.Type == "Success") {
-        displaySuccessMessage(res.Message)
-    } else if (res.Type == "Error") {
-        displayErrorMessage(res.Message)
-    } else if (res.Type == "Warning") {
-        displayWarningMessage(res.Message)
-    }
-}
-
-function startSpinner(id) {
-    spinner = document.getElementById(id);
-    spinner.classList.remove("d-none");
-}
-
-function stopSpinner(id) {
-    spinner = document.getElementById(id);
-    spinner.classList.add("d-none")
-}
-
-function changeExtension() {
-    console.log("change ext")
-    let downloadMode = document.getElementById("download-mode").value
-    let fileExtensions = document.getElementById("file-extension")
-    let downloadQualities = document.getElementById("download-quality")
-    if (downloadMode == "Audio Only") {
-        fileExtensions.options[0].value = "m4a"
-        fileExtensions.options[0].text = "m4a"
-        fileExtensions.options[1].value = "mp3"
-        fileExtensions.options[1].text = "mp3"
-        downloadQualities.options[0].value = "best"
-        downloadQualities.options[0].text = "best"
-        downloadQualities.options[1].value = "medium"
-        downloadQualities.options[1].text = "medium"
-        downloadQualities.options[2].value = "worst"
-        downloadQualities.options[2].text = "worst"
-    } else if (downloadMode == "Video And Audio") {
-        fileExtensions.options[0].value = "any"
-        fileExtensions.options[0].text = "any (recommended for now)"
-        fileExtensions.options[1].value = "mp4"
-        fileExtensions.options[1].text = "mp4"
-        // fileExtensions.options[2].value = ".mkv"
-        // fileExtensions.options[2].text = ".mkv"
-
-        downloadQualities.options[0].value = "best"
-        downloadQualities.options[0].text = "best"
-        downloadQualities.options[1] = null
-        downloadQualities.options[2].value = "worst"
-        downloadQualities.options[2].text = "worst"
-    }
 }

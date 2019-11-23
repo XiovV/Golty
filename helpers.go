@@ -12,15 +12,15 @@ import (
 
 func GetAll(target string) ([]DownloadTarget, error) {
 	var db []DownloadTarget
-	var dbName string
+	var databaseName string
 	if target == "channels" {
-		dbName = "channels.json"
+		databaseName = "channels.json"
 	} else if target == "playlists" {
-		dbName = "playlists.json"
+		databaseName = "playlists.json"
 	}
 
 	log.Info("getting all channels from channels.json")
-	jsonFile, err := os.Open(CONFIG_ROOT + dbName)
+	jsonFile, err := os.Open(CONFIG_ROOT + databaseName)
 	if err != nil {
 		log.Error("From GetAll()", err)
 		return []DownloadTarget{}, fmt.Errorf("From GetAll(): %v", err)
@@ -36,52 +36,47 @@ func GetAll(target string) ([]DownloadTarget, error) {
 		return []DownloadTarget{}, fmt.Errorf("From GetAll(): %v", err)
 	}
 	log.Info("successfully read all channels")
+	log.Info(db)
 	return db, nil
 }
 
 func CheckAll(target string) (Response, error) {
 	var foundFor []string
 	var preferredExtension string
-	var allInInDb []DownloadTarget
+	var allInDb []DownloadTarget
 	var err error
 	var targetType string
 	if target == "channels" {
 		log.Info("checking for all channels")
-		allInInDb, err = GetAll("channels")
+		allInDb, err = GetAll("channels")
 		targetType = "Channel"
 	} else if target == "playlists" {
 		log.Info("checking for all playlists")
-		allInInDb, err = GetAll("playlists")
+		allInDb, err = GetAll("playlists")
 		targetType = "Playlist"
 	}
-	for _, item := range allInInDb {
+	for _, item := range allInDb {
 		target := DownloadTarget{URL: item.URL, Type: targetType}
-		target, err = GetFromDatabase(target)
+		target, err = target.GetFromDatabase()
 		if err != nil {
 			return Response{Type: "Error", Key: "GETTING_FROM_DATABASE_ERROR", Message: "There was an error getting the channel from database" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
 		}
-
-		if item.URL == target.URL {
-			videoId, err := GetLatestVideo(target)
-			if err != nil {
-				log.Error("There was an error getting latest video: ", err)
-				return Response{Type: "Error", Key: "GETTING_LATEST_VIDEO_ERROR", Message: "There was an error getting the latestvideo" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
+		newVideoUploaded, videoId, err := target.CheckNow()
+		if err != nil {
+			return Response{Type: "Error", Key: "CHECKING_ERROR", Message: "There was an error checking for new uploads" + err.Error()}, fmt.Errorf("CheckAll: %s", err)
+		}
+		if newVideoUploaded == true {
+			log.Info("new video detected for: ", item.URL)
+			foundFor = append(foundFor, item.URL)
+			if target.DownloadMode == "Audio Only" {
+				preferredExtension = target.PreferredExtensionForAudio
+			} else if target.DownloadMode == "Video And Audio" {
+				preferredExtension = target.PreferredExtensionForVideo
 			}
-
-			UpdateLastChecked(item)
-			if item.LatestDownloaded == videoId {
-				log.Info("no new videos found for: ", item.URL)
-			} else {
-				log.Info("new video detected for: ", item.URL)
-				foundFor = append(foundFor, item.URL)
-				if target.DownloadMode == "Audio Only" {
-					preferredExtension = target.PreferredExtensionForAudio
-				} else if target.DownloadMode == "Video And Audio" {
-					preferredExtension = target.PreferredExtensionForVideo
-				}
-				go Download(target, "best", preferredExtension, false)
-				UpdateLatestDownloaded(target, videoId)
-			}
+			go target.Download("best", preferredExtension, false)
+			target.UpdateLatestDownloaded(videoId)
+		} else {
+			log.Info("no new videos found for: ", item.URL)
 		}
 	}
 	if len(foundFor) == 0 {
@@ -90,74 +85,66 @@ func CheckAll(target string) (Response, error) {
 	return Response{Type: "Success", Key: "NEW_VIDEOS", Message: "New videos detected for: " + strings.Join(foundFor, ",")}, nil
 }
 
-func (target DownloadTarget) CheckNow() (Response, error) {
+func (target DownloadTarget) CheckNow() (bool, string, error) {
 	var allInDb []DownloadTarget
 	var err error
 	log.Info("checking for new videos")
 	if target.Type == "Channel" {
 		allInDb, err = GetAll("channels")
 		if err != nil {
-			return Response{}, fmt.Errorf("From p.CheckNow(): %v", err)
+			return false, "", fmt.Errorf("From p.CheckNow(): %v", err)
 		}
 	} else if target.Type == "Playlist" {
 		allInDb, err = GetAll("playlists")
 		if err != nil {
-			return Response{}, fmt.Errorf("From p.CheckNow(): %v", err)
+			return false, "", fmt.Errorf("From p.CheckNow(): %v", err)
 		}
 	}
-	var preferredExtension string
 
-	targets, err := GetFromDatabase(target)
+	targets, err := target.GetFromDatabase()
 	if err != nil {
-		return Response{Type: "Error", Key: "GETTING_FROM_DATABASE_ERROR", Message: "There was an error getting the playlist from database" + err.Error()}, fmt.Errorf("CheckNow: %s", err)
+		return false, "", fmt.Errorf("CheckNow: %s", err)
 	}
 	targetURL := target.URL
 
-	targetMetadata, err := GetMetadata(targets)
+	targetMetadata, err := targets.GetMetadata()
 	if err != nil {
-		return Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting playlist metadata: " + err.Error()}, nil
+		return false, "", fmt.Errorf("CheckNow: %s", err)
 	}
 
-	err = UpdateLastChecked(target)
+	err = target.UpdateLastChecked()
 	if err != nil {
-		return Response{Type: "Error", Key: "ERROR_UPDATING_LAST_CHECKED", Message: "There was an error updating latest checked date and time: " + err.Error()}, nil
+		return false, "", fmt.Errorf("CheckNow: %s", err)
 	}
 
 	for _, target := range allInDb {
 		if target.URL == targetURL {
 			if target.LatestDownloaded == targetMetadata.ID {
 				log.Info("no new videos found for: ", targetURL)
-				return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected for " + target.Name}, nil
+				return false, "", nil
 			} else {
-				log.Info("new video detected for: ", targetURL)
-				if target.DownloadMode == "Audio Only" {
-					preferredExtension = target.PreferredExtensionForAudio
-				} else if target.DownloadMode == "Video And Audio" {
-					preferredExtension = target.PreferredExtensionForVideo
-				}
-				err := Download(target, "best", preferredExtension, false)
-				if err != nil {
-					log.Error(err)
-					return Response{Type: "Error", Key: "ERROR_DOWNLOADING_VIDEO", Message: err.Error()}, nil
-				}
-				UpdateLatestDownloaded(target, targetMetadata.ID)
-				return Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + target.Name + " and downloaded"}, nil
+				log.Info("new video found for: ", targetURL)
+				return true, targetMetadata.ID, nil
 			}
 		}
 	}
-	log.Error("Something went terribly wrong")
-	return Response{Type: "Error", Key: "UNKNOWN_ERROR", Message: "Something went wrong"}, nil
+	log.Error("CheckNow: Something went terribly wrong")
+	return false, "", fmt.Errorf("CheckNow: something went wrong ")
 }
 
 func RemoveAtIndex(s []DownloadTarget, index int) []DownloadTarget {
 	return append(s[:index], s[index+1:]...)
 }
 
-func GetChannelName(channelURL string) string {
-	return strings.Split(channelURL, "/")[4]
-}
-
 func ReturnResponse(w http.ResponseWriter, res Response) {
 	log.Info("returning response: ", res)
 	json.NewEncoder(w).Encode(res)
+}
+
+func Log(err error) error {
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
 }

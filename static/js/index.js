@@ -35,14 +35,29 @@ function updateCheckingInterval() {
 }
 
 function addChannel() {
-  console.log("CALLING ADD CHANNEl")
   startSpinner("add-channel-spinner")
   let downloadEntire = document.querySelector('#download-entire-channel').checked;
   let URL = document.getElementById("channel-url").value
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
   let downloadQuality = document.getElementById("download-quality").value
+  let downloadPath = document.getElementById("output-path-indicator").innerText
 
+  // if (downloadPath[0] != "/" && downloadPath[downloadPath.length - 1] != "/") {
+  //   displayErrorMessage("Please add a / at the beginning AND end of the output string.")
+  //   stopSpinner("add-channel-spinner")
+  //   return
+  // } else if (downloadPath[downloadPath.length - 1] != "/") {
+  //   displayErrorMessage("Please add a / at the end of the output string.")
+  //   stopSpinner("add-channel-spinner")
+  //   return
+  // } else if (downloadPath[0] != "/") {
+  //   displayErrorMessage("Please add a / at the beginning of the output string.")
+  //   stopSpinner("add-channel-spinner")
+  //   return
+  // }
+
+  let type = "Channel"
 
   let channelData = {
     URL,
@@ -50,6 +65,8 @@ function addChannel() {
     fileExtension,
     downloadQuality,
     downloadEntire,
+    downloadPath,
+    type,
   };
 
   const options = {
@@ -60,7 +77,7 @@ function addChannel() {
     })
   };
 
-  fetch("/api/add-channel", options)
+  fetch("/api/add", options)
     .then(res => res.json())
     .then(res => {
       handleResponse(res)
@@ -71,22 +88,47 @@ function addChannel() {
 
 function checkAll() {
   startSpinner("check-all-spinner")
-  fetch("/api/check-all")
-    .then(res => res.json())
-    .then(res => {
-      handleResponse(res)
-      stopSpinner("check-all-spinner")
-      getChannels()
-    });
+  let type = "channels"
+  let channelData = {
+    type,
+  }
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(channelData),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/check-all", options)
+      .then(res => res.json())
+      .then(res => {
+        handleResponse(res)
+        stopSpinner("check-all-spinner")
+        getChannels()
+      });
 }
 
 function getChannels() {
-  fetch("/api/get-channels")
-    .then(res => res.json())
-    .then(channels => {
-      displayChannels(channels);
-      getVersion();
-    });
+  let channelData = {
+    Type: "channels"
+  }
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(channelData),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/get", options)
+      .then(res => res.json())
+      .then(channels => {
+        displayChannels(channels);
+        getVersion();
+      });
 }
 
 function checkChannel(id) {
@@ -95,12 +137,14 @@ function checkChannel(id) {
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
   let downloadQuality = document.getElementById("download-quality").value
+  let type = "Channel"
 
   let channelData = {
     URL,
     downloadMode,
     fileExtension,
-    downloadQuality
+    downloadQuality,
+    type
   };
 
   const options = {
@@ -111,7 +155,7 @@ function checkChannel(id) {
     })
   };
 
-  fetch("/api/check-channel", options)
+  fetch("/api/check", options)
     .then(res => res.json())
     .then(res => {
       console.log(res);
@@ -134,7 +178,8 @@ function checkChannel(id) {
 
 function deleteChannel(id) {
   let channelURL = {
-    URL: id
+    URL: id,
+    Type: "Channel"
   };
 
   const options = {
@@ -145,7 +190,7 @@ function deleteChannel(id) {
     })
   };
 
-  fetch("/api/delete-channel", options)
+  fetch("/api/delete", options)
     .then(res => res.json())
     .then(res => {
       handleResponse(res)
@@ -198,7 +243,7 @@ function displayChannels(channels) {
         <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.URL}listElem>
           ${channel.Name}
         </button><button class="btn btn-danger float-right ml-2" id="${channel.URL +
-        "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.URL}" onClick="checkChannel(this.id)">Check<div id="${channel.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
+        "delTarget"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.URL}" onClick="checkChannel(this.id)">Check<div id="${channel.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
       </h5>
   
       <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
@@ -208,12 +253,13 @@ function displayChannels(channels) {
           <p>Last Checked: ${channel.LastChecked}</p>
           <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
           <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
+          <p class="m-0 p-0">Download Path: ${channel.DownloadPath}</p>
           <br>
-          <button class="btn btn-link dropdown-toggle" type="button" data-toggle="collapse" data-target="#history${index}" aria-expanded="false" aria-controls="history${index}">
+          <button class="btn btn-link dropdown-toggle m-0 p-0" type="button" data-toggle="collapse" data-target="#history${index}" aria-expanded="false" aria-controls="history${index}">
             Download History
           </button>
-          <div class="collapse" id="history${index}">
-            <div class="card card-body" id="dlhistory${channel.Name}">
+          <div class="collapse m-0 p-0" id="history${index}">
+            <div class="card card-body p-2" id="dlhistory${channel.Name}">
             </div>
           </div>
         </div>
@@ -232,6 +278,64 @@ function displayDownloadHistory(channelName, downloadHistory) {
   })
 }
 
+function changeExtension() {
+  console.log("change ext")
+
+  let downloadMode = document.getElementById("download-mode").value;
+  let fileExtensions = document.getElementById("file-extension");
+  let downloadQualities = document.getElementById("download-quality");
+  let input = document.getElementById("download-path").value;
+  if (downloadMode == "Audio Only") {
+    document.getElementById("download-path").placeholder = "default: /channels/%(uploader)s/audio/%(title)s.%(ext)s";
+    if (input.length > 0) {
+      downloadPathRadio = document.getElementById("custom-download-output").checked;
+      youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
+      if (downloadPathRadio == true) {
+        document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/audio/%(title)s.%(ext)s"
+      } else if (youtubedlOutputRadio == true) {
+        document.getElementById("output-path-indicator").innerHTML = input
+      }
+    } else {
+      document.getElementById("output-path-indicator").innerHTML = "/channels/%(uploader)s/audio/%(title)s.%(ext)s"
+    }
+
+    fileExtensions.options[0].value = "m4a";
+    fileExtensions.options[0].text = "m4a";
+    fileExtensions.options[1].value = "mp3";
+    fileExtensions.options[1].text = "mp3";
+    downloadQualities.options[0].value = "best";
+    downloadQualities.options[0].text = "best";
+    downloadQualities.options[1].value = "medium";
+    downloadQualities.options[1].text = "medium";
+    downloadQualities.options[2].value = "worst";
+    downloadQualities.options[2].text = "worst"
+
+  } else if (downloadMode == "Video And Audio") {
+    document.getElementById("download-path").placeholder = "default: /channels/%(uploader)s/video/%(title)s.%(ext)s";
+    if (input.length > 0) {
+      downloadPathRadio = document.getElementById("custom-download-output").checked;
+      youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
+      if (downloadPathRadio == true) {
+        document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/video/%(title)s.%(ext)s"
+      } else if (youtubedlOutputRadio == true) {
+        document.getElementById("output-path-indicator").innerHTML = input
+      }
+    } else {
+      document.getElementById("output-path-indicator").innerHTML = "/channels/%(uploader)s/video/%(title)s.%(ext)s"
+    }
+
+    fileExtensions.options[0].value = "any";
+    fileExtensions.options[0].text = "any (recommended for now)";
+    fileExtensions.options[1].value = "mp4";
+    fileExtensions.options[1].text = "mp4";
+
+    downloadQualities.options[0].value = "best";
+    downloadQualities.options[0].text = "best";
+    downloadQualities.options[1].value = "worst";
+    downloadQualities.options[1].text = "worst"
+  }
+}
+
 function handleResponse(res) {
   if (res.Type == "Success") {
     displaySuccessMessage(res.Message)
@@ -243,43 +347,41 @@ function handleResponse(res) {
 }
 
 function startSpinner(id) {
-  spinner = document.getElementById(id);
+  let spinner = document.getElementById(id);
   spinner.classList.remove("d-none");
 }
 
 function stopSpinner(id) {
-  spinner = document.getElementById(id);
+  let spinner = document.getElementById(id);
   spinner.classList.add("d-none")
 }
 
-function changeExtension() {
-  console.log("change ext")
-  let downloadMode = document.getElementById("download-mode").value
-  let fileExtensions = document.getElementById("file-extension")
-  let downloadQualities = document.getElementById("download-quality")
+function customYtdl(checkboxId) {
+  document.getElementById("download-path").disabled = false
+  if (checkboxId == "custom-download-output") {
+    document.getElementById("download-path").placeholder = "default: /channels/"
+  } else if (checkboxId == "custom-ytdl-output") {
+    document.getElementById("download-path").placeholder = "default: /channels/%(uploader)s/audio/%(title)s.%(ext)s"
+  }
+}
+
+function changeOutputPathIndicator(id) {
+  document.getElementById("output-path-indicator").innerHTML = "";
+  downloadPathRadio = document.getElementById("custom-download-output").checked;
+  youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
+  let downloadMode = document.getElementById("download-mode").value;
+  input = document.getElementById(id).value;
   if (downloadMode == "Audio Only") {
-    fileExtensions.options[0].value = "m4a"
-    fileExtensions.options[0].text = "m4a"
-    fileExtensions.options[1].value = "mp3"
-    fileExtensions.options[1].text = "mp3"
-    downloadQualities.options[0].value = "best"
-    downloadQualities.options[0].text = "best"
-    downloadQualities.options[1].value = "medium"
-    downloadQualities.options[1].text = "medium"
-    downloadQualities.options[2].value = "worst"
-    downloadQualities.options[2].text = "worst"
+    if (downloadPathRadio == true) {
+      document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/audio/%(title)s.%(ext)s"
+    } else if (youtubedlOutputRadio == true) {
+      document.getElementById("output-path-indicator").innerHTML = input
+    }
   } else if (downloadMode == "Video And Audio") {
-    fileExtensions.options[0].value = "any"
-    fileExtensions.options[0].text = "any (recommended for now)"
-    fileExtensions.options[1].value = "mkv"
-    fileExtensions.options[1].text = "mkv"
-    // fileExtensions.options[2].value = ".mkv"
-    // fileExtensions.options[2].text = ".mkv"
-    
-    downloadQualities.options[0].value = "best"
-    downloadQualities.options[0].text = "best"
-    downloadQualities.options[1] = null
-    downloadQualities.options[2].value = "worst"
-    downloadQualities.options[2].text = "worst"
+    if (downloadPathRadio == true) {
+      document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/video/%(title)s.%(ext)s"
+    } else if (youtubedlOutputRadio == true) {
+      document.getElementById("output-path-indicator").innerHTML = input
+    }
   }
 }

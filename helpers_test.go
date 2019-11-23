@@ -1,11 +1,21 @@
 package main
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
-func TestGetChannelName(t *testing.T) {
-	result := GetChannelName("https://www.youtube.com/channel/UC4w1YQAJMWOz4qtxinq55LQ")
 
-	if result != "UC4w1YQAJMWOz4qtxinq55LQ" {
-		t.Errorf("Result Incorrect: %s", result)
+
+func TestDownloadTarget_CheckNow(t *testing.T) {
+	assert := assert.New(t)
+	for _, target := range targets {
+		err := target.AddToDatabase()
+		assert.Nil(err)
+		isThereANewVideo, _, err := target.CheckNow()
+		assert.Nil(err)
+		assert.Equal(true, isThereANewVideo)
+		err = target.Delete()
+		assert.Nil(err)
 	}
 }
