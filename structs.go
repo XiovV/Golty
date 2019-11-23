@@ -143,12 +143,13 @@ type DownloadTarget struct {
 	DownloadPath               string
 }
 
-type DeleteChannelPayload struct {
-	URL string
+type GetTargetPayload struct {
+	Type string
 }
 
-type DeletePlaylistPayload struct {
+type DeleteTargetPayload struct {
 	URL string
+	Type string
 }
 
 type CheckingIntervalPayload struct {
@@ -163,6 +164,7 @@ type AddTargetPayload struct {
 	DownloadEntire        bool
 	CheckingInterval      string
 	DownloadPath          string
+	Type                  string
 }
 
 type DownloadVideoPayload struct {

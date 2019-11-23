@@ -42,6 +42,8 @@ function addPlaylist() {
   let downloadQuality = document.getElementById("download-quality").value
   let downloadPath = document.getElementById("output-path-indicator").innerText
 
+  let type = "Playlist"
+
   let playlistData = {
     URL,
     downloadMode,
@@ -49,6 +51,7 @@ function addPlaylist() {
     downloadQuality,
     downloadEntire,
     downloadPath,
+    type,
   };
 
   const options = {
@@ -59,7 +62,7 @@ function addPlaylist() {
     })
   };
 
-  fetch("/api/add-playlist", options)
+  fetch("/api/add", options)
     .then(res => res.json())
     .then(res => {
       handleResponse(res)
@@ -70,22 +73,54 @@ function addPlaylist() {
 
 function checkAll() {
   startSpinner("check-all-spinner")
-  fetch("/api/check-all-playlists")
-    .then(res => res.json())
-    .then(res => {
-      handleResponse(res)
-      stopSpinner("check-all-spinner")
-      getPlaylists()
-    });
+  let channelData = {
+    Type: "playlists"
+  }
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(channelData),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/check-all", options)
+      .then(res => res.json())
+      .then(res => {
+        handleResponse(res)
+        stopSpinner("check-all-spinner")
+        getPlaylists()
+      });
+  // startSpinner("check-all-spinner")
+  // fetch("/api/check-all-playlists")
+  //   .then(res => res.json())
+  //   .then(res => {
+  //     handleResponse(res)
+  //     stopSpinner("check-all-spinner")
+  //     getPlaylists()
+  //   });
 }
 
 function getPlaylists() {
-  fetch("/api/get-playlists")
-    .then(res => res.json())
-    .then(playlists => {
-      displayPlaylists(playlists);
-      getVersion();
-    });
+  let channelData = {
+    Type: "playlists"
+  }
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(channelData),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/get", options)
+      .then(res => res.json())
+      .then(playlists => {
+        displayPlaylists(playlists);
+        getVersion();
+      });
 }
 
 function checkPlaylist(id) {
@@ -133,7 +168,8 @@ function checkPlaylist(id) {
 
 function deletePlaylist(id) {
   let playlistURL = {
-    URL: id
+    URL: id,
+    Type: "Playlist"
   };
 
   const options = {
@@ -144,7 +180,7 @@ function deletePlaylist(id) {
     })
   };
 
-  fetch("/api/delete-playlist", options)
+  fetch("/api/delete", options)
     .then(res => res.json())
     .then(res => {
       handleResponse(res)
@@ -196,7 +232,7 @@ function displayPlaylists(playlists) {
         <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${playlist.URL}listElem>
           ${playlist.Name}
         </button><button class="btn btn-danger float-right ml-2" id="${playlist.URL +
-        "delPlaylist"}" onClick="deletePlaylist(this.id)">&times</button><button class="btn btn-primary float-right" id="${playlist.URL}" onClick="checkPlaylist(this.id)">Check<div id="${playlist.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
+        "delTarget"}" onClick="deletePlaylist(this.id)">&times</button><button class="btn btn-primary float-right" id="${playlist.URL}" onClick="checkPlaylist(this.id)">Check<div id="${playlist.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
       </h5>
   
       <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">

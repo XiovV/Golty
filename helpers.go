@@ -36,25 +36,26 @@ func GetAll(target string) ([]DownloadTarget, error) {
 		return []DownloadTarget{}, fmt.Errorf("From GetAll(): %v", err)
 	}
 	log.Info("successfully read all channels")
+	log.Info(db)
 	return db, nil
 }
 
 func CheckAll(target string) (Response, error) {
 	var foundFor []string
 	var preferredExtension string
-	var allInInDb []DownloadTarget
+	var allInDb []DownloadTarget
 	var err error
 	var targetType string
 	if target == "channels" {
 		log.Info("checking for all channels")
-		allInInDb, err = GetAll("channels")
+		allInDb, err = GetAll("channels")
 		targetType = "Channel"
 	} else if target == "playlists" {
 		log.Info("checking for all playlists")
-		allInInDb, err = GetAll("playlists")
+		allInDb, err = GetAll("playlists")
 		targetType = "Playlist"
 	}
-	for _, item := range allInInDb {
+	for _, item := range allInDb {
 		target := DownloadTarget{URL: item.URL, Type: targetType}
 		target, err = target.GetFromDatabase()
 		if err != nil {
@@ -138,4 +139,12 @@ func RemoveAtIndex(s []DownloadTarget, index int) []DownloadTarget {
 func ReturnResponse(w http.ResponseWriter, res Response) {
 	log.Info("returning response: ", res)
 	json.NewEncoder(w).Encode(res)
+}
+
+func Log(err error) error {
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
 }

@@ -57,6 +57,8 @@ function addChannel() {
   //   return
   // }
 
+  let type = "Channel"
+
   let channelData = {
     URL,
     downloadMode,
@@ -64,6 +66,7 @@ function addChannel() {
     downloadQuality,
     downloadEntire,
     downloadPath,
+    type,
   };
 
   const options = {
@@ -74,7 +77,7 @@ function addChannel() {
     })
   };
 
-  fetch("/api/add-channel", options)
+  fetch("/api/add", options)
     .then(res => res.json())
     .then(res => {
       handleResponse(res)
@@ -85,22 +88,47 @@ function addChannel() {
 
 function checkAll() {
   startSpinner("check-all-spinner")
-  fetch("/api/check-all")
-    .then(res => res.json())
-    .then(res => {
-      handleResponse(res)
-      stopSpinner("check-all-spinner")
-      getChannels()
-    });
+  let type = "channels"
+  let channelData = {
+    type,
+  }
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(channelData),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/check-all", options)
+      .then(res => res.json())
+      .then(res => {
+        handleResponse(res)
+        stopSpinner("check-all-spinner")
+        getChannels()
+      });
 }
 
 function getChannels() {
-  fetch("/api/get-channels")
-    .then(res => res.json())
-    .then(channels => {
-      displayChannels(channels);
-      getVersion();
-    });
+  let channelData = {
+    Type: "channels"
+  }
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(channelData),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/get", options)
+      .then(res => res.json())
+      .then(channels => {
+        displayChannels(channels);
+        getVersion();
+      });
 }
 
 function checkChannel(id) {
@@ -109,12 +137,14 @@ function checkChannel(id) {
   let downloadMode = document.getElementById("download-mode").value
   let fileExtension = document.getElementById("file-extension").value
   let downloadQuality = document.getElementById("download-quality").value
+  let type = "Channel"
 
   let channelData = {
     URL,
     downloadMode,
     fileExtension,
-    downloadQuality
+    downloadQuality,
+    type
   };
 
   const options = {
@@ -125,7 +155,7 @@ function checkChannel(id) {
     })
   };
 
-  fetch("/api/check-channel", options)
+  fetch("/api/check", options)
     .then(res => res.json())
     .then(res => {
       console.log(res);
@@ -148,7 +178,8 @@ function checkChannel(id) {
 
 function deleteChannel(id) {
   let channelURL = {
-    URL: id
+    URL: id,
+    Type: "Channel"
   };
 
   const options = {
@@ -159,7 +190,7 @@ function deleteChannel(id) {
     })
   };
 
-  fetch("/api/delete-channel", options)
+  fetch("/api/delete", options)
     .then(res => res.json())
     .then(res => {
       handleResponse(res)
@@ -212,7 +243,7 @@ function displayChannels(channels) {
         <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.URL}listElem>
           ${channel.Name}
         </button><button class="btn btn-danger float-right ml-2" id="${channel.URL +
-        "delChannel"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.URL}" onClick="checkChannel(this.id)">Check<div id="${channel.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
+        "delTarget"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.URL}" onClick="checkChannel(this.id)">Check<div id="${channel.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
       </h5>
   
       <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
