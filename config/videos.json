@@ -1,9 +1,1 @@
-[
- {
-  "VideoURL": "https://www.youtube.com/watch?v=oWgfLTjQLYg",
-  "DownloadMode": "Audio Only",
-  "FileExtension": "m4a",
-  "DownloadQuality": "best",
-  "DownloadPath": "/nrw/test/%(uploader)s/audio/%(title)s.%(ext)s"
- }
-]
+[]
