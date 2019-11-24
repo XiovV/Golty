@@ -37,8 +37,7 @@ function getVideos() {
     fetch("/api/get-videos")
         .then(res => res.json())
         .then(videos => {
-            // displayVideos(videos);
-            displayPlaylists(videos)
+            displayVideos(videos);
             getVersion();
         });
 }
