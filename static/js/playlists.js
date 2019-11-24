@@ -39,10 +39,10 @@ function addPlaylist() {
 function checkPlaylist(id) {
   startSpinner(id+"-spinner");
   let URL = id;
-  let downloadMode = document.getElementById("download-mode").value
-  let fileExtension = document.getElementById("file-extension").value
-  let downloadQuality = document.getElementById("download-quality").value
-  let type = "Playlist"
+  let downloadMode = document.getElementById("download-mode").value;
+  let fileExtension = document.getElementById("file-extension").value;
+  let downloadQuality = document.getElementById("download-quality").value;
+  let type = "Playlist";
 
   let channelData = {
     URL,
@@ -64,7 +64,7 @@ function checkPlaylist(id) {
       .then(res => res.json())
       .then(res => {
         console.log(res);
-        stopSpinner(id+"-spinner")
+        stopSpinner(id+"-spinner");
         if (res.Type == "Success") {
           if (res.Key == "NO_NEW_VIDEOS") {
             displayWarningMessage(res.Message);
@@ -128,7 +128,7 @@ function getPlaylists() {
 function displayPlaylists(playlists) {
   document.getElementById("accordion").innerHTML = "";
   playlists.forEach((playlist, index) => {
-    console.log(playlist)
+    console.log(playlist);
     document.getElementById("accordion").innerHTML += `<div class="mb-2 p-2 card">
       <h5 class="mb-0">
         <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${playlist.URL}listElem>
@@ -156,7 +156,7 @@ function displayPlaylists(playlists) {
         </h5>
         </div>
       </div>
-    </div>`
+    </div>`;
     displayDownloadHistory(playlist.Name, playlist.DownloadHistory)
   })
 }
