@@ -36,13 +36,13 @@ function updateCheckingInterval() {
 function addPlaylist() {
   startSpinner("add-playlist-spinner")
   let downloadEntire = document.querySelector('#download-entire-playlist').checked;
-  let URL = document.getElementById("playlist-url").value
-  let downloadMode = document.getElementById("download-mode").value
-  let fileExtension = document.getElementById("file-extension").value
-  let downloadQuality = document.getElementById("download-quality").value
-  let downloadPath = document.getElementById("output-path-indicator").innerText
+  let URL = document.getElementById("playlist-url").value;
+  let downloadMode = document.getElementById("download-mode").value;
+  let fileExtension = document.getElementById("file-extension").value;
+  let downloadQuality = document.getElementById("download-quality").value;
+  let downloadPath = document.getElementById("output-path-indicator").innerText;
 
-  let type = "Playlist"
+  let type = "Playlist";
 
   let playlistData = {
     URL,
@@ -75,7 +75,7 @@ function checkAll() {
   startSpinner("check-all-spinner")
   let channelData = {
     Type: "playlists"
-  }
+  };
 
   const options = {
     method: "POST",
@@ -92,20 +92,12 @@ function checkAll() {
         stopSpinner("check-all-spinner")
         getPlaylists()
       });
-  // startSpinner("check-all-spinner")
-  // fetch("/api/check-all-playlists")
-  //   .then(res => res.json())
-  //   .then(res => {
-  //     handleResponse(res)
-  //     stopSpinner("check-all-spinner")
-  //     getPlaylists()
-  //   });
 }
 
 function getPlaylists() {
   let channelData = {
     Type: "playlists"
-  }
+  };
 
   const options = {
     method: "POST",
@@ -124,11 +116,11 @@ function getPlaylists() {
 }
 
 function checkPlaylist(id) {
-  startSpinner(id+"-spinner")
-  let URL = id
-  let downloadMode = document.getElementById("download-mode").value
-  let fileExtension = document.getElementById("file-extension").value
-  let downloadQuality = document.getElementById("download-quality").value
+  startSpinner(id+"-spinner");
+  let URL = id;
+  let downloadMode = document.getElementById("download-mode").value;
+  let fileExtension = document.getElementById("file-extension").value;
+  let downloadQuality = document.getElementById("download-quality").value;
 
   let channelData = {
     URL,
@@ -183,14 +175,14 @@ function deletePlaylist(id) {
   fetch("/api/delete", options)
     .then(res => res.json())
     .then(res => {
-      handleResponse(res)
+      handleResponse(res);
       getPlaylists()
     });
 }
 
 function displayErrorMessage(message) {
   let error = document.getElementById("error");
-  error.innerHTML = ""
+  error.innerHTML = "";
   error.classList.remove("d-none");
   error.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
 }
@@ -199,14 +191,13 @@ function displaySuccessMessage(message) {
   let success = document.getElementById("success");
 
   if (success) {
-    console.log("DISPLAY SUCCESS ALERT")
+    console.log("DISPLAY SUCCESS ALERT");
 
-    success.innerHTML = ""
+    success.innerHTML = "";
     success.classList.remove("d-none");
     success.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
   } else {
-    console.log("CREATE SUCCESS ALERT")
-    let alertsDiv = document.getElementById("alerts").innerHTML
+    let alertsDiv = document.getElementById("alerts").innerHTML;
     alertsDiv += `<div class="alert alert-success alert-dismissible mt-3" id="success" role="alert">
                     ${message}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -218,13 +209,13 @@ function displaySuccessMessage(message) {
 
 function displayWarningMessage(message) {
   let warning = document.getElementById("warning");
-  warning.innerHTML = ""
+  warning.innerHTML = "";
   warning.classList.remove("d-none");
   warning.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
 }
 
 function displayPlaylists(playlists) {
-  document.getElementById("accordion").innerHTML = ""
+  document.getElementById("accordion").innerHTML = "";
   playlists.forEach((playlist, index) => {
     console.log(playlist)
     document.getElementById("accordion").innerHTML += `<div class="mb-2 p-2 card">
@@ -262,15 +253,12 @@ function displayPlaylists(playlists) {
 function displayDownloadHistory(channelName, downloadHistory) {
   let historyBox = document.getElementById("dlhistory"+channelName)
   console.log(historyBox)
-  console.log("DISPLAY HISTORY")
   downloadHistory.forEach(video => {
     historyBox.innerHTML += `<br> <a href=https://www.youtube.com/watch?v=${video} target="_blank">https://www.youtube.com/watch?v=${video}</a>` 
   })
 }
 
 function changeExtension() {
-  console.log("change ext")
-
   let downloadMode = document.getElementById("download-mode").value;
   let fileExtensions = document.getElementById("file-extension");
   let downloadQualities = document.getElementById("download-quality");

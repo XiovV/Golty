@@ -68,12 +68,12 @@
     </div>
 
     <div class="custom-control custom-radio">
-      <input type="radio" onclick="customYtdl(this.id)" name="custom-output" id="custom-download-output" class="custom-control-input">
-      <label class="custom-control-label" for="custom-download-output">Enter custom download path</label>
-    </div>
-    <div class="custom-control custom-radio">
       <input type="radio" onclick="customYtdl(this.id)" name="custom-output" id="custom-ytdl-output"  class="custom-control-input">
       <label class="custom-control-label mb-2" for="custom-ytdl-output">Enter custom youtube-dl output</label>
+    </div>
+    <div class="custom-control custom-radio">
+      <input type="radio" onclick="customYtdl(this.id)" name="custom-output" id="custom-download-output" class="custom-control-input">
+      <label class="custom-control-label" for="custom-download-output">Enter custom download path</label>
     </div>
     <input type="text" class="form-control mb-1" id="download-path" oninput="changeOutputPathIndicator(this.id)" placeholder="" disabled>
     <div class="form-group form-inline">

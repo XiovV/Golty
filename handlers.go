@@ -8,6 +8,15 @@ import (
 	"time"
 )
 
+type version struct {
+	VersionNumber string
+}
+
+func HandleGetVersion(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(version{VersionNumber: VERSION})
+}
+
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/index.html")
 }

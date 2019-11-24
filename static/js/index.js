@@ -14,9 +14,9 @@ function updateCheckingInterval() {
     checkingInterval = checkingIntervalInput * 1440
   }
 
-  interval = {
+  let interval = {
     checkingInterval
-  }
+  };
 
   const options = {
     method: "POST",
@@ -43,21 +43,7 @@ function addChannel() {
   let downloadQuality = document.getElementById("download-quality").value
   let downloadPath = document.getElementById("output-path-indicator").innerText
 
-  // if (downloadPath[0] != "/" && downloadPath[downloadPath.length - 1] != "/") {
-  //   displayErrorMessage("Please add a / at the beginning AND end of the output string.")
-  //   stopSpinner("add-channel-spinner")
-  //   return
-  // } else if (downloadPath[downloadPath.length - 1] != "/") {
-  //   displayErrorMessage("Please add a / at the end of the output string.")
-  //   stopSpinner("add-channel-spinner")
-  //   return
-  // } else if (downloadPath[0] != "/") {
-  //   displayErrorMessage("Please add a / at the beginning of the output string.")
-  //   stopSpinner("add-channel-spinner")
-  //   return
-  // }
-
-  let type = "Channel"
+  let type = "Channel";
 
   let channelData = {
     URL,
@@ -80,18 +66,18 @@ function addChannel() {
   fetch("/api/add", options)
     .then(res => res.json())
     .then(res => {
-      handleResponse(res)
-      stopSpinner("add-channel-spinner")
+      handleResponse(res);
+      stopSpinner("add-channel-spinner");
       getChannels()
     });
 }
 
 function checkAll() {
-  startSpinner("check-all-spinner")
-  let type = "channels"
+  startSpinner("check-all-spinner");
+  let type = "channels";
   let channelData = {
     type,
-  }
+  };
 
   const options = {
     method: "POST",
@@ -104,8 +90,8 @@ function checkAll() {
   fetch("/api/check-all", options)
       .then(res => res.json())
       .then(res => {
-        handleResponse(res)
-        stopSpinner("check-all-spinner")
+        handleResponse(res);
+        stopSpinner("check-all-spinner");
         getChannels()
       });
 }
@@ -113,7 +99,7 @@ function checkAll() {
 function getChannels() {
   let channelData = {
     Type: "channels"
-  }
+  };
 
   const options = {
     method: "POST",
@@ -132,12 +118,12 @@ function getChannels() {
 }
 
 function checkChannel(id) {
-  startSpinner(id+"-spinner")
-  let URL = id
-  let downloadMode = document.getElementById("download-mode").value
-  let fileExtension = document.getElementById("file-extension").value
-  let downloadQuality = document.getElementById("download-quality").value
-  let type = "Channel"
+  startSpinner(id+"-spinner");
+  let URL = id;
+  let downloadMode = document.getElementById("download-mode").value;
+  let fileExtension = document.getElementById("file-extension").value;
+  let downloadQuality = document.getElementById("download-quality").value;
+  let type = "Channel";
 
   let channelData = {
     URL,
@@ -159,7 +145,7 @@ function checkChannel(id) {
     .then(res => res.json())
     .then(res => {
       console.log(res);
-      stopSpinner(id+"-spinner")
+      stopSpinner(id+"-spinner");
       if (res.Type == "Success") {
         if (res.Key == "NO_NEW_VIDEOS") {
           displayWarningMessage(res.Message);
@@ -313,8 +299,8 @@ function changeExtension() {
   } else if (downloadMode == "Video And Audio") {
     document.getElementById("download-path").placeholder = "default: /channels/%(uploader)s/video/%(title)s.%(ext)s";
     if (input.length > 0) {
-      downloadPathRadio = document.getElementById("custom-download-output").checked;
-      youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
+      let downloadPathRadio = document.getElementById("custom-download-output").checked;
+      let youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
       if (downloadPathRadio == true) {
         document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/video/%(title)s.%(ext)s"
       } else if (youtubedlOutputRadio == true) {
@@ -367,10 +353,10 @@ function customYtdl(checkboxId) {
 
 function changeOutputPathIndicator(id) {
   document.getElementById("output-path-indicator").innerHTML = "";
-  downloadPathRadio = document.getElementById("custom-download-output").checked;
-  youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
+  let downloadPathRadio = document.getElementById("custom-download-output").checked;
+  let youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
   let downloadMode = document.getElementById("download-mode").value;
-  input = document.getElementById(id).value;
+  let input = document.getElementById(id).value;
   if (downloadMode == "Audio Only") {
     if (downloadPathRadio == true) {
       document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/audio/%(title)s.%(ext)s"

@@ -19,15 +19,15 @@ func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 	log.Info(videoData)
 	if videoData.DownloadPath == "" {
 		if videoData.DownloadMode == "Audio Only" {
-			ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o downloads/videos/%(uploader)s/audio/%(title)s.%(ext)s "+videoData.VideoURL
+			ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o "+ videoData.DownloadPath+ " "+videoData.VideoURL
 		} else if videoData.DownloadMode == "Video And Audio" {
-			ytdlCommand = "youtube-dl -o downloads/videos/%(uploader)s/video/%(title)s.%(ext)s "+videoData.VideoURL
+			ytdlCommand = "youtube-dl -o "+ videoData.DownloadPath + " " +videoData.VideoURL
 		}
 	} else {
 		if videoData.DownloadMode == "Audio Only" {
-			ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o downloads" + videoData.DownloadPath+ "%(title)s.%(ext)s "+videoData.VideoURL
+			ytdlCommand = "youtube-dl -f bestaudio[ext="+videoData.FileExtension+"] -o downloads" + videoData.DownloadPath+ " "+videoData.VideoURL
 		} else if videoData.DownloadMode == "Video And Audio" {
-			ytdlCommand = "youtube-dl -o downloads" + videoData.DownloadPath+ "%(title)s.%(ext)s "+videoData.VideoURL
+			ytdlCommand = "youtube-dl -o downloads" + videoData.DownloadPath+ " "+videoData.VideoURL
 		}
 	}
 
