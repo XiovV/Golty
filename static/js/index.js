@@ -219,50 +219,41 @@ function displayWarningMessage(message) {
   warning.innerHTML = `${message} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
 }
 
-function displayChannels(channels) {
-  document.getElementById("accordion").innerHTML = ""
-  console.log(channels)
-  channels.forEach((channel, index) => {
-    console.log(channel)
-    document.getElementById("accordion").innerHTML += `<div class="mb-2 p-2 card">
-      <h5 class="mb-0">
-        <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.URL}listElem>
-          ${channel.Name}
-        </button><button class="btn btn-danger float-right ml-2" id="${channel.URL +
-        "delTarget"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.URL}" onClick="checkChannel(this.id)">Check<div id="${channel.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
-      </h5>
-  
-      <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
-        <div class="panel-body ml-2">
-          Latest Download: <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded} target="_blank">https://www.youtube.com/watch?v=${channel.LatestDownloaded}</a>
-          <p>Download Mode: ${channel.DownloadMode}</p>
-          <p>Last Checked: ${channel.LastChecked}</p>
-          <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
-          <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
-          <p class="m-0 p-0">Download Path: ${channel.DownloadPath}</p>
-          <br>
-          <button class="btn btn-link dropdown-toggle m-0 p-0" type="button" data-toggle="collapse" data-target="#history${index}" aria-expanded="false" aria-controls="history${index}">
-            Download History
-          </button>
-          <div class="collapse m-0 p-0" id="history${index}">
-            <div class="card card-body p-2" id="dlhistory${channel.Name}">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>`
-    displayDownloadHistory(channel.Name, channel.DownloadHistory)
-  })
-}
-
-function displayDownloadHistory(channelName, downloadHistory) {
-  let historyBox = document.getElementById("dlhistory"+channelName)
-  console.log(historyBox)
-  console.log("DISPLAY HISTORY")
-  downloadHistory.forEach(video => {
-    historyBox.innerHTML += `<br> <a href=https://www.youtube.com/watch?v=${video} target="_blank">https://www.youtube.com/watch?v=${video}</a>` 
-  })
-}
+// function displayChannels(channels) {
+//   document.getElementById("accordion").innerHTML = ""
+//   console.log(channels)
+//   channels.forEach((channel, index) => {
+//     console.log(channel)
+//     document.getElementById("accordion").innerHTML += `<div class="mb-2 p-2 card">
+//       <h5 class="mb-0">
+//         <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${channel.URL}listElem>
+//           ${channel.Name}
+//         </button><button class="btn btn-danger float-right ml-2" id="${channel.URL +
+//         "delTarget"}" onClick="deleteChannel(this.id)">&times</button><button class="btn btn-primary float-right" id="${channel.URL}" onClick="checkChannel(this.id)">Check<div id="${channel.URL}-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
+//       </h5>
+//
+//       <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordion">
+//         <div class="panel-body ml-2">
+//           Latest Download: <a href=https://www.youtube.com/watch?v=${channel.LatestDownloaded} target="_blank">https://www.youtube.com/watch?v=${channel.LatestDownloaded}</a>
+//           <p>Download Mode: ${channel.DownloadMode}</p>
+//           <p>Last Checked: ${channel.LastChecked}</p>
+//           <p>Preferred Extension For Audio: ${channel.PreferredExtensionForAudio}
+//           <p>Preferred Extension For Video: ${channel.PreferredExtensionForVideo}
+//           <p class="m-0 p-0">Download Path: ${channel.DownloadPath}</p>
+//           <br>
+//           <button class="btn btn-link dropdown-toggle m-0 p-0" type="button" data-toggle="collapse" data-target="#history${index}" aria-expanded="false" aria-controls="history${index}">
+//             Download History
+//           </button>
+//           <div class="collapse m-0 p-0" id="history${index}">
+//             <div class="card card-body p-2" id="dlhistory${channel.Name}">
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>`
+//     displayDownloadHistory(channel.Name, channel.DownloadHistory)
+//   })
+// }
 
 function changeExtension() {
   console.log("change ext")
@@ -320,26 +311,6 @@ function changeExtension() {
     downloadQualities.options[1].value = "worst";
     downloadQualities.options[1].text = "worst"
   }
-}
-
-function handleResponse(res) {
-  if (res.Type == "Success") {
-    displaySuccessMessage(res.Message)
-  } else if (res.Type == "Error") {
-    displayErrorMessage(res.Message)
-  } else if (res.Type == "Warning") {
-    displayWarningMessage(res.Message)
-  }
-}
-
-function startSpinner(id) {
-  let spinner = document.getElementById(id);
-  spinner.classList.remove("d-none");
-}
-
-function stopSpinner(id) {
-  let spinner = document.getElementById(id);
-  spinner.classList.add("d-none")
 }
 
 function customYtdl(checkboxId) {
