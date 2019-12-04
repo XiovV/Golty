@@ -83,7 +83,7 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errRes = Response{Type: "Error", Key: "ERROR_ERROR_UPDATING_DOWNLOAD_HISTORY", Message: "There was an error while updating the playlist's download history: " + err.Error()}
 		}
-		okRes = Response{Type: "Success", Key: "ADD_PLAYLIST_SUCCESS", Message: "Playlist successfully added and downloaded latest video"}
+		okRes = Response{Type: "Success", Key: "ADD_PLAYLIST_SUCCESS", Message: "Successfully added and downloaded latest video"}
 	}
 	if errRes.Type == "Error" {
 		ReturnResponse(w, errRes)
@@ -154,7 +154,7 @@ func HandleDeleteTarget(w http.ResponseWriter, r *http.Request) {
 
 	target.Delete()
 
-	ReturnResponse(w, Response{Type: "Success", Key: "DELETE_PLAYLIST_SUCCESS", Message: "Playlist removed"})
+	ReturnResponse(w, Response{Type: "Success", Key: "DELETE_PLAYLIST_SUCCESS", Message: "Successfully removed"})
 	return
 }
 
