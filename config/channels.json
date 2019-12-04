@@ -1,1 +1,20 @@
-[]
+[
+ {
+  "URL": "https://www.youtube.com/user/NewRetroWave/",
+  "LatestDownloaded": "6tRbQ_bUTtc",
+  "DownloadMode": "Audio Only",
+  "Name": "Uploads from NewRetroWave",
+  "PreferredExtensionForAudio": "m4a",
+  "PreferredExtensionForVideo": "",
+  "DownloadHistory": [
+   "7rCzIwlX8Dg",
+   "lkw-JCHYdR0",
+   "6tRbQ_bUTtc",
+   "6tRbQ_bUTtc"
+  ],
+  "LastChecked": "12-04-2019 19:01:06",
+  "CheckingInterval": "1",
+  "Type": "Channel",
+  "DownloadPath": "/channels/%(uploader)s/audio/%(title)s.%(ext)s"
+ }
+]

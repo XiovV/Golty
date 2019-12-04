@@ -36,6 +36,43 @@ function addPlaylist() {
     });
 }
 
+function updateCheckingInterval() {
+  startSpinner("update-checking-interval-spinner")
+  let checkingInterval
+  let checkingIntervalInput = document.getElementById("checking-interval").value
+  let time = document.getElementById("time").value
+
+  if (time == "minutes") {
+    checkingInterval = checkingIntervalInput
+  } else if (time == "hours") {
+    checkingInterval = checkingIntervalInput * 60
+  } else if (time == "days") {
+    checkingInterval = checkingIntervalInput * 1440
+  }
+
+  let type = "Playlist";
+
+  let interval = {
+    checkingInterval,
+    type
+  };
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(interval),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  };
+
+  fetch("/api/update-checking-interval", options)
+      .then(res => res.json())
+      .then(res => {
+        handleResponse(res)
+        stopSpinner("update-checking-interval-spinner")
+      });
+}
+
 function checkPlaylist(id) {
   startSpinner(id+"-spinner");
   let URL = id;
@@ -63,15 +100,14 @@ function checkPlaylist(id) {
   fetch("/api/check", options)
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         stopSpinner(id+"-spinner");
         if (res.Type == "Success") {
           if (res.Key == "NO_NEW_VIDEOS") {
             displayWarningMessage(res.Message);
-            getChannels()
+            getPlaylists()
           } else if (res.Key == "NEW_VIDEO_DETECTED") {
             displaySuccessMessage(res.Message);
-            getChannels()
+            getPlaylists()
           }
         } else if (res.Type == "Error") {
           if (res.Key == "ERROR_DOWNLOADING_VIDEO") {
@@ -128,7 +164,6 @@ function getPlaylists() {
 function displayPlaylists(playlists) {
   document.getElementById("accordion").innerHTML = "";
   playlists.forEach((playlist, index) => {
-    console.log(playlist);
     document.getElementById("accordion").innerHTML += `<div class="mb-2 p-2 card">
       <h5 class="mb-0">
         <button class="btn btn-link dropdown-toggle" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}" id=${playlist.URL}listElem>
@@ -144,13 +179,13 @@ function displayPlaylists(playlists) {
           <p>Last Checked: ${playlist.LastChecked}</p>
           <p>Preferred Extension For Audio: ${playlist.PreferredExtensionForAudio}
           <p>Preferred Extension For Video: ${playlist.PreferredExtensionForVideo}
-          <p>Download Path: ${playlist.DownloadPath}</p>
+          <p class="m-0 p-0">Download Path: ${playlist.DownloadPath}</p>
           <br>
-          <button class="btn btn-link dropdown-toggle" type="button" data-toggle="collapse" data-target="#history${index}" aria-expanded="false" aria-controls="history${index}">
+          <button class="btn btn-link dropdown-toggle m-0 p-0" type="button" data-toggle="collapse" data-target="#history${index}" aria-expanded="false" aria-controls="history${index}">
             Download History
           </button>
-          <div class="collapse" id="history${index}">
-            <div class="card card-body" id="dlhistory${playlist.Name}">
+          <div class="collapse m-0 p-0" id="history${index}">
+            <div class="card card-body p-2" id="dlhistory${playlist.Name}">
             </div>
           </div>
         </h5>

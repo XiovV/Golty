@@ -7,21 +7,22 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
-
 	"time"
 )
 
 var db []DownloadTarget
 var databaseName string
 
-func UpdateCheckingInterval(interval string) (Response, error) {
+func (target DownloadTarget) UpdateCheckingInterval(interval string) (Response, error) {
+	databaseName = setDatabaseName(target.Type)
+
 	log.Info("updating checking interval")
 
-	db = openDatabaseAndUnmarshalJSON("channels.json")
+	db = openDatabaseAndUnmarshalJSON(databaseName)
 
 	if len(db) > 0 {
 		db[0].CheckingInterval = interval
-		err := writeDb(db, CONFIG_ROOT+"channels.json")
+		err := writeDb(db, CONFIG_ROOT+databaseName)
 		if err != nil {
 			return Response{Type: "Error", Key: "ERROR_WRITING_TO_DATABASE", Message: "There was an error writing to channels.json: " + err.Error()}, fmt.Errorf("UpdateCheckingInterval: %s", err)
 		}
@@ -70,18 +71,31 @@ func (target DownloadTarget) GetFromDatabase() (DownloadTarget, error) {
 	return getItemFromDatabase(databaseName, target.URL)
 }
 
-func GetCheckingInterval() (int, error) {
+func GetCheckingInterval(target string) (int, error) {
 	log.Info("getting checking interval")
 
-	db = openDatabaseAndUnmarshalJSON("channels.json")
-	if len(db) > 0 && db[0].CheckingInterval != "" {
-		checkingInterval, err := strconv.Atoi(db[0].CheckingInterval)
-		if err != nil {
-			return 0, fmt.Errorf("GetCheckingInterval: %s", err)
+	if target == "channels" {
+		db = openDatabaseAndUnmarshalJSON("channels.json")
+		if len(db) > 0 && db[0].CheckingInterval != "" {
+			checkingInterval, err := strconv.Atoi(db[0].CheckingInterval)
+			if err != nil {
+				return 0, fmt.Errorf("GetCheckingInterval: %s", err)
+			}
+			log.Info("got checking interval successfully")
+			return checkingInterval, nil
 		}
-		log.Info("got checking interval successfully")
-		return checkingInterval, nil
+	} else if target == "playlists" {
+		db = openDatabaseAndUnmarshalJSON("playlists.json")
+		if len(db) > 0 && db[0].CheckingInterval != "" {
+			checkingInterval, err := strconv.Atoi(db[0].CheckingInterval)
+			if err != nil {
+				return 0, fmt.Errorf("GetCheckingInterval: %s", err)
+			}
+			log.Info("got checking interval successfully")
+			return checkingInterval, nil
+		}
 	}
+
 	log.Info("checking interval not yet specified")
 	return 0, nil
 }

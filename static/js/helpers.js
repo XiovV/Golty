@@ -57,8 +57,6 @@ function displayWarningMessage(message) {
 
 function displayDownloadHistory(channelName, downloadHistory) {
     let historyBox = document.getElementById("dlhistory"+channelName)
-    console.log(historyBox)
-    console.log("DISPLAY HISTORY")
     downloadHistory.forEach(video => {
         historyBox.innerHTML += `<br> <a href=https://www.youtube.com/watch?v=${video} target="_blank">https://www.youtube.com/watch?v=${video}</a>`
     })

@@ -14,8 +14,11 @@ function updateCheckingInterval() {
     checkingInterval = checkingIntervalInput * 1440
   }
 
+  let type = "Channel";
+
   let interval = {
-    checkingInterval
+    checkingInterval,
+    type
   };
 
   const options = {

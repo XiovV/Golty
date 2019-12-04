@@ -148,3 +148,7 @@ func Log(err error) error {
 	}
 	return nil
 }
+
+//func sanitiseInput(url string) {
+
+//}

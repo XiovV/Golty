@@ -42,7 +42,7 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
 	}
-
+	//sanitiseInputURL(targetData.URL)
 	target := DownloadTarget{URL: targetData.URL, Type: targetData.Type}
 
 	doesTargetExist, err := target.DoesExist()
@@ -51,7 +51,7 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 		errRes = Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to check if the channel already exists" + err.Error()}
 	}
 
-	if doesTargetExist == true {
+	if doesTargetExist {
 		log.Info("this playlist already exists")
 		okRes = Response{Type: "Success", Key: "PLAYLIST_ALREADY_EXISTS", Message: "This playlists already exists"}
 	} else {
@@ -69,7 +69,7 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 		err = target.AddToDatabase()
 		if err != nil {
 			log.Error(err)
-			errRes =  Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()}
+			errRes = Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()}
 		}
 		err = target.Download(targetData.DownloadQuality, targetData.FileExtension, targetData.DownloadEntire)
 		if err != nil {
@@ -99,6 +99,8 @@ func HandleCheckTarget(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&targetData)
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
+		ReturnResponse(w, errRes)
+		return
 	}
 	target := DownloadTarget{URL: targetData.URL, Type: targetData.Type}
 	target, _ = target.GetFromDatabase()
@@ -106,28 +108,33 @@ func HandleCheckTarget(w http.ResponseWriter, r *http.Request) {
 	newVideoFound, videoId, err := target.CheckNow()
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the playlist: " + err.Error()}
+		ReturnResponse(w, errRes)
+		return
 	}
 	if newVideoFound == true {
 		err = target.Download("best", targetData.FileExtension, false)
 		if err != nil {
 			errRes = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the channel: " + err.Error()}
+			ReturnResponse(w, errRes)
+			return
 		}
 		err = target.UpdateLatestDownloaded(videoId)
 		if err != nil {
 			errRes = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the channel: " + err.Error()}
+			ReturnResponse(w, errRes)
+			return
 		}
 		err = target.UpdateDownloadHistory(videoId)
 		if err != nil {
 			errRes = Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLIST", Message: "There was an error while checking the channel: " + err.Error()}
 		}
 		okRes = Response{Type: "Success", Key: "NEW_VIDEO_DETECTED", Message: "New video detected for " + target.Name + " and downloaded"}
+		ReturnResponse(w, okRes)
+		return
 	} else {
 		okRes = Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos detected for " + target.Name}
-	}
-	if errRes.Type == "Error" {
-		ReturnResponse(w, errRes)
-	} else if okRes.Type == "Success" {
 		ReturnResponse(w, okRes)
+		return
 	}
 }
 
@@ -139,6 +146,7 @@ func HandleDeleteTarget(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&targetData)
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+		return
 	}
 	targetURL := targetData.URL
 	targetURL = strings.Replace(targetURL, "delTarget", "", -1)
@@ -147,6 +155,7 @@ func HandleDeleteTarget(w http.ResponseWriter, r *http.Request) {
 	target.Delete()
 
 	ReturnResponse(w, Response{Type: "Success", Key: "DELETE_PLAYLIST_SUCCESS", Message: "Playlist removed"})
+	return
 }
 
 func HandleGetTargets(w http.ResponseWriter, r *http.Request) {
@@ -155,15 +164,16 @@ func HandleGetTargets(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&targetData)
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+		return
 	}
 	log.Info("got this data: ", targetData)
 	targets, err := GetAll(targetData.Type)
 	if err != nil {
-		res := Response{Type: "Error", Key: "ERROR_GETTING_PLAYLISTS", Message: "There was an error while getting playlists: " + err.Error()}
-		json.NewEncoder(w).Encode(res)
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_CHANNELS", Message: "There was an error while getting playlists: " + err.Error()})
+		return
 	}
 	json.NewEncoder(w).Encode(targets)
+	return
 }
 
 func HandleCheckAllTargets(w http.ResponseWriter, r *http.Request) {
@@ -172,12 +182,15 @@ func HandleCheckAllTargets(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&targetData)
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+		return
 	}
 	res, err := CheckAll(targetData.Type)
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_CHECKING_PLAYLISTS", Message: "There was an error while checking playlists: " + err.Error()})
+		return
 	}
 	ReturnResponse(w, res)
+	return
 }
 
 func HandleUpdateCheckingInterval(w http.ResponseWriter, r *http.Request) {
@@ -188,15 +201,15 @@ func HandleUpdateCheckingInterval(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&interval)
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
+		ReturnResponse(w, errRes)
+		return
 	}
-
-	res, err := UpdateCheckingInterval(interval.CheckingInterval)
+	target := DownloadTarget{Type: interval.Type}
+	res, err := target.UpdateCheckingInterval(interval.CheckingInterval)
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_UPDATING_CHECKING_INTERVAL", Message: "There was an updating the checking interval: " + err.Error()}
-	}
-	if errRes.Type == "Error" {
 		ReturnResponse(w, errRes)
-	} else {
-		ReturnResponse(w, res)
+		return
 	}
+	ReturnResponse(w, res)
 }

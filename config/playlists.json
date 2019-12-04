@@ -1,1 +1,17 @@
-[]
+[
+ {
+  "URL": "https://www.youtube.com/watch?v=P7f2fEoM6Kw\u0026list=PLyIFQr1wryPKulMOzAKzBt8EoQD6vMPzA",
+  "LatestDownloaded": "P7f2fEoM6Kw",
+  "DownloadMode": "Audio Only",
+  "Name": "Essential Smooth Jams 👀 ✔",
+  "PreferredExtensionForAudio": "m4a",
+  "PreferredExtensionForVideo": "",
+  "DownloadHistory": [
+   "P7f2fEoM6Kw"
+  ],
+  "LastChecked": "12-04-2019 19:01:04",
+  "CheckingInterval": "3",
+  "Type": "Playlist",
+  "DownloadPath": "/playlists/%(uploader)s/%(playlist)s/audio/%(title)s.%(ext)s"
+ }
+]
