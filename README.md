@@ -79,6 +79,14 @@ environment:
 ### Running The Container
 Once the configuration is complete, `docker-compose up -d` will pull and run the container for you in the background. The container will now be accessible from http://localhost:8080 (or whichever port you've modified it to) on that machine. Using `docker logs` will show the container logs for troubleshooting.
 
+### Roadmap
+* Login screen
+* Ability to change channel/playlist preferences
+* Custom video resolution selection
+* Notifications when a new upload is detected
+* Specify after what amount of time to automatically delete videos
+* Support more file extensions
+
 ## Built With
 * [Go](https://golang.org/) - Go Language
 * [Gorilla Mux](https://github.com/gorilla/mux) - Go Multiplexer

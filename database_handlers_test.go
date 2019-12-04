@@ -78,7 +78,7 @@ func TestUpdateCheckingInterval(t *testing.T) {
 	for _, target := range targets {
 		err := target.AddToDatabase()
 		assert.Nil(err)
-		_, err = UpdateCheckingInterval("5")
+		_, err = target.UpdateCheckingInterval("5")
 		assert.Nil(err)
 		updatedTarget, err := target.GetFromDatabase()
 		assert.Equal("5", updatedTarget.CheckingInterval, "updatedTarget.CheckingInterval should be 5")
@@ -93,9 +93,9 @@ func TestGetCheckingInterval(t *testing.T) {
 		if target.Name != "Heroic Motivational Anthems" {
 			err := target.AddToDatabase()
 			assert.Nil(err)
-			_, err = UpdateCheckingInterval("5")
+			_, err = target.UpdateCheckingInterval("5")
 			assert.Nil(err)
-			checkingInterval, err := GetCheckingInterval()
+			checkingInterval, err := GetCheckingInterval("playlists")
 			assert.Nil(err)
 			assert.Equal(5, checkingInterval, "checkingInterval should be 5 for"+target.Name)
 			err = target.Delete()
