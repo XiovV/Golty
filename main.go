@@ -39,20 +39,39 @@ func init() {
 	initChannelsDatabase()
 }
 
-func uploadChecker() {
-	interval, err := GetCheckingInterval()
+func uploadCheckerChannels() {
+	interval, err := GetCheckingInterval("channels")
 	if err != nil {
-		log.Errorf("uploadChecker: %s", err)
+		log.Errorf("uploadCheckerChannels: %s", err)
 	}
 	if interval == 0 {
 		time.Sleep(5 * time.Minute)
-		uploadChecker()
+		uploadCheckerChannels()
 	} else if interval != 0 {
 		for {
 			if interval != 0 {
 				time.Sleep(time.Duration(interval) * time.Minute)
 				go CheckAll("channels")
-				log.Infof("upload Checker running every %v minutes", interval)
+				log.Infof("upload Checker for channels running every %v minutes", interval)
+			}
+		}
+	}
+}
+
+func uploadCheckerPlaylists() {
+	interval, err := GetCheckingInterval("playlists")
+	if err != nil {
+		log.Errorf("uploadCheckerPlaylists: %s", err)
+	}
+	if interval == 0 {
+		time.Sleep(5 * time.Minute)
+		uploadCheckerPlaylists()
+	} else if interval != 0 {
+		for {
+			if interval != 0 {
+				<-time.After(time.Duration(interval) * time.Minute)
+				go CheckAll("playlists")
+				log.Infof("upload Checker for playlists running every %v minutes", interval)
 			}
 		}
 	}
@@ -61,7 +80,8 @@ func uploadChecker() {
 func main() {
 	log.Info("server running on port 8080")
 	
-	go uploadChecker()
+	go uploadCheckerChannels()
+	go uploadCheckerPlaylists()
 
 	r := mux.NewRouter()
 	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})

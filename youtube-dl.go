@@ -90,21 +90,6 @@ func (target DownloadTarget) Download(downloadQuality, fileExtension string, dow
 			}
 		}
 	}
-	// else if target.Type == "Playlist" {
-	//	if target.DownloadMode == "Audio Only" {
-	//		if downloadEntire == false {
-	//			ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext="+fileExtension+"] -o downloads/playlists/%(uploader)s/%(playlist)s/audio/%(title)s.%(ext)s "+target.URL
-	//		} else {
-	//			ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext="+fileExtension+"] -o downloads/playlists/%(uploader)s/%(playlist)s/audio/%(title)s.%(ext)s "+target.URL
-	//		}
-	//	} else if target.DownloadMode == "Video And Audio" {
-	//		if downloadEntire == false {
-	//			ytdlCommand = "youtube-dl --playlist-end 1 -o downloads/playlists/%(uploader)s/%(playlist)s/video/%(title)s.%(ext)s " +target.URL
-	//		} else {
-	//			ytdlCommand = "youtube-dl --ignore-errors -o downloads/playlists/%(uploader)s/%(playlist)s/video/%(title)s.%(ext)s " +target.URL
-	//		}
-	//	}
-	//}
 
 	err := DownloadVideo(ytdlCommand)
 	if err != nil {

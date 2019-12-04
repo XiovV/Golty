@@ -154,6 +154,7 @@ type DeleteTargetPayload struct {
 
 type CheckingIntervalPayload struct {
 	CheckingInterval string
+	Type string
 }
 
 type AddTargetPayload struct {

@@ -63,12 +63,19 @@
         </select>
       </div>
     </div>
-    <div class="custom-control custom-checkbox mb-3">
-      <input type="checkbox" class="custom-control-input" id="custom-ytdl" onclick="customYtdl()">
-      <label class="custom-control-label" for="custom-ytdl">Enter custom youtube-dl output: </label>
+    <div class="custom-control custom-radio">
+      <input type="radio" onclick="customYtdl(this.id)" name="custom-output" id="custom-ytdl-output"  class="custom-control-input">
+      <label class="custom-control-label" for="custom-ytdl-output">Enter custom youtube-dl output</label>
     </div>
+    <div class="custom-control custom-radio mb-2">
+      <input type="radio" onclick="customYtdl(this.id)" name="custom-output" id="custom-download-output" class="custom-control-input">
+      <label class="custom-control-label" for="custom-download-output">Enter custom download path</label>
+    </div>
+    <input type="text" class="form-control mb-1" id="download-path" oninput="changeOutputPathIndicator(this.id)" placeholder="" disabled>
     <input type="checkbox" class="custom-control-input" id="custom-ytdl">
-    <input type="text" class="form-control mb-3" id="download-path" placeholder="default: videos/%(uploader)s/audio/%(title)s.%(ext)s" disabled>
+    <div class="form-group form-inline">
+      <p class="pr-1">Output path: </p><p class="mb-3 text-muted" id="output-path-indicator">/videos/%(uploader)s/audio/%(title)s.%(ext)s</p>
+    </div>
     <button class="btn btn-primary mb-3" onclick="downloadVideo()">Download Video<div id="download-video-spinner" class="spinner-border align-middle ml-2 d-none"></div></button>
     
     <h2 class="mt-2">Download History: </h2>
@@ -83,6 +90,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <script src="/static/js/videos.js"></script>
+  <script src="/static/js/helpers.js"></script>
   <script src="/static/js/version.js"></script>
 </body>
 </html>
