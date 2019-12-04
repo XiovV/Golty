@@ -23,20 +23,44 @@ func initLogFile() {
 	log.SetOutput(mw)
 }
 
-func initChannelsDatabase() {
-	_, err := os.Stat("./config/channels.json")
-	if os.IsNotExist(err) {
-		f, _ := os.Create("./config/channels.json")
-		defer f.Close()
-		s, _ := f.WriteString("[]")
-		log.Info("initiated channels.json: ", s)
-		f.Sync()
+func initDatabase() {
+	for i:=0; i<=2; i++ {
+		if i == 0 {
+			_, err := os.Stat("./config/channels.json")
+			if os.IsNotExist(err) {
+				f, _ := os.Create("./config/channels.json")
+				defer f.Close()
+				s, _ := f.WriteString("[]")
+				log.Info("initiated channels.json: ", s)
+				f.Sync()
+			}
+		} else if i == 1 {
+			_, err := os.Stat("./config/playlists.json")
+			if os.IsNotExist(err) {
+				f, _ := os.Create("./config/playlists.json")
+				defer f.Close()
+				s, _ := f.WriteString("[]")
+				log.Info("initiated playlists.json: ", s)
+				f.Sync()
+			}
+		} else if i == 2 {
+			_, err := os.Stat("./config/videos.json")
+			if os.IsNotExist(err) {
+				f, _ := os.Create("./config/videos.json")
+				defer f.Close()
+				s, _ := f.WriteString("[]")
+				log.Info("initiated videos.json: ", s)
+				f.Sync()
+			}
+		}
 	}
+
 }
 
 func init() {
 	initLogFile()
-	initChannelsDatabase()
+	CreateDirIfNotExist("./config")
+	initDatabase()
 }
 
 func uploadCheckerChannels() {
