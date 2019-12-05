@@ -95,7 +95,7 @@ func TestGetCheckingInterval(t *testing.T) {
 			assert.Nil(err)
 			_, err = target.UpdateCheckingInterval("5")
 			assert.Nil(err)
-			checkingInterval, err := GetCheckingInterval("playlists")
+			checkingInterval, err := GetCheckingInterval("channels")
 			assert.Nil(err)
 			assert.Equal(5, checkingInterval, "checkingInterval should be 5 for"+target.Name)
 			err = target.Delete()

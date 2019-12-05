@@ -134,10 +134,8 @@ func getItemFromDatabase(databaseName, targetURL string) (DownloadTarget, error)
 
 func setDatabaseName(targetType string) string {
 	if targetType == "Channel" {
-		log.Info("Removing channel from database")
 		return "channels.json"
 	} else if targetType == "Playlist" {
-		log.Info("Removing playlist from database")
 		return "playlists.json"
 	}
 	return ""
@@ -175,7 +173,7 @@ func appendToDownloadHistory(target DownloadTarget, videoId, databaseName string
 func addTargetToDatabase(target DownloadTarget, databaseName string) error {
 	openDatabaseAndUnmarshalJSON(databaseName)
 
-	log.Info("adding channel to DB")
+	log.Infof("adding %v to DB", target)
 	db = append(db, target)
 	return writeDb(db, CONFIG_ROOT+databaseName)
 }
