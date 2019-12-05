@@ -26,7 +26,7 @@ go build
 ./go-auto-yt
 ```
 
-You can now go to https://localhost:8080 and start using GoAutoYT.
+You can now go to http://localhost:8080 and start using GoAutoYT.
 
 Getting Started (with Docker)
 ------------
