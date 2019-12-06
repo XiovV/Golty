@@ -37,7 +37,7 @@ Getting Started (with Docker)
 ### Configuring The Container
 [Docker Hub Image](https://hub.docker.com/r/xiovv/go-auto-yt)
 
-The `docker-compose.yml` file in the repository can be used as a guide for setting up your own containers. the only thing that needs to be checked is the `volumes` section. If you keep the default, you need to ensure that there are _downloads_ and _config_ folders in the same directory as the `docker-compose.yml` file. Otherwise, feel free to modify those mapping to your own local directories. [Docker Bind Mount Docs](https://docs.docker.com/storage/bind-mounts/)
+The `docker-compose.yml` file in the repository can be used as a guide for setting up your own containers. The only thing that needs to be checked is the `volumes` section. If you keep the default, you need to ensure that there are _downloads_ and _config_ folders in the same directory as the `docker-compose.yml` file. Otherwise, feel free to modify those mapping to your own local directories. [Docker Bind Mount Docs](https://docs.docker.com/storage/bind-mounts/)
 
 ```YAML
 volumes:
@@ -86,8 +86,3 @@ Once the configuration is complete, `docker-compose up -d` will pull and run the
 * Notifications when a new upload is detected
 * Specify after what amount of time to automatically delete videos
 * Support more file extensions
-
-## Built With
-* [Go](https://golang.org/) - Go Language
-* [Gorilla Mux](https://github.com/gorilla/mux) - Go Multiplexer
-* [Bootstrap](https://getbootstrap.com/) - CSS Framework
