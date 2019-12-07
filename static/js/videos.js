@@ -67,9 +67,9 @@ function displayVideos(videos) {
 
 function customYtdl(checkboxId) {
     document.getElementById("download-path").disabled = false
-    if (checkboxId == "custom-download-output") {
+    if (checkboxId === "custom-download-output") {
         document.getElementById("download-path").placeholder = "default: /videos/"
-    } else if (checkboxId == "custom-ytdl-output") {
+    } else if (checkboxId === "custom-ytdl-output") {
         document.getElementById("download-path").placeholder = "default: /videos/%(uploader)s/audio/%(title)s.%(ext)s"
     }
 }
@@ -80,16 +80,16 @@ function changeOutputPathIndicator(id) {
     let youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
     let downloadMode = document.getElementById("download-mode").value;
     let input = document.getElementById(id).value;
-    if (downloadMode == "Audio Only") {
-        if (downloadPathRadio == true) {
+    if (downloadMode === "Audio Only") {
+        if (downloadPathRadio === true) {
             document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/audio/%(title)s.%(ext)s"
-        } else if (youtubedlOutputRadio == true) {
+        } else if (youtubedlOutputRadio === true) {
             document.getElementById("output-path-indicator").innerHTML = input
         }
-    } else if (downloadMode == "Video And Audio") {
-        if (downloadPathRadio == true) {
+    } else if (downloadMode === "Video And Audio") {
+        if (downloadPathRadio === true) {
             document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/video/%(title)s.%(ext)s"
-        } else if (youtubedlOutputRadio == true) {
+        } else if (youtubedlOutputRadio === true) {
             document.getElementById("output-path-indicator").innerHTML = input
         }
     }
