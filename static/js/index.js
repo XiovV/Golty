@@ -299,7 +299,6 @@ function changeExtension() {
 
   let downloadMode = document.getElementById("download-mode").value;
   let fileExtensions = document.getElementById("file-extension");
-  let downloadQualities = document.getElementById("download-quality");
   let input = document.getElementById("download-path").value;
   if (downloadMode == "Audio Only") {
     document.getElementById("download-path").placeholder = "default: /channels/%(uploader)s/audio/%(title)s.%(ext)s";
@@ -316,16 +315,9 @@ function changeExtension() {
     }
 
     fileExtensions.options[0].value = "m4a";
-    fileExtensions.options[0].text = "m4a";
+    fileExtensions.options[0].text = "m4a (recommended for now)";
     fileExtensions.options[1].value = "mp3";
     fileExtensions.options[1].text = "mp3";
-    downloadQualities.options[0].value = "best";
-    downloadQualities.options[0].text = "best";
-    downloadQualities.options[1].value = "medium";
-    downloadQualities.options[1].text = "medium";
-    downloadQualities.options[2].value = "worst";
-    downloadQualities.options[2].text = "worst"
-
   } else if (downloadMode == "Video And Audio") {
     document.getElementById("download-path").placeholder = "default: /channels/%(uploader)s/video/%(title)s.%(ext)s";
     if (input.length > 0) {
@@ -344,11 +336,6 @@ function changeExtension() {
     fileExtensions.options[0].text = "any (recommended for now)";
     fileExtensions.options[1].value = "mp4";
     fileExtensions.options[1].text = "mp4";
-
-    downloadQualities.options[0].value = "best";
-    downloadQualities.options[0].text = "best";
-    downloadQualities.options[1].value = "worst";
-    downloadQualities.options[1].text = "worst"
   }
 }
 

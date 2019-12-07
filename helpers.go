@@ -157,3 +157,13 @@ func CreateDirIfNotExist(dir string) {
 		}
 	}
 }
+
+func createDir(dir string) {
+	_, err := os.Stat(dir)
+	if os.IsNotExist(err) {
+		f, _ := os.Create(dir)
+		defer f.Close()
+		f.WriteString("[]")
+		f.Sync()
+	}
+}
