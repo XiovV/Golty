@@ -44,7 +44,7 @@ function updateCheckingInterval() {
   let type = "Playlist";
 
   let interval = {
-    checkingInterval,
+    checkingInterval: checkingInterval.toString(),
     type
   };
 

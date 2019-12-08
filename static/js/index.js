@@ -7,7 +7,7 @@ function updateCheckingInterval() {
   let type = "Channel";
 
   let interval = {
-    checkingInterval,
+    checkingInterval: checkingInterval.toString(),
     type
   };
 

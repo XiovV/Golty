@@ -1,5 +1,3 @@
-
-
 function handleResponse(res) {
     if (res.Type === "Success") {
         displaySuccessMessage(res.Message)
