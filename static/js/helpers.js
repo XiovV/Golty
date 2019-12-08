@@ -1,11 +1,9 @@
-
-
 function handleResponse(res) {
-    if (res.Type == "Success") {
+    if (res.Type === "Success") {
         displaySuccessMessage(res.Message)
-    } else if (res.Type == "Error") {
+    } else if (res.Type === "Error") {
         displayErrorMessage(res.Message)
-    } else if (res.Type == "Warning") {
+    } else if (res.Type === "Warning") {
         displayWarningMessage(res.Message)
     }
 }
@@ -60,4 +58,17 @@ function displayDownloadHistory(channelName, downloadHistory) {
     downloadHistory.forEach(video => {
         historyBox.innerHTML += `<br> <a href=https://www.youtube.com/watch?v=${video} target="_blank">https://www.youtube.com/watch?v=${video}</a>`
     })
+}
+
+function setCheckingInterval() {
+    let checkingIntervalInput = document.getElementById("checking-interval").value;
+    let time = document.getElementById("time").value;
+
+    if (time === "minutes") {
+        return checkingIntervalInput
+    } else if (time === "hours") {
+        return  checkingIntervalInput * 60
+    } else if (time === "days") {
+        return checkingIntervalInput * 1440
+    }
 }

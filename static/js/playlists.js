@@ -37,23 +37,14 @@ function addPlaylist() {
 }
 
 function updateCheckingInterval() {
-  startSpinner("update-checking-interval-spinner")
-  let checkingInterval
-  let checkingIntervalInput = document.getElementById("checking-interval").value
-  let time = document.getElementById("time").value
+  startSpinner("update-checking-interval-spinner");
+  let checkingInterval = setCheckingInterval();
 
-  if (time == "minutes") {
-    checkingInterval = checkingIntervalInput
-  } else if (time == "hours") {
-    checkingInterval = checkingIntervalInput * 60
-  } else if (time == "days") {
-    checkingInterval = checkingIntervalInput * 1440
-  }
 
   let type = "Playlist";
 
   let interval = {
-    checkingInterval,
+    checkingInterval: checkingInterval.toString(),
     type
   };
 
@@ -101,16 +92,16 @@ function checkPlaylist(id) {
       .then(res => res.json())
       .then(res => {
         stopSpinner(id+"-spinner");
-        if (res.Type == "Success") {
-          if (res.Key == "NO_NEW_VIDEOS") {
+        if (res.Type === "Success") {
+          if (res.Key === "NO_NEW_VIDEOS") {
             displayWarningMessage(res.Message);
             getPlaylists()
-          } else if (res.Key == "NEW_VIDEO_DETECTED") {
+          } else if (res.Key === "NEW_VIDEO_DETECTED") {
             displaySuccessMessage(res.Message);
             getPlaylists()
           }
-        } else if (res.Type == "Error") {
-          if (res.Key == "ERROR_DOWNLOADING_VIDEO") {
+        } else if (res.Type === "Error") {
+          if (res.Key === "ERROR_DOWNLOADING_VIDEO") {
             displayErrorMessage(res.Message);
           }
         }
@@ -223,14 +214,14 @@ function changeExtension() {
   let fileExtensions = document.getElementById("file-extension");
   let downloadQualities = document.getElementById("download-quality");
   let input = document.getElementById("download-path").value;
-  if (downloadMode == "Audio Only") {
+  if (downloadMode === "Audio Only") {
     document.getElementById("download-path").placeholder = "default: /playlists/%(uploader)s/audio/%(title)s.%(ext)s";
     if (input.length > 0) {
-      downloadPathRadio = document.getElementById("custom-download-output").checked;
-      youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
-      if (downloadPathRadio == true) {
+      let downloadPathRadio = document.getElementById("custom-download-output").checked;
+      let youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
+      if (downloadPathRadio === true) {
         document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/audio/%(title)s.%(ext)s"
-      } else if (youtubedlOutputRadio == true) {
+      } else if (youtubedlOutputRadio === true) {
         document.getElementById("output-path-indicator").innerHTML = input
       }
     } else {
@@ -248,14 +239,14 @@ function changeExtension() {
     downloadQualities.options[2].value = "worst";
     downloadQualities.options[2].text = "worst"
 
-  } else if (downloadMode == "Video And Audio") {
+  } else if (downloadMode === "Video And Audio") {
     document.getElementById("download-path").placeholder = "default: /playlists/%(uploader)s/%(playlist)s/audio/%(title)s.%(ext)s";
     if (input.length > 0) {
       let downloadPathRadio = document.getElementById("custom-download-output").checked;
       let youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
-      if (downloadPathRadio == true) {
+      if (downloadPathRadio === true) {
         document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/%(playlist)s/audio/%(title)s.%(ext)s"
-      } else if (youtubedlOutputRadio == true) {
+      } else if (youtubedlOutputRadio === true) {
         document.getElementById("output-path-indicator").innerHTML = input
       }
     } else {
@@ -276,9 +267,9 @@ function changeExtension() {
 
 function customYtdl(checkboxId) {
   document.getElementById("download-path").disabled = false;
-  if (checkboxId == "custom-download-output") {
+  if (checkboxId === "custom-download-output") {
     document.getElementById("download-path").placeholder = "default: /playlists/"
-  } else if (checkboxId == "custom-ytdl-output") {
+  } else if (checkboxId === "custom-ytdl-output") {
     document.getElementById("download-path").placeholder = "default: /playlists/%(uploader)s/%(playlist)s/audio/%(title)s.%(ext)s"
   }
 }
@@ -289,16 +280,16 @@ function changeOutputPathIndicator(id) {
   let youtubedlOutputRadio = document.getElementById("custom-ytdl-output").checked;
   let input = document.getElementById(id).value;
   let downloadMode = document.getElementById("download-mode").value;
-  if (downloadMode == "Audio Only") {
-    if (downloadPathRadio == true) {
+  if (downloadMode === "Audio Only") {
+    if (downloadPathRadio === true) {
       document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/%(playlist)s/audio/%(title)s.%(ext)s"
-    } else if (youtubedlOutputRadio == true) {
+    } else if (youtubedlOutputRadio === true) {
       document.getElementById("output-path-indicator").innerHTML = input
     }
-  } else if (downloadMode == "Video And Audio") {
-    if (downloadPathRadio == true) {
+  } else if (downloadMode === "Video And Audio") {
+    if (downloadPathRadio === true) {
       document.getElementById("output-path-indicator").innerHTML = input + "%(uploader)s/%(playlist)s/audio/%(title)s.%(ext)s"
-    } else if (youtubedlOutputRadio == true) {
+    } else if (youtubedlOutputRadio === true) {
       document.getElementById("output-path-indicator").innerHTML = input
     }
   }
