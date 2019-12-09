@@ -1,1 +1,17 @@
-[]
+[
+ {
+  "URL": "https://www.youtube.com/watch?v=au5Ap5qAWa8\u0026list=PL63ZO-jXFTasqvj7WdEFQ6QtG6UBrl9CR",
+  "LatestDownloaded": "au5Ap5qAWa8",
+  "DownloadMode": "Video And Audio",
+  "Name": "Electronic Gems",
+  "PreferredExtensionForAudio": "",
+  "PreferredExtensionForVideo": "any",
+  "DownloadHistory": [
+   "au5Ap5qAWa8"
+  ],
+  "LastChecked": "12-09-2019 20:40:54",
+  "CheckingInterval": "",
+  "Type": "Playlist",
+  "DownloadPath": "/playlists/%(uploader)s/%(playlist)s/video/%(title)s.%(ext)s"
+ }
+]
