@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var targets = []DownloadTarget{
@@ -56,6 +57,7 @@ func TestDownloadTarget_AddToDatabase(t *testing.T) {
 		assert.Nil(err)
 	}
 }
+
 //
 //func TestDownloadTarget_UpdateLatestDownloaded(t *testing.T) {
 //	assert := assert.New(t)

@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 func initLogFile() {
@@ -76,7 +77,7 @@ func uploadCheckerPlaylists() {
 
 func main() {
 	log.Info("server running on port 8080")
-	
+
 	go uploadCheckerChannels()
 	go uploadCheckerPlaylists()
 

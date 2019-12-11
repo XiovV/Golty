@@ -2,8 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	log "github.com/sirupsen/logrus"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
@@ -19,41 +20,41 @@ func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 	if videoData.DownloadPath == "" {
 		if videoData.DownloadMode == "Audio Only" {
 			ytdlCommand = YTDLCommand{
-				Binary:    "youtube-dl",
-				FirstFlag: "",
+				Binary:       "youtube-dl",
+				FirstFlag:    "",
 				FirstFlagArg: "",
-				FileType:  "bestaudio[ext=" + videoData.FileExtension + "]",
-				Output: videoData.DownloadPath,
-				Target: videoData.VideoURL,
+				FileType:     "bestaudio[ext=" + videoData.FileExtension + "]",
+				Output:       videoData.DownloadPath,
+				Target:       videoData.VideoURL,
 			}
 		} else if videoData.DownloadMode == "Video And Audio" {
 			ytdlCommand = YTDLCommand{
-				Binary:    "youtube-dl",
-				FirstFlag: "",
+				Binary:       "youtube-dl",
+				FirstFlag:    "",
 				FirstFlagArg: "",
-				FileType:  "bestvideo[ext=" + videoData.FileExtension + "]",
-				Output: videoData.DownloadPath,
-				Target: videoData.VideoURL,
+				FileType:     "bestvideo[ext=" + videoData.FileExtension + "]",
+				Output:       videoData.DownloadPath,
+				Target:       videoData.VideoURL,
 			}
 		}
 	} else {
 		if videoData.DownloadMode == "Audio Only" {
 			ytdlCommand = YTDLCommand{
-				Binary:    "youtube-dl",
-				FirstFlag: "",
+				Binary:       "youtube-dl",
+				FirstFlag:    "",
 				FirstFlagArg: "",
-				FileType:  "bestaudio[ext=" + videoData.FileExtension + "]",
-				Output: "downloads" + videoData.DownloadPath,
-				Target: videoData.VideoURL,
+				FileType:     "bestaudio[ext=" + videoData.FileExtension + "]",
+				Output:       "downloads" + videoData.DownloadPath,
+				Target:       videoData.VideoURL,
 			}
 		} else if videoData.DownloadMode == "Video And Audio" {
 			ytdlCommand = YTDLCommand{
-				Binary:    "youtube-dl",
-				FirstFlag: "",
+				Binary:       "youtube-dl",
+				FirstFlag:    "",
 				FirstFlagArg: "",
-				FileType:  "bestvideo[ext=" + videoData.FileExtension + "]",
-				Output: "downloads" + videoData.DownloadPath,
-				Target: videoData.VideoURL,
+				FileType:     "bestvideo[ext=" + videoData.FileExtension + "]",
+				Output:       "downloads" + videoData.DownloadPath,
+				Target:       videoData.VideoURL,
 			}
 		}
 	}
