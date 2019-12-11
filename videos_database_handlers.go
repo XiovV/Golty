@@ -46,7 +46,7 @@ func GetVideos() ([]DownloadVideoPayload, error) {
 		return []DownloadVideoPayload{}, fmt.Errorf("From GetChannels(): %v", err)
 	}
 	log.Info("successfully read all channels")
-	return videos, nil
+	return reverseVideos(videos), nil
 }
 
 func writeToVideosDb(db []DownloadVideoPayload, dbName string) error {

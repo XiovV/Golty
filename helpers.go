@@ -37,25 +37,32 @@ func GetAll(target string) ([]DownloadTarget, error) {
 	}
 	log.Info("successfully read all channels")
 	log.Info(db)
-	return db, nil
+	return reverseTargets(db), nil
 }
 
-func CheckAll(target string) (Response, error) {
-	var foundFor []string
-	var preferredExtension string
+func getAllTargets(target string) ([]DownloadTarget, string) {
 	var allInDb []DownloadTarget
-	var err error
 	var targetType string
 	if target == "channels" {
 		log.Info("checking for all channels")
-		allInDb, err = GetAll("channels")
+		allInDb, _ = GetAll("channels")
 		targetType = "Channel"
+		return allInDb, targetType
 	} else if target == "playlists" {
 		log.Info("checking for all playlists")
-		allInDb, err = GetAll("playlists")
+		allInDb, _ = GetAll("playlists")
 		targetType = "Playlist"
+		return allInDb, targetType
 	}
-	for _, item := range allInDb {
+
+	return nil, ""
+}
+
+func checkAllTargets(targets []DownloadTarget, targetType string) (Response, error) {
+	var foundFor []string
+	var preferredExtension string
+	var err error
+	for _, item := range targets {
 		target := DownloadTarget{URL: item.URL, Type: targetType}
 		target, err = target.GetFromDatabase()
 		if err != nil {
@@ -83,6 +90,10 @@ func CheckAll(target string) (Response, error) {
 		return Response{Type: "Success", Key: "NO_NEW_VIDEOS", Message: "No new videos found."}, nil
 	}
 	return Response{Type: "Success", Key: "NEW_VIDEOS", Message: "New videos detected for: " + strings.Join(foundFor, ",")}, nil
+}
+
+func CheckAll(target string) (Response, error) {
+	return checkAllTargets(getAllTargets(target))
 }
 
 func (target DownloadTarget) CheckNow() (bool, string, error) {
@@ -166,4 +177,18 @@ func createDir(dir string) {
 		f.WriteString("[]")
 		f.Sync()
 	}
+}
+
+func reverseTargets(s []DownloadTarget) []DownloadTarget {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
+}
+
+func reverseVideos(s []DownloadVideoPayload) []DownloadVideoPayload {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
 }

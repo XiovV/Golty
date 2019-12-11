@@ -8,7 +8,7 @@ import (
 
 func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to download a video")
-	var ytdlCommand string
+	var ytdlCommand YTDLCommand
 	var videoData DownloadVideoPayload
 	err := json.NewDecoder(r.Body).Decode(&videoData)
 	if err != nil {
@@ -18,15 +18,43 @@ func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 	log.Info(videoData)
 	if videoData.DownloadPath == "" {
 		if videoData.DownloadMode == "Audio Only" {
-			ytdlCommand = "youtube-dl -f bestaudio[ext=" + videoData.FileExtension + "] -o " + videoData.DownloadPath + " " + videoData.VideoURL
+			ytdlCommand = YTDLCommand{
+				Binary:    "youtube-dl",
+				FirstFlag: "",
+				FirstFlagArg: "",
+				FileType:  "bestaudio[ext=" + videoData.FileExtension + "]",
+				Output: videoData.DownloadPath,
+				Target: videoData.VideoURL,
+			}
 		} else if videoData.DownloadMode == "Video And Audio" {
-			ytdlCommand = "youtube-dl -o " + videoData.DownloadPath + " " + videoData.VideoURL
+			ytdlCommand = YTDLCommand{
+				Binary:    "youtube-dl",
+				FirstFlag: "",
+				FirstFlagArg: "",
+				FileType:  "bestvideo[ext=" + videoData.FileExtension + "]",
+				Output: videoData.DownloadPath,
+				Target: videoData.VideoURL,
+			}
 		}
 	} else {
 		if videoData.DownloadMode == "Audio Only" {
-			ytdlCommand = "youtube-dl -f bestaudio[ext=" + videoData.FileExtension + "] -o downloads" + videoData.DownloadPath + " " + videoData.VideoURL
+			ytdlCommand = YTDLCommand{
+				Binary:    "youtube-dl",
+				FirstFlag: "",
+				FirstFlagArg: "",
+				FileType:  "bestaudio[ext=" + videoData.FileExtension + "]",
+				Output: "downloads" + videoData.DownloadPath,
+				Target: videoData.VideoURL,
+			}
 		} else if videoData.DownloadMode == "Video And Audio" {
-			ytdlCommand = "youtube-dl -o downloads" + videoData.DownloadPath + " " + videoData.VideoURL
+			ytdlCommand = YTDLCommand{
+				Binary:    "youtube-dl",
+				FirstFlag: "",
+				FirstFlagArg: "",
+				FileType:  "bestvideo[ext=" + videoData.FileExtension + "]",
+				Output: "downloads" + videoData.DownloadPath,
+				Target: videoData.VideoURL,
+			}
 		}
 	}
 
