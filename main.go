@@ -103,6 +103,8 @@ func main() {
 
 	r.HandleFunc("/api/version", HandleGetVersion).Methods("GET")
 
+	r.HandleFunc("/favicon.ico", ServeFavicon).Methods("GET")
+
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 
 	http.ListenAndServe(":8080", handlers.CORS(headers, methods, origins)(r))
