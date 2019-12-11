@@ -93,8 +93,7 @@ func (target DownloadTarget) Download(downloadQuality, fileExtension string, dow
 
 	err := DownloadVideo(ytdlCommand)
 	if err != nil {
-		return fmt.Errorf(err.Error())
-		fmt.Errorf("Download: %s", err)
+		return fmt.Errorf("Download: %v", err)
 	}
 
 	return nil
