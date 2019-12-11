@@ -3,9 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func (target DownloadTarget) GetMetadata() (TargetMetadata, error) {
@@ -62,30 +63,30 @@ func (target DownloadTarget) Download(downloadQuality, fileExtension string, dow
 			if target.DownloadMode == "Audio Only" {
 				// Downloads only latest video
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath +" "+ target.URL
+					ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext=" + fileExtension + "] -o downloads" + target.DownloadPath + " " + target.URL
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext="+fileExtension+"] -o downloads" +target.DownloadPath + " "+ target.URL
+					ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext=" + fileExtension + "] -o downloads" + target.DownloadPath + " " + target.URL
 				}
 			} else if target.DownloadMode == "Video And Audio" {
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -o downloads" + target.DownloadPath + " "+ target.URL
+					ytdlCommand = "youtube-dl --playlist-end 1 -o downloads" + target.DownloadPath + " " + target.URL
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -o downloads" + target.DownloadPath + " "+ target.URL
+					ytdlCommand = "youtube-dl --ignore-errors -o downloads" + target.DownloadPath + " " + target.URL
 				}
 			}
 		} else {
 			if target.DownloadMode == "Audio Only" {
 				// Downloads only latest video
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath + " "+target.URL
+					ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext=" + fileExtension + "] -o downloads" + target.DownloadPath + " " + target.URL
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath + " "+target.URL
+					ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext=" + fileExtension + "] -o downloads" + target.DownloadPath + " " + target.URL
 				}
 			} else if target.DownloadMode == "Video And Audio" {
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -o downloads" + target.DownloadPath + " "+target.URL
+					ytdlCommand = "youtube-dl --playlist-end 1 -o downloads" + target.DownloadPath + " " + target.URL
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -o downloads" + target.DownloadPath + " "+target.URL
+					ytdlCommand = "youtube-dl --ignore-errors -o downloads" + target.DownloadPath + " " + target.URL
 				}
 			}
 		}

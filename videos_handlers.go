@@ -2,8 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	log "github.com/sirupsen/logrus"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {

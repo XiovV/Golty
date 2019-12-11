@@ -130,7 +130,7 @@ type TargetMetadata struct {
 }
 
 type DownloadTarget struct {
-	URL                		   string
+	URL                        string
 	LatestDownloaded           string
 	DownloadMode               string
 	Name                       string
@@ -139,7 +139,7 @@ type DownloadTarget struct {
 	DownloadHistory            []string
 	LastChecked                string
 	CheckingInterval           string
-	Type 					   string
+	Type                       string
 	DownloadPath               string
 }
 
@@ -148,32 +148,32 @@ type GetTargetPayload struct {
 }
 
 type DeleteTargetPayload struct {
-	URL string
+	URL  string
 	Type string
 }
 
 type CheckingIntervalPayload struct {
 	CheckingInterval string
-	Type string
+	Type             string
 }
 
 type AddTargetPayload struct {
-	URL                   string
-	DownloadMode          string
-	FileExtension         string
-	DownloadQuality       string
-	DownloadEntire        bool
-	CheckingInterval      string
-	DownloadPath          string
-	Type                  string
+	URL              string
+	DownloadMode     string
+	FileExtension    string
+	DownloadQuality  string
+	DownloadEntire   bool
+	CheckingInterval string
+	DownloadPath     string
+	Type             string
 }
 
 type DownloadVideoPayload struct {
-	 VideoURL 			   string
-	 DownloadMode          string
-	 FileExtension         string
-	 DownloadQuality       string
-	 DownloadPath          string
+	VideoURL        string
+	DownloadMode    string
+	FileExtension   string
+	DownloadQuality string
+	DownloadPath    string
 }
 
 type Response struct {
@@ -183,8 +183,8 @@ type Response struct {
 }
 
 type Video struct {
-	VideoID string
-	DownloadMode string
+	VideoID         string
+	DownloadMode    string
 	DownloadQuality string
-	FileExtension string
+	FileExtension   string
 }

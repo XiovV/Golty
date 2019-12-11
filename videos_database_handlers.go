@@ -3,9 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func (v DownloadVideoPayload) AddToDatabase() error {

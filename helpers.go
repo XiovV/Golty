@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func GetAll(target string) ([]DownloadTarget, error) {
