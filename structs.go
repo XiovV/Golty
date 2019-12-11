@@ -188,3 +188,13 @@ type Video struct {
 	DownloadQuality string
 	FileExtension string
 }
+
+type YTDLCommand struct {
+	TargetType string
+	Binary string
+	FirstFlag string
+	FirstFlagArg string
+	FileType string
+	Output string
+	Target string
+}

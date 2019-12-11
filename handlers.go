@@ -35,7 +35,7 @@ func HandleVideos(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
-	log.Info("received a request to add a playlist")
+	log.Info("received a request to add a target")
 	w.Header().Set("Content-Type", "application/json")
 	var targetData AddTargetPayload
 	err := json.NewDecoder(r.Body).Decode(&targetData)
@@ -73,7 +73,7 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 		}
 		err = target.Download(targetData.DownloadQuality, targetData.FileExtension, targetData.DownloadEntire)
 		if err != nil {
-			errRes = Response{Type: "Error", Key: "ERROR_DOWNLOADING_ENTIRE_CHANNEL", Message: "There was an error downloading the entire channel" + err.Error()}
+			errRes = Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error downloading the target " + err.Error()}
 		}
 		err = target.UpdateLatestDownloaded(targetMetadata.ID)
 		if err != nil {

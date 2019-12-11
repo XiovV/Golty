@@ -5,7 +5,6 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"os/exec"
-	"strings"
 )
 
 func (target DownloadTarget) GetMetadata() (TargetMetadata, error) {
@@ -45,7 +44,7 @@ func (target DownloadTarget) GetLatestVideo() (string, error) {
 
 func (target DownloadTarget) Download(downloadQuality, fileExtension string, downloadEntire bool) error {
 	log.Info("DOWNLOAD: ", target)
-	var ytdlCommand string
+	var ytdlCommand YTDLCommand
 	if target.DownloadMode == "Audio Only" {
 		log.Info("downloading audio only")
 		if downloadQuality == "best" {
@@ -60,32 +59,85 @@ func (target DownloadTarget) Download(downloadQuality, fileExtension string, dow
 	if target.Type == "Channel" || target.Type == "Playlist" {
 		if target.DownloadPath == "" {
 			if target.DownloadMode == "Audio Only" {
-				// Downloads only latest video
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath +" "+ target.URL
+					ytdlCommand = YTDLCommand{
+						Binary:    "youtube-dl",
+						FirstFlag: "--playlist-end",
+						FirstFlagArg: "1",
+						FileType:  "-f bestaudio[ext="+fileExtension+"]",
+						Output: "-o downloads" + target.DownloadPath +" "+ target.URL,
+					}
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext="+fileExtension+"] -o downloads" +target.DownloadPath + " "+ target.URL
+					ytdlCommand = YTDLCommand{
+						Binary:    "youtube-dl",
+						FirstFlag: "--ignore-errors",
+						FirstFlagArg: "",
+						FileType:  "-f bestaudio[ext="+fileExtension+"]",
+						Output: "-o downloads" + target.DownloadPath +" "+ target.URL,
+					}
 				}
 			} else if target.DownloadMode == "Video And Audio" {
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -o downloads" + target.DownloadPath + " "+ target.URL
+					ytdlCommand = YTDLCommand{
+						Binary:    "youtube-dl",
+						FirstFlag: "--playlist-end",
+						FirstFlagArg: "1",
+						FileType:  "-f bestaudio[ext="+fileExtension+"]",
+						Output: "-o downloads" + target.DownloadPath,
+						Target: target.URL,
+					}
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -o downloads" + target.DownloadPath + " "+ target.URL
+					ytdlCommand = YTDLCommand{
+						Binary:    "youtube-dl",
+						FirstFlag: "--ignore-errors",
+						FirstFlagArg: "",
+						FileType:  "-f bestaudio[ext="+fileExtension+"]",
+						Output: "-o downloads" + target.DownloadPath,
+						Target: target.URL,
+					}
 				}
 			}
 		} else {
 			if target.DownloadMode == "Audio Only" {
 				// Downloads only latest video
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath + " "+target.URL
+					ytdlCommand = YTDLCommand{
+						Binary:    "youtube-dl",
+						FirstFlag: "--playlist-end",
+						FirstFlagArg: "1",
+						FileType:  "bestaudio[ext="+fileExtension+"]",
+						Output: "downloads" + target.DownloadPath,
+						Target: target.URL,
+					}
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -f bestaudio[ext="+fileExtension+"] -o downloads" + target.DownloadPath + " "+target.URL
+					ytdlCommand = YTDLCommand{
+						Binary:    "youtube-dl",
+						FirstFlag: "--ignore-errors",
+						FirstFlagArg: "",
+						FileType:  "bestaudio[ext="+fileExtension+"]",
+						Output: "downloads" + target.DownloadPath,
+						Target: target.URL,
+					}
 				}
 			} else if target.DownloadMode == "Video And Audio" {
 				if downloadEntire == false {
-					ytdlCommand = "youtube-dl --playlist-end 1 -o downloads" + target.DownloadPath + " "+target.URL
+					ytdlCommand = YTDLCommand{
+						Binary:    "youtube-dl",
+						FirstFlag: "--playlist-end",
+						FirstFlagArg: "1",
+						FileType:  "bestaudio[ext="+fileExtension+"]",
+						Output: "downloads" + target.DownloadPath,
+						Target: target.URL,
+					}
 				} else {
-					ytdlCommand = "youtube-dl --ignore-errors -o downloads" + target.DownloadPath + " "+target.URL
+					ytdlCommand = YTDLCommand{
+						Binary:    "youtube-dl",
+						FirstFlag: "--ignore-errors",
+						FirstFlagArg: "",
+						FileType:  "bestaudio[ext="+fileExtension+"]",
+						Output: "downloads" + target.DownloadPath +" "+ target.URL,
+						Target: target.URL,
+					}
 				}
 			}
 		}
@@ -95,20 +147,24 @@ func (target DownloadTarget) Download(downloadQuality, fileExtension string, dow
 	if err != nil {
 		return fmt.Errorf("Download: %v", err)
 	}
-
 	return nil
 }
 
-func DownloadVideo(command string) error {
+func DownloadVideo(command YTDLCommand) error {
 	log.Info("downloading video")
 	var cmd *exec.Cmd
-	args := strings.Split(command, " ")
-	cmd = exec.Command(args[0], args[1:]...)
+	log.Info(command)
+	if command.FirstFlag == "" {
+		cmd = exec.Command(command.Binary,"-f",command.FileType, "-o",command.Output, command.Target)
+	} else {
+		cmd = exec.Command(command.Binary, command.FirstFlag, command.FirstFlagArg, "-f",command.FileType, "-o",command.Output, command.Target)
+	}
 	log.Info("executing youtube-dl command: ", cmd.String())
 	err := cmd.Run()
 	if err != nil {
 		log.Error(err, cmd.String())
-		return fmt.Errorf("v.Download: %s", err)
+		return fmt.Errorf("DownloadVideo: %s", err.Error())
 	}
 	return nil
 }
+
