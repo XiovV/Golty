@@ -12,6 +12,10 @@ type version struct {
 	VersionNumber string
 }
 
+func ServeFavicon(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "favicon.ico")
+}
+
 func HandleGetVersion(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(version{VersionNumber: VERSION})
