@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -48,100 +49,38 @@ func (target DownloadTarget) Download(downloadQuality, fileExtension string, dow
 	var ytdlCommand YTDLCommand
 	if target.DownloadMode == "Audio Only" {
 		log.Info("downloading audio only")
-		if downloadQuality == "best" {
+		switch downloadQuality {
+		case "best":
 			downloadQuality = "0"
-		} else if downloadQuality == "medium" {
+		case "medium":
 			downloadQuality = "5"
-		} else if downloadQuality == "worst" {
+		case "worst":
 			downloadQuality = "9"
 		}
 		log.Info("download quality set to: ", downloadQuality)
 	}
-	if target.Type == "Channel" || target.Type == "Playlist" {
-		if target.DownloadPath == "" {
-			if target.DownloadMode == "Audio Only" {
-				if downloadEntire == false {
-					ytdlCommand = YTDLCommand{
-						Binary:       "youtube-dl",
-						FirstFlag:    "--playlist-end",
-						FirstFlagArg: "1",
-						FileType:     "-f bestaudio[ext=" + fileExtension + "]",
-						Output:       "-o downloads" + target.DownloadPath + " " + target.URL,
-					}
-				} else {
-					ytdlCommand = YTDLCommand{
-						Binary:       "youtube-dl",
-						FirstFlag:    "--ignore-errors",
-						FirstFlagArg: "",
-						FileType:     "-f bestaudio[ext=" + fileExtension + "]",
-						Output:       "-o downloads" + target.DownloadPath + " " + target.URL,
-					}
-				}
-			} else if target.DownloadMode == "Video And Audio" {
-				if downloadEntire == false {
-					ytdlCommand = YTDLCommand{
-						Binary:       "youtube-dl",
-						FirstFlag:    "--playlist-end",
-						FirstFlagArg: "1",
-						FileType:     "-f bestaudio[ext=" + fileExtension + "]",
-						Output:       "-o downloads" + target.DownloadPath,
-						Target:       target.URL,
-					}
-				} else {
-					ytdlCommand = YTDLCommand{
-						Binary:       "youtube-dl",
-						FirstFlag:    "--ignore-errors",
-						FirstFlagArg: "",
-						FileType:     "-f bestaudio[ext=" + fileExtension + "]",
-						Output:       "-o downloads" + target.DownloadPath,
-						Target:       target.URL,
-					}
-				}
-			}
-		} else {
-			if target.DownloadMode == "Audio Only" {
-				// Downloads only latest video
-				if downloadEntire == false {
-					ytdlCommand = YTDLCommand{
-						Binary:       "youtube-dl",
-						FirstFlag:    "--playlist-end",
-						FirstFlagArg: "1",
-						FileType:     "bestaudio[ext=" + fileExtension + "]",
-						Output:       "downloads" + target.DownloadPath,
-						Target:       target.URL,
-					}
-				} else {
-					ytdlCommand = YTDLCommand{
-						Binary:       "youtube-dl",
-						FirstFlag:    "--ignore-errors",
-						FirstFlagArg: "",
-						FileType:     "bestaudio[ext=" + fileExtension + "]",
-						Output:       "downloads" + target.DownloadPath,
-						Target:       target.URL,
-					}
-				}
-			} else if target.DownloadMode == "Video And Audio" {
-				if downloadEntire == false {
-					ytdlCommand = YTDLCommand{
-						Binary:       "youtube-dl",
-						FirstFlag:    "--playlist-end",
-						FirstFlagArg: "1",
-						FileType:     "bestaudio[ext=" + fileExtension + "]",
-						Output:       "downloads" + target.DownloadPath,
-						Target:       target.URL,
-					}
-				} else {
-					ytdlCommand = YTDLCommand{
-						Binary:       "youtube-dl",
-						FirstFlag:    "--ignore-errors",
-						FirstFlagArg: "",
-						FileType:     "bestaudio[ext=" + fileExtension + "]",
-						Output:       "downloads" + target.DownloadPath + " " + target.URL,
-						Target:       target.URL,
-					}
-				}
-			}
-		}
+	ytdlCommand = YTDLCommand{
+		Binary: "youtube-dl",
+		Target: target.URL,
+	}
+	switch target.DownloadPath {
+	default:
+		ytdlCommand.Output = filepath.Join(dlRoot, target.DownloadPath)
+	case "":
+		ytdlCommand.Output = filepath.Join(dlRoot, "/%(uploader)s/audio/%(title)s.%(ext)s")
+	}
+	switch target.DownloadMode {
+	case "Audio Only":
+		ytdlCommand.FileType = "bestaudio[ext=" + fileExtension + "]"
+	case "Video And Audio":
+		ytdlCommand.FileType = "bestvideo[ext=" + fileExtension + "]"
+	}
+	switch downloadEntire {
+	case true:
+		ytdlCommand.FirstFlag = "--ignore-errors"
+	case false:
+		ytdlCommand.FirstFlag = "--playlist-end"
+		ytdlCommand.FirstFlagArg = "1"
 	}
 
 	err := DownloadVideo(ytdlCommand)

@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -17,48 +18,22 @@ func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
 	}
 	log.Info(videoData)
-	if videoData.DownloadPath == "" {
-		if videoData.DownloadMode == "Audio Only" {
-			ytdlCommand = YTDLCommand{
-				Binary:       "youtube-dl",
-				FirstFlag:    "",
-				FirstFlagArg: "",
-				FileType:     "bestaudio[ext=" + videoData.FileExtension + "]",
-				Output:       videoData.DownloadPath,
-				Target:       videoData.VideoURL,
-			}
-		} else if videoData.DownloadMode == "Video And Audio" {
-			ytdlCommand = YTDLCommand{
-				Binary:       "youtube-dl",
-				FirstFlag:    "",
-				FirstFlagArg: "",
-				FileType:     "bestvideo[ext=" + videoData.FileExtension + "]",
-				Output:       videoData.DownloadPath,
-				Target:       videoData.VideoURL,
-			}
-		}
-	} else {
-		if videoData.DownloadMode == "Audio Only" {
-			ytdlCommand = YTDLCommand{
-				Binary:       "youtube-dl",
-				FirstFlag:    "",
-				FirstFlagArg: "",
-				FileType:     "bestaudio[ext=" + videoData.FileExtension + "]",
-				Output:       "downloads" + videoData.DownloadPath,
-				Target:       videoData.VideoURL,
-			}
-		} else if videoData.DownloadMode == "Video And Audio" {
-			ytdlCommand = YTDLCommand{
-				Binary:       "youtube-dl",
-				FirstFlag:    "",
-				FirstFlagArg: "",
-				FileType:     "bestvideo[ext=" + videoData.FileExtension + "]",
-				Output:       "downloads" + videoData.DownloadPath,
-				Target:       videoData.VideoURL,
-			}
-		}
+	ytdlCommand = YTDLCommand{
+		Binary: "youtube-dl",
+		Target: videoData.VideoURL,
 	}
-
+	switch videoData.DownloadPath {
+	default:
+		ytdlCommand.Output = filepath.Join(dlRoot, videoData.DownloadPath)
+	case "":
+		ytdlCommand.Output = filepath.Join(dlRoot, "/%(uploader)s/audio/%(title)s.%(ext)s")
+	}
+	switch videoData.DownloadMode {
+	case "Audio Only":
+		ytdlCommand.FileType = "bestaudio[ext=" + videoData.FileExtension + "]"
+	case "Video And Audio":
+		ytdlCommand.FileType = "bestvideo[ext=" + videoData.FileExtension + "]"
+	}
 	err = DownloadVideo(ytdlCommand)
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "DOWNLOAD_VIDEO_ERROR", Message: "There was an error while downloading the video: " + err.Error()}

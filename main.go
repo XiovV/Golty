@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"io"
 	"net/http"
 	"os"
@@ -9,6 +10,11 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
+)
+
+var (
+	port   string
+	dlRoot string
 )
 
 func initLogFile() {
@@ -35,6 +41,8 @@ func init() {
 	initLogFile()
 	CreateDirIfNotExist("./config")
 	initDatabase()
+	flag.StringVar(&port, "port", "8080", "port to listen")
+	flag.StringVar(&dlRoot, "dl", "./downloads", "root download folder")
 }
 
 func uploadCheckerChannels() {
@@ -76,7 +84,8 @@ func uploadCheckerPlaylists() {
 }
 
 func main() {
-	log.Info("server running on port 8080")
+	flag.Parse()
+	log.Info("server running on port " + port)
 
 	go uploadCheckerChannels()
 	go uploadCheckerPlaylists()
@@ -108,5 +117,5 @@ func main() {
 
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 
-	http.ListenAndServe(":8080", handlers.CORS(headers, methods, origins)(r))
+	log.Fatal(http.ListenAndServe(":"+port, handlers.CORS(headers, methods, origins)(r)))
 }
