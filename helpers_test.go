@@ -1,7 +1,5 @@
 package main
 
-
-
 //func TestDownloadTarget_CheckNow(t *testing.T) {
 //	assert := assert.New(t)
 //	for _, target := range targets {

@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
 	"strconv"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var db []DownloadTarget
@@ -59,7 +60,6 @@ func (target DownloadTarget) UpdateDownloadHistory(videoId string) error {
 	databaseName = setDatabaseName(target.Type)
 	return appendToDownloadHistory(target, videoId, databaseName)
 }
-
 
 func (target DownloadTarget) Delete() error {
 	databaseName = setDatabaseName(target.Type)
@@ -131,7 +131,6 @@ func getItemFromDatabase(databaseName, targetURL string) (DownloadTarget, error)
 	return DownloadTarget{}, fmt.Errorf("Couldn't find target")
 }
 
-
 func setDatabaseName(targetType string) string {
 	if targetType == "Channel" {
 		return "channels.json"
@@ -155,11 +154,10 @@ func removeItem(targetURL, databaseName string) error {
 	return writeDb(db, CONFIG_ROOT+databaseName)
 }
 
-
 func appendToDownloadHistory(target DownloadTarget, videoId, databaseName string) error {
 	db = openDatabaseAndUnmarshalJSON(databaseName)
 
-	for i:= range db {
+	for i := range db {
 		if db[i].URL == target.URL {
 			db[i].DownloadHistory = append(target.DownloadHistory, videoId)
 			log.Info(db)
@@ -181,7 +179,7 @@ func addTargetToDatabase(target DownloadTarget, databaseName string) error {
 func updateLastCheckedDateAndTime(target DownloadTarget, databaseName string) error {
 	openDatabaseAndUnmarshalJSON(databaseName)
 
-	for i:= range db {
+	for i := range db {
 		if db[i].URL == target.URL {
 			dt := time.Now()
 			db[i].LastChecked = dt.Format("01-02-2006 15:04:05")
