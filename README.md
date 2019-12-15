@@ -96,7 +96,7 @@ services:
       # Provider Info
       - --providers.docker
       # Certificate Resolver Info (If you need SSL Certs)
-      - --certificatesresolvers.le.acme.email=your@email.domain
+      - --certificatesresolvers.le.acme.email=your@email.address
       - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
       - --certificatesresolvers.le.acme.tlschallenge=true
     labels:
@@ -146,7 +146,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    command: -email your@email.domain -agree=true
+    command: -email your@email.address -agree=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - caddy:/root/.caddy
@@ -164,7 +164,6 @@ labels:
       - caddy.targetport=8080
       # If you require transparent proxying
       - caddy.proxy.transparent=
-
 ```
 
 ##### NGINX
@@ -201,10 +200,10 @@ Add the below environemnt variables to your go-auto-yt `docker-compose.yml` file
 
 ```YAML
 environment:
-  - VIRTUAL_HOST=sub.domain.com
+  - VIRTUAL_HOST=your.domain.here
   - VURTUAL_PORT=8080
   # If you need SSL and have used JrCs's solution linked above, add the below
-  - LETSENCRYPT_HOST=sub.domain.com
+  - LETSENCRYPT_HOST=your.domain.here
   - LETSENCRYPT_EMAIL=your@email.address
 ```
 
