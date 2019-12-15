@@ -78,6 +78,57 @@ environment:
 ### Running The Container
 Once the configuration is complete, `docker-compose up -d` will pull and run the container for you in the background. The container will now be accessible from http://localhost:8080 (or whichever port you've modified it to) on that machine. Using `docker logs` will show the container logs for troubleshooting.
 
+#### Reverse Proxies
+If you'd like to have multiple services run over a single port, Reverse Proxies can be used with the docker container. Popular options are [Traefik](https://containo.us/traefik/), [Caddy](https://caddyserver.com/) and [NGINX](https://github.com/jwilder/nginx-proxy).
+
+##### Traefik
+Traefik is a popular option as a reverse proxy because it has official docker support and a high level of configurability. A `docker-compose` example for the Traefik container itself is below:
+```YAML
+services:
+  traefik:
+    container_name: traefik
+    image: traefik:latest
+    command:
+      # Entrypoints
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      # Provider Info
+      - --providers.docker
+      # Certificate Resolver Info (If you need SSL Certs)
+      - --certificatesresolvers.le.acme.email=your@email.domain
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.le.acme.tlschallenge=true
+    labels:
+      # The labels in this section are for redirecting port 80 to port 443
+      # If you're using this internally or otherwise don't need HTTPS, remove these
+      # Middleware Redirect
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      # Global HTTP -> HTTPS Redirect
+      - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.redirs.entrypoints=http"
+      - "traefik.http.routers.redirs.middlewares=https-redirect"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
+        - "certs:/letsencrypt"
+    restart: unless-stopped
+    network_mode: "bridge"
+volumes:
+  certs:
+```
+Using the above config, make below additions to the go-auto-yt `docker-compose.yml`:
+```YAML
+labels:
+      - "traefik.enable=true"
+      # Using HTTPS here as best practise, replace with http if necessary
+      - "traefik.http.routers.go-auto-yt.entrypoints=https"
+      - "traefik.http.routers.go-auto-yt.rule=Host(`your.domain.here`)"
+      # If you want auto SSL certificate generation
+      - "traefik.http.routers.go-auto-yt.tls.certresolver=le"
+```
+
 ### Roadmap
 * Login screen
 * Ability to change channel/playlist preferences
