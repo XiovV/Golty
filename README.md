@@ -82,7 +82,7 @@ Once the configuration is complete, `docker-compose up -d` will pull and run the
 If you'd like to have multiple services run over a single port, Reverse Proxies can be used with the docker container. Popular options are [Traefik](https://containo.us/traefik/), [Caddy](https://caddyserver.com/) and [NGINX](https://github.com/jwilder/nginx-proxy).
 
 ##### Traefik
-Traefik is a popular option as a reverse proxy because it has official docker support and a high level of configurability. A `docker-compose` example for the Traefik container itself is below:
+Traefik is a popular option as a reverse proxy because it has official docker support and a high level of configurability. A `docker-compose` example for a Traefik v2 container itself is below:
 ```YAML
 services:
   traefik:
