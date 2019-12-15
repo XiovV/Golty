@@ -132,6 +132,8 @@ labels:
       - "traefik.http.routers.go-auto-yt.tls.certresolver=le"
 ```
 
+More advanced configuration options can be found [in the docs](https://docs.traefik.io/routing/providers/docker/).
+
 ##### Caddy
 Caddy is still at v1 (v2 is currently in beta, use at your own risk) and at this time doesn't have an official docker image. [Community offerings exist](https://github.com/caddyserver/caddy/wiki/Docker-Containers) so if you're set on using Caddy then take a look at some of those. There's an example of one in use below. _You can also set a custom Caddyfile if you do some [reading on the topic](https://caddyserver.com/v1/docs/caddyfile)._
 
