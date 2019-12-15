@@ -57,7 +57,7 @@ volumes:
   config:
 ```
 
-You can view these volumes with the `docker volumes` command and view further information with `docker volume inspect VOLUME_NAME`. [Docker Volume Docs](https://docs.docker.com/storage/volumes/)
+You can view these volumes with the `docker volumes` command and view further information with `docker volume inspect VOLUME_NAME`. Further reading: [Docker Volume Docs](https://docs.docker.com/storage/volumes/)
 
 The port can also be changed by modifying the `ports:` item. By default, this is set to 8080 but if you wanted to change it to port 9000, for example, modify the docker-compose.yml to reflect the below. This follows the standard [docker container networking model](https://docs.docker.com/config/containers/container-networking/) of `host:container.`
 
