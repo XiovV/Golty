@@ -167,6 +167,47 @@ labels:
 
 ```
 
+##### NGINX
+Using NGINX as a reverse proxy has a number of different implementations. Official documentation lives [here](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/). [Jwilder's docker container](https://github.com/jwilder/nginx-proxy) is a popular choice for a containerised version. NGINX doesn't automatically fetch SSL certificates for you like the other solutions so if you need that, consider an additional service such as [this one](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion). An example of using the two together can be found [here](https://github.com/dangerous-tech/docker-composes/tree/master/proxy).
+
+```YAML
+services:
+  proxy:
+    container_name: proxy
+    image: jwilder/nginx-proxy
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - DEFAULT_HOST=proxy.local
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    network_mode: "bridge"
+
+volumes:
+  certs:
+  conf:
+  vhost:
+  html:
+  dhparam:
+```
+
+Add the below environemnt variables to your go-auto-yt `docker-compose.yml` file to have them proxied by the container with the above config:
+
+```YAML
+environment:
+  - VIRTUAL_HOST=sub.domain.com
+  - VURTUAL_PORT=8080
+  # If you need SSL and have used JrCs's solution linked above, add the below
+  - LETSENCRYPT_HOST=sub.domain.com
+  - LETSENCRYPT_EMAIL=your@email.address
+```
+
 ### Roadmap
 * Login screen
 * Ability to change channel/playlist preferences
