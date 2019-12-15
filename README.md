@@ -52,7 +52,6 @@ volumes:
 If you wish to use Docker volume mappings, comment out the local folder lines and uncomment the docker volume lines. You must also uncomment the root `volumes` section at the bottom of the sample YAML file. This will instruct docker to create the volumes. 
 
 ```YAML
-# uncomment this if using the docker volume mapping above
 volumes:
   downloads:
   config:
