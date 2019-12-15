@@ -129,6 +129,39 @@ labels:
       - "traefik.http.routers.go-auto-yt.tls.certresolver=le"
 ```
 
+##### Caddy
+Caddy is still at v1 (v2 is currently in beta, use at your own risk) and at this time doesn't have an official docker image. [Community offerings exist](https://github.com/caddyserver/caddy/wiki/Docker-Containers) so if you're set on using Caddy then take a look at some of those. There's an example of one in use below. _You can also set a custom Caddyfile if you do some [reading on the topic](https://caddyserver.com/v1/docs/caddyfile)._
+
+```YAML
+services:
+  caddy:
+    container_name: caddy
+    image: lucaslorentz/caddy-docker-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    command: -email your@email.domain -agree=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - caddy:/root/.caddy
+    network_mode: "bridge"
+
+volumes:
+  caddy:
+```
+
+Add the following labels to your go-auto-yt `docker-compose.yml` to get the Caddy container to pick them up and proxy requests. If you need advanced features (custom headers, etc), check the README of whichever solution you're using. The one above can be found [here](https://github.com/lucaslorentz/caddy-docker-proxy).
+
+```YAML
+labels:
+      - caddy.address=your.domain.here
+      - caddy.targetport=8080
+      # If you require transparent proxying
+      - caddy.proxy.transparent=
+
+```
+
 ### Roadmap
 * Login screen
 * Ability to change channel/playlist preferences
