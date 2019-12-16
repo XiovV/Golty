@@ -1,10 +1,6 @@
 os: linux
 dist: bionic
 
-arch:
-  - amd64
-  - arm64
-
 env:
   global:
     - secure: "qZN8JV91mJz2sLyewz6nRVb++KsNUwstvbMPpion4kfs23m54FgMDI+bpu8pgrZyINqsFwDdKbElnUOjR7tAwtJq5zLeSuC7vy2YT/eud/D3C1kcJBjE4qYihRRRlYMQhlsZb1/3gaN9mvUx0g1UmHLug9SfSy3GFDiSKMeE6umMOLJzLzXl0aOLtREiFZMb8TmvVRzD6W1GuLBe2gxYHvsOKumhVbL0CJnocGzTlSmAgx/smPjMahTznURtmfXpEijh7FBfUz4JRhGSdNjKGLXZ/ci8b1MVYRu1FElkyub/hVgkcJEHbmBeXDQtdTCR6Xp+a4r0vRnroHwfRLHoAfXw7QexJqOZ4Xab91ExFVzHvxvasEcEuUjSMYubnW4InlcxbM7r7lNGRspbbb8FNl3MVcxcYewkafN6tcO/yaHUHyneBaXE8TwqUXwscMFy4N9lRcK2hrUL/505honlAOnABRjav2NhynThX9kBs7Wd3E4eP2kyYwOTYmCmj4n3Ses2kelxfHMq/yXAML29rYurxEcFiOcwTaL5O66wW+ecdb6mhlXyPmS/ypCtlUKOWjs3+5yoSwaT8o+3usgcllIEzStczISKMZ1+Rtgf32o1voJNn0dQSMmMNLV4WRNAl8TZjEjTrY6N2Xz/7xCXPwh+UoCaNaOlaPAYY4v0tcc="
@@ -32,7 +28,13 @@ jobs:
     script:
     - go test -v
     - go build -v
-  - stage: "docker_build+deploy"
+  - stage: "docker-amd64_build+deploy"
     if: branch = master
+    arch: amd64
+    language: shell
+    script: ./travis/dockerhub-deploy.sh
+  - stage: "docker-arm64_build+deploy"
+    if: branch = master
+    arch: arm64
     language: shell
     script: ./travis/dockerhub-deploy.sh
