@@ -209,12 +209,11 @@ func HandleUpdateCheckingInterval(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, errRes)
 		return
 	}
-	target := DownloadTarget{Type: interval.Type}
-	res, err := target.UpdateCheckingInterval(interval.CheckingInterval)
+	err = UpdateCheckingInterval(interval.Type, interval.CheckingInterval)
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_UPDATING_CHECKING_INTERVAL", Message: "There was an updating the checking interval: " + err.Error()}
 		ReturnResponse(w, errRes)
 		return
 	}
-	ReturnResponse(w, res)
+	ReturnResponse(w, Response{Type: "Success", Key: "UPDATE_CHECKING_INTERVAL_SUCCESS", Message: "Successfully updated the checking interval"})
 }

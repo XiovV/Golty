@@ -1,5 +1,7 @@
 package main
 
+import "sync"
+
 type TargetMetadata struct {
 	PlaylistUploader   string      `json:"playlist_uploader"`
 	UploadDate         string      `json:"upload_date"`
@@ -197,4 +199,11 @@ type YTDLCommand struct {
 	FileType     string
 	Output       string
 	Target       string
+}
+
+type Database struct {
+	*sync.RWMutex
+	file     string
+	contents []DownloadTarget
+	lookup   map[string]*DownloadTarget
 }
