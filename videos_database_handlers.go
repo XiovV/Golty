@@ -5,19 +5,20 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
 )
 
 func (v DownloadVideoPayload) AddToDatabase() error {
-	byteValue, err := openJSONDatabase(CONFIG_ROOT + "videos.json")
+	b, err := ioutil.ReadFile(filepath.Join(CONFIG_ROOT, "videos.json"))
 	if err != nil {
 		return fmt.Errorf("v.AddToDatabase: %s", err)
 	}
 
 	var videos []DownloadVideoPayload
 
-	json.Unmarshal(byteValue, &videos)
+	json.Unmarshal(b, &videos)
 
 	log.Info("adding video to DB")
 	videos = append(videos, v)

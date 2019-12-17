@@ -46,9 +46,9 @@ func init() {
 }
 
 func uploadCheckerChannels() {
-	interval, err := GetCheckingInterval("channels")
+	interval, err := GetCheckingInterval(TypeChannel)
 	if err != nil {
-		log.Errorf("uploadCheckerChannels: %s", err)
+		log.Errorf("uploadCheckerChannels: %v", err)
 	}
 	if interval == 0 {
 		time.Sleep(5 * time.Minute)
@@ -65,9 +65,9 @@ func uploadCheckerChannels() {
 }
 
 func uploadCheckerPlaylists() {
-	interval, err := GetCheckingInterval("playlists")
+	interval, err := GetCheckingInterval(TypePlaylist)
 	if err != nil {
-		log.Errorf("uploadCheckerPlaylists: %s", err)
+		log.Errorf("uploadCheckerPlaylists: %v", err)
 	}
 	if interval == 0 {
 		time.Sleep(5 * time.Minute)

@@ -4,238 +4,194 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"os"
+	"path/filepath"
 	"strconv"
+	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 )
 
-var db []DownloadTarget
-var databaseName string
+const (
+	TypeChannel  = "Channel"
+	TypePlaylist = "Playlist"
+)
 
-func (target DownloadTarget) UpdateCheckingInterval(interval string) (Response, error) {
-	databaseName = setDatabaseName(target.Type)
-
-	log.Info("updating checking interval")
-
-	db = openDatabaseAndUnmarshalJSON(databaseName)
-
-	if len(db) > 0 {
-		db[0].CheckingInterval = interval
-		err := writeDb(db, CONFIG_ROOT+databaseName)
-		if err != nil {
-			return Response{Type: "Error", Key: "ERROR_WRITING_TO_DATABASE", Message: "There was an error writing to channels.json: " + err.Error()}, fmt.Errorf("UpdateCheckingInterval: %s", err)
-		}
-		return Response{Type: "Success", Key: "UPDATE_CHECKING_INTERVAL_SUCCESS", Message: "Successfully updated the checking interval"}, nil
-	}
-	return Response{Type: "Error", Key: "DATABASE_EMPTY", Message: "There has to be at least one channel in the database before updating the checking interval."}, nil
+var confs = map[string]*Database{
+	TypeChannel:  &Database{RWMutex: &sync.RWMutex{}, file: "channels.json"},
+	TypePlaylist: &Database{RWMutex: &sync.RWMutex{}, file: "playlists.json"},
 }
 
-func (target DownloadTarget) UpdateLastChecked() error {
-	log.Info("UPDATING LAST CHECKED FOR: ", target.URL)
-	log.Info("updating last checked date and time for: ", target.Name)
-	databaseName = setDatabaseName(target.Type)
-	return updateLastCheckedDateAndTime(target, databaseName)
-}
-
-func (target DownloadTarget) DoesExist() (bool, error) {
-	databaseName = setDatabaseName(target.Type)
-	return checkIfTargetExists(target, databaseName)
-}
-
-func (target DownloadTarget) UpdateLatestDownloaded(videoId string) error {
-	log.Info("updating latest downloaded video id")
-	databaseName = setDatabaseName(target.Type)
-	return updateLatestDownloadedVideoId(target, videoId, databaseName)
-}
-
-func (target DownloadTarget) AddToDatabase() error {
-	databaseName = setDatabaseName(target.Type)
-	return addTargetToDatabase(target, databaseName)
-}
-
-func (target DownloadTarget) UpdateDownloadHistory(videoId string) error {
-	log.Info("updating download history")
-	databaseName = setDatabaseName(target.Type)
-	return appendToDownloadHistory(target, videoId, databaseName)
-}
-
-func (target DownloadTarget) Delete() error {
-	databaseName = setDatabaseName(target.Type)
-	return removeItem(target.URL, databaseName)
-}
-
-func (target DownloadTarget) GetFromDatabase() (DownloadTarget, error) {
-	databaseName = setDatabaseName(target.Type)
-	return getItemFromDatabase(databaseName, target.URL)
-}
-
-func GetCheckingInterval(target string) (int, error) {
-	log.Info("getting checking interval")
-
-	if target == "channels" {
-		db = openDatabaseAndUnmarshalJSON("channels.json")
-		if len(db) > 0 && db[0].CheckingInterval != "" {
-			checkingInterval, err := strconv.Atoi(db[0].CheckingInterval)
-			if err != nil {
-				return 0, fmt.Errorf("GetCheckingInterval: %s", err)
-			}
-			log.Info("got checking interval successfully")
-			return checkingInterval, nil
-		}
-	} else if target == "playlists" {
-		db = openDatabaseAndUnmarshalJSON("playlists.json")
-		if len(db) > 0 && db[0].CheckingInterval != "" {
-			checkingInterval, err := strconv.Atoi(db[0].CheckingInterval)
-			if err != nil {
-				return 0, fmt.Errorf("GetCheckingInterval: %s", err)
-			}
-			log.Info("got checking interval successfully")
-			return checkingInterval, nil
+func init() {
+	for _, v := range confs {
+		if err := v.load(); err != nil {
+			log.Fatal(nil)
 		}
 	}
-
-	log.Info("checking interval not yet specified")
-	return 0, nil
 }
 
-func writeDb(db []DownloadTarget, dbName string) error {
-	result, err := json.Marshal(db)
+func (db *Database) write() error {
+	b, err := json.MarshalIndent(&db.contents, "", "	")
 	if err != nil {
-		log.Error("There was an error writing to database: ", err)
-		return fmt.Errorf("writeDb: %s", err)
+		err = fmt.Errorf("database.write: could not marshal json: %w", err)
+		log.Error(err)
+		return err
 	}
-
-	json.Unmarshal(result, &db)
-
-	file, _ := json.MarshalIndent(db, "", " ")
-
-	err = ioutil.WriteFile(dbName, file, 0644)
+	err = ioutil.WriteFile(filepath.Join(CONFIG_ROOT, db.file), b, 0644)
 	if err != nil {
-		log.Error("There was an error writing to database: ", err)
-		return fmt.Errorf("writeDb: %s", err)
+		err = fmt.Errorf("database.write: could not write file %w", err)
+		log.Error(err)
+		return err
 	}
-
 	return nil
 }
 
-func getItemFromDatabase(databaseName, targetURL string) (DownloadTarget, error) {
-	db = openDatabaseAndUnmarshalJSON(databaseName)
-
-	for i := range db {
-		if db[i].URL == targetURL {
-			return db[i], nil
-		}
+func (db *Database) load() error {
+	b, err := ioutil.ReadFile(filepath.Join(CONFIG_ROOT, db.file))
+	if err != nil {
+		err = fmt.Errorf("database.load: could not read file: %w", err)
+		log.Error(err)
+		return err
 	}
-	return DownloadTarget{}, fmt.Errorf("Couldn't find target")
+	err = json.Unmarshal(b, &db.contents)
+	if err != nil {
+		err = fmt.Errorf("database.load: could not read file: %w", err)
+		log.Error(err)
+		return err
+	}
+	db.lookup = make(map[string]*DownloadTarget)
+	for i := range db.contents {
+		db.lookup[db.contents[i].URL] = &db.contents[i]
+	}
+	return nil
 }
 
-func setDatabaseName(targetType string) string {
-	if targetType == "Channel" {
-		return "channels.json"
-	} else if targetType == "Playlist" {
-		return "playlists.json"
+func UpdateCheckingInterval(file, interval string) error {
+	log.Info("update checking interval")
+	cf, ok := confs[file]
+	if !ok {
+		return fmt.Errorf("UpdateCheckingInterval: bad conf type")
 	}
-	return ""
+	if len(cf.contents) == 0 {
+		return fmt.Errorf("UpdateCheckingInterval: empty config list")
+	}
+	cf.Lock()
+	cf.contents[0].CheckingInterval = interval
+	cf.write()
+	cf.Unlock()
+	return nil
 }
 
-func removeItem(targetURL, databaseName string) error {
-	db = openDatabaseAndUnmarshalJSON(databaseName)
+func updateDB(file, url string, f func(t *DownloadTarget) error) error {
+	cf, ok := confs[file]
+	if !ok {
+		return fmt.Errorf("updateDB: bad conf type")
+	}
+	cf.Lock()
+	defer cf.Unlock()
+	t, ok := cf.lookup[url]
+	if !ok {
+		return fmt.Errorf("updateDB: no such URL")
+	}
+	err := f(t)
+	if err != nil {
+		return err
+	}
+	return cf.write()
+}
 
-	for i := range db {
-		if db[i].URL == targetURL {
-			db = RemoveAtIndex(db, i)
+func (t DownloadTarget) UpdateLastChecked() error {
+	return updateDB(t.Type, t.URL, func(t *DownloadTarget) error {
+		t.LastChecked = time.Now().Format("01-02-2006 15:04:05")
+		log.Info("last checked date and time updated successfully")
+		return nil
+	})
+}
+
+func (t DownloadTarget) UpdateLatestDownloaded(videoId string) error {
+	return updateDB(t.Type, t.URL, func(t *DownloadTarget) error {
+		t.LatestDownloaded = videoId
+		log.Info("latest downloaded video id updated successfully")
+		return nil
+	})
+}
+
+func (t DownloadTarget) DoesExist() (bool, error) {
+	cf, ok := confs[t.Type]
+	if !ok {
+		return false, fmt.Errorf("DoesExist: bad conf type")
+	}
+	cf.RLock()
+	_, ok = cf.lookup[t.URL]
+	cf.RUnlock()
+	return ok, nil
+}
+
+func (t DownloadTarget) AddToDatabase() error {
+	cf, ok := confs[t.Type]
+	if !ok {
+		return fmt.Errorf("updateDB: bad conf type")
+	}
+	cf.Lock()
+	cf.contents = append(cf.contents, t)
+	cf.lookup[t.URL] = &cf.contents[len(cf.contents)-1]
+	cf.Unlock()
+	return nil
+}
+
+func (t DownloadTarget) UpdateDownloadHistory(videoId string) error {
+	return updateDB(t.Type, t.URL, func(t *DownloadTarget) error {
+		t.DownloadHistory = append(t.DownloadHistory, videoId)
+		log.Info(t.DownloadHistory)
+		return nil
+	})
+}
+
+func (t DownloadTarget) Delete() error {
+	cf, ok := confs[t.Type]
+	if !ok {
+		return fmt.Errorf("Delete: bad conf type")
+	}
+	cf.Lock()
+	defer cf.write()
+	defer cf.Unlock()
+	delete(cf.lookup, t.URL)
+	for i := range cf.contents {
+		if cf.contents[i].URL == t.URL {
+			cf.contents = RemoveAtIndex(cf.contents, i)
 			log.Info("successfully removed channel from channels.json")
-			break
+			return nil
 		}
 	}
-
-	return writeDb(db, CONFIG_ROOT+databaseName)
+	return fmt.Errorf("DownloadTarget.Delete: no such target")
 }
 
-func appendToDownloadHistory(target DownloadTarget, videoId, databaseName string) error {
-	db = openDatabaseAndUnmarshalJSON(databaseName)
-
-	for i := range db {
-		if db[i].URL == target.URL {
-			db[i].DownloadHistory = append(target.DownloadHistory, videoId)
-			log.Info(db)
-			break
-		}
+func (t DownloadTarget) GetFromDatabase() (out DownloadTarget, err error) {
+	cf, ok := confs[t.Type]
+	if !ok {
+		err = fmt.Errorf("GetFromDatabase: bad conf type")
+		return
 	}
-
-	return writeDb(db, CONFIG_ROOT+databaseName)
-}
-
-func addTargetToDatabase(target DownloadTarget, databaseName string) error {
-	openDatabaseAndUnmarshalJSON(databaseName)
-
-	log.Infof("adding %v to DB", target)
-	db = append(db, target)
-	return writeDb(db, CONFIG_ROOT+databaseName)
-}
-
-func updateLastCheckedDateAndTime(target DownloadTarget, databaseName string) error {
-	openDatabaseAndUnmarshalJSON(databaseName)
-
-	for i := range db {
-		if db[i].URL == target.URL {
-			dt := time.Now()
-			db[i].LastChecked = dt.Format("01-02-2006 15:04:05")
-			log.Info("last checked date and time updated successfully")
-			break
-		}
+	cf.RLock()
+	defer cf.RUnlock()
+	ft, ok := cf.lookup[t.URL]
+	if !ok {
+		err = fmt.Errorf("GetFromDatabase: no such URL")
+		return
 	}
-	return writeDb(db, CONFIG_ROOT+databaseName)
+	out = *ft
+	return
 }
 
-func updateLatestDownloadedVideoId(target DownloadTarget, videoId, databaseName string) error {
-	db = openDatabaseAndUnmarshalJSON(databaseName)
-
-	for i := range db {
-		if db[i].URL == target.URL {
-			db[i].LatestDownloaded = videoId
-			log.Info("latest downloaded video id updated successfully")
-			break
-		}
+func GetCheckingInterval(file string) (int, error) {
+	cf, ok := confs[file]
+	if !ok {
+		return 0, fmt.Errorf("GetFromDatabase: bad conf type")
 	}
-	return writeDb(db, CONFIG_ROOT+databaseName)
-}
-
-func checkIfTargetExists(target DownloadTarget, databaseName string) (bool, error) {
-	db = openDatabaseAndUnmarshalJSON(databaseName)
-
-	for i := range db {
-		if db[i].URL == target.URL {
-			fmt.Println(db[i].URL, target.URL)
-			return true, nil
-		}
+	cf.RLock()
+	defer cf.RUnlock()
+	if len(cf.contents) == 0 {
+		return 0, fmt.Errorf("GetCheckingInterval: empty target list")
 	}
-
-	return false, nil
-}
-
-func openJSONDatabase(dbName string) ([]byte, error) {
-	jsonFile, err := os.Open(dbName)
-	if err != nil {
-		log.Errorf("openJSONDatabase: %s", err)
-		return nil, fmt.Errorf("openJSONDatabase: %s", err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		log.Errorf("openJSONDatabase: %s", err)
-		return nil, fmt.Errorf("openJSONDatabase: %s", err)
-	}
-
-	return byteValue, nil
-}
-
-func openDatabaseAndUnmarshalJSON(databaseName string) []DownloadTarget {
-	byteValue, _ := openJSONDatabase(CONFIG_ROOT + databaseName)
-	json.Unmarshal(byteValue, &db)
-	return db
+	return strconv.Atoi(cf.contents[0].CheckingInterval)
 }
