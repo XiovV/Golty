@@ -13,8 +13,7 @@ branches:
 
 stages:
   - go_test+build
-  - docker-amd64_build+deploy
-  - docker-arm64_build+deploy
+  - docker-build+deploy
 
 jobs:
   include:
@@ -29,13 +28,20 @@ jobs:
     script:
     - go test -v
     - go build -v
-  - stage: "docker-amd64_build+deploy"
+  - stage: "docker-build+deploy"
     if: branch = master
-    arch: amd64
     language: shell
-    script: ./travis/dockerhub-deploy.sh
-  - stage: "docker-arm64_build+deploy"
-    if: branch = master
-    arch: arm64
-    language: shell
-    script: ./travis/dockerhub-deploy.sh
+    before_install:
+    - docker run --privileged linuxkit/binfmt:v0.7
+    - docker run -d --privileged -p 1234:1234 --name buildkit moby/buildkit:latest --addr tcp://0.0.0.0:1234 --oci-worker-platform linux/amd64 --oci-worker-platform linux/arm64 --oci-worker-platform linux/armhf
+    - docker cp buildkit:/usr/bin/buildctl /usr/bin/
+    - export BUILDKIT_HOST=tcp://0.0.0.0:1234
+    addons:
+      apt:
+        packages:
+        - docker-ce
+    script:
+    - ./travis/build-amd64.sh
+    - ./travis/build-arm.sh
+    - ./travis/build-arm64.sh
+    - ./travis/dockerhub-deploy.sh
