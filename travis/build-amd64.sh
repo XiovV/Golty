@@ -1,8 +1,8 @@
 #!/bin/bash
 set -ev
 
-PLATFORM=arm64
-DOCKERFILE_LOCATION="./docker/Dockerfile.arm64"
+PLATFORM=amd64
+DOCKERFILE_LOCATION="./docker/Dockerfile.amd64"
 DOCKER_USER="xiovv"
 DOCKER_IMAGE="go-auto-yt"
 DOCKER_TAG="stable"
