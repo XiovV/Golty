@@ -13,7 +13,8 @@ branches:
 
 stages:
   - go_test+build
-  - docker_build+deploy
+  - docker-amd64_build+deploy
+  - docker-arm64_build+deploy
 
 jobs:
   include:
