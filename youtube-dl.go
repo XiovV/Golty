@@ -100,10 +100,16 @@ func DownloadVideo(command YTDLCommand) error {
 		cmd = exec.Command(command.Binary, command.FirstFlag, command.FirstFlagArg, "-f", command.FileType, "-o", command.Output, command.Target)
 	}
 	log.Info("executing youtube-dl command: ", cmd.String())
-	err := cmd.Run()
+	// err := cmd.Run()
+	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Error(err, cmd.String())
-		return fmt.Errorf("DownloadVideo: %s", err.Error())
+		log.Error("There was an error downloading the video: ", string(out))
+		return fmt.Errorf("DownloadVideo: %s", string(out))
 	}
+	log.Info(out)
+	// if err != nil {
+	// 	log.Error(err, cmd.String())
+	// 	return fmt.Errorf("DownloadVideo: %s", err.Error())
+	// }
 	return nil
 }
