@@ -78,11 +78,6 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 			target = DownloadTarget{URL: targetData.URL, DownloadMode: targetData.DownloadMode, Name: targetMetadata.Playlist, PreferredExtensionForVideo: targetData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: targetData.Type, DownloadPath: targetData.DownloadPath}
 		}
 
-		// err = target.AddToDatabase()
-		// if err != nil {
-		// 	log.Error(err)
-		// 	errRes = Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()}
-		// }
 		err = target.Download(targetData.DownloadQuality, targetData.FileExtension, targetData.DownloadEntire)
 		if err != nil {
 			errRes = Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error downloading the target " + err.Error()}

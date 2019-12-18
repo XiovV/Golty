@@ -15,12 +15,12 @@ func (target DownloadTarget) GetMetadata() (TargetMetadata, error) {
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Error("From GetMetadata(): ", err)
-		return TargetMetadata{}, fmt.Errorf("From c.GetMetadata(): %v", err)
+		return TargetMetadata{}, fmt.Errorf("From c.GetMetadata(): %v", string(out))
 	}
 	metaData := &TargetMetadata{}
 	if err = json.Unmarshal(out, metaData); err != nil {
 		log.Error("From GetMetadata(): ", err)
-		return TargetMetadata{}, fmt.Errorf("From c.GetMetadata(): %v", err)
+		return TargetMetadata{}, fmt.Errorf("From c.GetMetadata(): %v", string(out))
 	}
 
 	return *metaData, nil
@@ -100,16 +100,11 @@ func DownloadVideo(command YTDLCommand) error {
 		cmd = exec.Command(command.Binary, command.FirstFlag, command.FirstFlagArg, "-f", command.FileType, "-o", command.Output, command.Target)
 	}
 	log.Info("executing youtube-dl command: ", cmd.String())
-	// err := cmd.Run()
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Error("There was an error downloading the video: ", string(out))
 		return fmt.Errorf("DownloadVideo: %s", string(out))
 	}
 	log.Info(out)
-	// if err != nil {
-	// 	log.Error(err, cmd.String())
-	// 	return fmt.Errorf("DownloadVideo: %s", err.Error())
-	// }
 	return nil
 }
