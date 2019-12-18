@@ -183,7 +183,6 @@ func HandleGetTargets(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 		return
 	}
-	log.Info("got this data: ", targetData)
 	targets, err := GetAll(targetData.Type)
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_CHANNELS", Message: "There was an error while getting playlists: " + err.Error()})
