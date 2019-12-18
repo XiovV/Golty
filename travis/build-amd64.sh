@@ -26,7 +26,7 @@ else
         --opt platform=linux/${PLATFORM} \
         --opt filename=${DOCKERFILE_LOCATION} \
         --opt build-arg:TRAVIS_PULL_REQUEST=false \
-        --output type=docker,name=go-auto-yt_${PLATFORM}:stable \
+        --output type=docker,name=${DOCKER_IMAGE}:${DOCKER_TAG}-${PLATFORM} \
         --local dockerfile=. \
         --local context=. \
         | docker load
