@@ -4,7 +4,7 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 
 if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
     docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-    docker tag go-auto-yt xiovv/go-auto-yt:stable
+#    docker tag go-auto-yt xiovv/go-auto-yt:stable
 
     docker manifest create xiovv/go-auto-yt:stable \
             xiovv/go-auto-yt:stable-amd64 \
