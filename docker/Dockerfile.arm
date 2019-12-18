@@ -12,7 +12,7 @@ RUN cd go-auto-yt && if [ ! "$TRAVIS_PULL_REQUEST" = false ]; then git fetch ori
 FROM golang:alpine as GO
 WORKDIR /app
 COPY --from=DOWNLOAD /git/go-auto-yt .
-RUN go build -o main .
+RUN GOOS=linux GOARCH=arm go build -o main .
 
 #Use ffmpeg as base image and copy executable from other temp images
 FROM alpine:latest as BASE
