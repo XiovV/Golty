@@ -23,6 +23,9 @@ var confs = map[string]*Database{
 }
 
 func init() {
+	initLogFile()
+	CreateDirIfNotExist("./config")
+	initDatabase()
 	for _, v := range confs {
 		if err := v.load(); err != nil {
 			log.Fatal(nil)
