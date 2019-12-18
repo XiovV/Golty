@@ -16,7 +16,7 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
         --opt filename=${DOCKERFILE_LOCATION} \
         --opt build-arg:TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST} \
         --output type=image \
-        --output name=docker.io/${DOCKER_USER}/${IMAGE}:${TAG}-${PLATFORM} \
+        --output name=docker.io/${DOCKER_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}-${PLATFORM} \
         --output push=true \
         --local dockerfile=. \
         --local context=.
@@ -26,7 +26,8 @@ else
         --opt platform=linux/${PLATFORM} \
         --opt filename=${DOCKERFILE_LOCATION} \
         --opt build-arg:TRAVIS_PULL_REQUEST=false \
-        --output type=image \
+        --output type=docker,name=go-auto-yt_${PLATFORM}:stable \
         --local dockerfile=. \
-        --local context=.
+        --local context=. \
+        | docker load
 fi

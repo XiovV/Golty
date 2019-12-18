@@ -18,4 +18,6 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
     docker manifest annotate xiovv/go-auto-yt:stable xiovv/go-auto-yt:stable-arm64 --arch arm64
 
     docker manifest push xiovv/go-auto-yt:stable
+else
+    docker images
 fi
