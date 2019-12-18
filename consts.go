@@ -2,7 +2,7 @@ package main
 
 const (
 	CONFIG_ROOT = "./config/"
-	VERSION     = "v0.5.9"
+	VERSION     = "v0.5.10"
 )
 
 var (
