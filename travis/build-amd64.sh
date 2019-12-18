@@ -14,6 +14,7 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
         --progress=plain \
         --opt platform=linux/${PLATFORM} \
         --opt filename=${DOCKERFILE_LOCATION} \
+        --opt build-arg:TRAVIS_PULL_REQUEST=false
         --output type=image \
         --output name=docker.io/${DOCKER_USER}/${IMAGE}:${TAG}-${PLATFORM} \
         --output push=true \
@@ -24,6 +25,7 @@ else
         --progress=plain \
         --opt platform=linux/${PLATFORM} \
         --opt filename=${DOCKERFILE_LOCATION} \
+        --opt build-arg:TRAVIS_PULL_REQUEST=true
         --output type=image \
         --local dockerfile=. \
         --local context=.
