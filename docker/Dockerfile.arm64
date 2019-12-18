@@ -1,4 +1,3 @@
-#Here we use multi-stage build to minimize size of the final image.
 #Download go-auto-yt via git and youtube-dl via curl on ubuntu temp image
 FROM ubuntu:latest as DOWNLOAD
 WORKDIR /git
@@ -14,7 +13,7 @@ WORKDIR /app
 COPY --from=DOWNLOAD /git/go-auto-yt .
 RUN GOOS=linux GOARCH=arm64 go build -o main .
 
-#Use ffmpeg as base image and copy executable from other temp images
+#Use alpine as base image and copy executable from other temp images
 FROM alpine:latest as BASE
 WORKDIR /app
 COPY --from=GO /app/main .
