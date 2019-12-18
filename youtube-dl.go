@@ -105,6 +105,6 @@ func DownloadVideo(command YTDLCommand) error {
 		log.Error("There was an error downloading the video: ", string(out))
 		return fmt.Errorf("DownloadVideo: %s", string(out))
 	}
-	log.Info(out)
+	log.Info(string(out))
 	return nil
 }
