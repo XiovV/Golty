@@ -16,13 +16,13 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
         --exporter image \
         --exporter-opt name=docker.io/${DOCKER_USER}/${IMAGE}:${TAG}-${PLATFORM} \
         --exporter-opt push=true \
-        --local dockerfile=./docker \
+        --local dockerfile=. \
         --local context=.
 else
     buildctl build --frontend dockerfile.v0 \
         --frontend-opt platform=linux/${PLATFORM} \
         --frontend-opt filename=${DOCKERFILE_LOCATION} \
         --exporter image \
-        --local dockerfile=./docker \
+        --local dockerfile=. \
         --local context=.
 fi
