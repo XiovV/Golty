@@ -31,6 +31,7 @@ func initLogFile() {
 }
 
 func initDatabase() {
+	log.Info("Initiating db")
 	databases := [3]string{"./config/channels.json", "./config/playlists.json", "./config/videos.json"}
 	for _, database := range databases {
 		createDir(database)
@@ -38,9 +39,6 @@ func initDatabase() {
 }
 
 func init() {
-	initLogFile()
-	CreateDirIfNotExist("./config")
-	initDatabase()
 	flag.StringVar(&port, "port", "8080", "port to listen")
 	flag.StringVar(&dlRoot, "dl", "./downloads", "root download folder")
 }
@@ -86,7 +84,6 @@ func uploadCheckerPlaylists() {
 func main() {
 	flag.Parse()
 	log.Info("server running on port " + port)
-
 	go uploadCheckerChannels()
 	go uploadCheckerPlaylists()
 
