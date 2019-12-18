@@ -46,23 +46,30 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&targetData)
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
+		ReturnResponse(w, errRes)
+		return
 	}
-	//sanitiseInputURL(targetData.URL)
 	target := DownloadTarget{URL: targetData.URL, Type: targetData.Type}
 
 	doesTargetExist, err := target.DoesExist()
 	if err != nil {
 		log.Info("error doesChannelExist: ", err)
 		errRes = Response{Type: "Error", Key: "DOES_EXIST_ERROR", Message: "There was an error while trying to check if the channel already exists" + err.Error()}
+		ReturnResponse(w, errRes)
+		return
 	}
 
 	if doesTargetExist {
 		log.Info("this playlist already exists")
 		okRes = Response{Type: "Success", Key: "PLAYLIST_ALREADY_EXISTS", Message: "This playlists already exists"}
+		ReturnResponse(w, okRes)
+		return
 	} else {
 		targetMetadata, err := target.GetMetadata()
 		if err != nil {
 			errRes = Response{Type: "Error", Key: "ERROR_GETTING_METADATA", Message: "There was an error getting channel metadata: " + err.Error()}
+			ReturnResponse(w, errRes)
+			return
 		}
 
 		if targetData.DownloadMode == "Audio Only" {
@@ -71,29 +78,39 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 			target = DownloadTarget{URL: targetData.URL, DownloadMode: targetData.DownloadMode, Name: targetMetadata.Playlist, PreferredExtensionForVideo: targetData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: targetData.Type, DownloadPath: targetData.DownloadPath}
 		}
 
-		err = target.AddToDatabase()
-		if err != nil {
-			log.Error(err)
-			errRes = Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()}
-		}
+		// err = target.AddToDatabase()
+		// if err != nil {
+		// 	log.Error(err)
+		// 	errRes = Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()}
+		// }
 		err = target.Download(targetData.DownloadQuality, targetData.FileExtension, targetData.DownloadEntire)
 		if err != nil {
 			errRes = Response{Type: "Error", Key: "ERROR_DOWNLOADING", Message: "There was an error downloading the target " + err.Error()}
+			ReturnResponse(w, errRes)
+			return
 		}
 		err = target.UpdateLatestDownloaded(targetMetadata.ID)
 		if err != nil {
 			errRes = Response{Type: "Error", Key: "ERROR_UPDATING_LATEST_DOWNLOADED", Message: "There was an error while updating the playlist's latest downloaded video id: " + err.Error()}
+			ReturnResponse(w, errRes)
+			return
 		}
 		err = target.UpdateDownloadHistory(targetMetadata.ID)
 		if err != nil {
 			errRes = Response{Type: "Error", Key: "ERROR_ERROR_UPDATING_DOWNLOAD_HISTORY", Message: "There was an error while updating the playlist's download history: " + err.Error()}
+			ReturnResponse(w, errRes)
+			return
+		}
+		err = target.AddToDatabase()
+		if err != nil {
+			log.Error(err)
+			errRes = Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()}
+			ReturnResponse(w, errRes)
+			return
 		}
 		okRes = Response{Type: "Success", Key: "ADD_PLAYLIST_SUCCESS", Message: "Successfully added and downloaded latest video"}
-	}
-	if errRes.Type == "Error" {
-		ReturnResponse(w, errRes)
-	} else if okRes.Type == "Success" {
 		ReturnResponse(w, okRes)
+		return
 	}
 }
 
