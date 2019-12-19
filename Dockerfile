@@ -1,5 +1,6 @@
+#Here we use multi-stage build to minimize size of the final image.
 #Download go-auto-yt via git and youtube-dl via curl on ubuntu temp image
-FROM ubuntu:latest as DOWNLOAD
+FROM ubuntu as DOWNLOAD
 WORKDIR /git
 ARG TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST
 RUN apt-get update && apt-get install git curl -y 
@@ -11,7 +12,7 @@ RUN cd go-auto-yt && if [ ! "$TRAVIS_PULL_REQUEST" = false ]; then git fetch ori
 FROM golang:alpine as GO
 WORKDIR /app
 COPY --from=DOWNLOAD /git/go-auto-yt .
-RUN GOOS=linux GOARCH=amd64 go build -o main .
+RUN go build -o main .
 
 #Use ffmpeg as base image and copy executable from other temp images
 FROM jrottenberg/ffmpeg:alpine as BASE
