@@ -63,17 +63,13 @@ func (target DownloadTarget) Download(downloadQuality, fileExtension string, dow
 		Binary: "youtube-dl",
 		Target: target.URL,
 	}
-	switch target.DownloadPath {
-	default:
-		ytdlCommand.Output = filepath.Join(dlRoot, target.DownloadPath)
-	case "":
-		ytdlCommand.Output = filepath.Join(dlRoot, "/%(uploader)s/audio/%(title)s.%(ext)s")
-	}
 	switch target.DownloadMode {
 	case "Audio Only":
 		ytdlCommand.FileType = "bestaudio"
+		ytdlCommand.Output = filepath.Join(dlRoot, target.DownloadPath)
 	case "Video And Audio":
 		ytdlCommand.FileType = "bestvideo[height<=" + downloadQuality + "]" + "+ bestaudio/best[height<=" + downloadQuality + "]"
+		ytdlCommand.Output = filepath.Join(dlRoot, target.DownloadPath)
 	}
 	switch downloadEntire {
 	case true:

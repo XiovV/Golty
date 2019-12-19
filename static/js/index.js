@@ -36,6 +36,8 @@ function addChannel() {
   let downloadQuality = document.getElementById("download-quality").value;
   let downloadPath = document.getElementById("output-path-indicator").innerText;
 
+  console.log("DL PATH: ", downloadPath)
+
   let type = "Channel";
 
   let channelData = {

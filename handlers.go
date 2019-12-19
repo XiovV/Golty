@@ -43,6 +43,7 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to add a target")
 	w.Header().Set("Content-Type", "application/json")
 	var targetData AddTargetPayload
+	log.Info(targetData)
 	err := json.NewDecoder(r.Body).Decode(&targetData)
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
