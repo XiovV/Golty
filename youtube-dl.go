@@ -73,7 +73,7 @@ func (target DownloadTarget) Download(downloadQuality, fileExtension string, dow
 	case "Audio Only":
 		ytdlCommand.FileType = "bestaudio"
 	case "Video And Audio":
-		ytdlCommand.FileType = "bestvideo"
+		ytdlCommand.FileType = "bestvideo[height<=" + downloadQuality + "]" + "+ bestaudio/best[height<=" + downloadQuality + "]"
 	}
 	switch downloadEntire {
 	case true:
