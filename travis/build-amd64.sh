@@ -1,11 +1,13 @@
 #!/bin/bash
 set -ev
 
+# Set Build Options
 PLATFORM=amd64
 DOCKERFILE_LOCATION="./docker/Dockerfile.amd64"
 DOCKER_IMAGE="go-auto-yt"
 DOCKER_TAG="stable"
 
+# If This Isn't A PR, Push to Dockerhub
 if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
     docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
@@ -14,12 +16,11 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
         --opt platform=linux/${PLATFORM} \
         --opt filename=${DOCKERFILE_LOCATION} \
         --opt build-arg:TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST} \
-        --output type=image \
-        --output name=docker.io/${DOCKER_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}-${PLATFORM} \
-        --output push=true \
+        --output type=image,name=docker.io/${DOCKER_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}-${PLATFORM},push=true \
         --local dockerfile=. \
         --local context=.
 else
+    # If This is a PR, Build to Check for Errors
     buildctl build --frontend dockerfile.v0 \
         --progress=plain \
         --opt platform=linux/${PLATFORM} \
@@ -29,4 +30,4 @@ else
         --local dockerfile=. \
         --local context=. \
         | docker load
-fi 
+fi
