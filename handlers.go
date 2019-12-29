@@ -43,7 +43,6 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to add a target")
 	w.Header().Set("Content-Type", "application/json")
 	var targetData AddTargetPayload
-	log.Info(targetData)
 	err := json.NewDecoder(r.Body).Decode(&targetData)
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()}
@@ -88,7 +87,7 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 		err = target.AddToDatabase()
 		if err != nil {
 			log.Error(err)
-			errRes = Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()}
+			errRes = Response{Type: "Error", Key: "ERROR_ADDING", Message: "There was an error adding the playlist to the database" + err.Error()}
 			ReturnResponse(w, errRes)
 			return
 		}
