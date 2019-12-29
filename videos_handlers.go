@@ -32,7 +32,7 @@ func HandleDownloadVideo(w http.ResponseWriter, r *http.Request) {
 	case "Audio Only":
 		ytdlCommand.FileType = "bestaudio[ext=" + videoData.FileExtension + "]"
 	case "Video And Audio":
-		ytdlCommand.FileType = "bestvideo[ext=" + videoData.FileExtension + "]"
+		ytdlCommand.FileType = "bestvideo[height<=" + videoData.DownloadQuality + "]" + "+ bestaudio/best[height<=" + videoData.DownloadQuality + "]"
 	}
 	err = DownloadVideo(ytdlCommand)
 	if err != nil {

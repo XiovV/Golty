@@ -84,6 +84,13 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 			ReturnResponse(w, errRes)
 			return
 		}
+		err = target.AddToDatabase()
+		if err != nil {
+			log.Error(err)
+			errRes = Response{Type: "Error", Key: "ERROR_ADDING", Message: "There was an error adding the playlist to the database" + err.Error()}
+			ReturnResponse(w, errRes)
+			return
+		}
 		err = target.UpdateLatestDownloaded(targetMetadata.ID)
 		if err != nil {
 			errRes = Response{Type: "Error", Key: "ERROR_UPDATING_LATEST_DOWNLOADED", Message: "There was an error while updating the playlist's latest downloaded video id: " + err.Error()}
@@ -96,13 +103,7 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 			ReturnResponse(w, errRes)
 			return
 		}
-		err = target.AddToDatabase()
-		if err != nil {
-			log.Error(err)
-			errRes = Response{Type: "Error", Key: "ERROR_ADDING_PLAYLIST", Message: "There was an error adding the playlist to the database" + err.Error()}
-			ReturnResponse(w, errRes)
-			return
-		}
+
 		okRes = Response{Type: "Success", Key: "ADD_PLAYLIST_SUCCESS", Message: "Successfully added and downloaded latest video"}
 		ReturnResponse(w, okRes)
 		return
@@ -183,7 +184,6 @@ func HandleGetTargets(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
 		return
 	}
-	log.Info("got this data: ", targetData)
 	targets, err := GetAll(targetData.Type)
 	if err != nil {
 		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_CHANNELS", Message: "There was an error while getting playlists: " + err.Error()})

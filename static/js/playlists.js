@@ -227,18 +227,6 @@ function changeExtension() {
     } else {
       document.getElementById("output-path-indicator").innerHTML = "/playlists/%(uploader)s/%(playlist)s/audio/%(title)s.%(ext)s"
     }
-
-    fileExtensions.options[0].value = "m4a";
-    fileExtensions.options[0].text = "m4a";
-    fileExtensions.options[1].value = "mp3";
-    fileExtensions.options[1].text = "mp3";
-    downloadQualities.options[0].value = "best";
-    downloadQualities.options[0].text = "best";
-    downloadQualities.options[1].value = "medium";
-    downloadQualities.options[1].text = "medium";
-    downloadQualities.options[2].value = "worst";
-    downloadQualities.options[2].text = "worst"
-
   } else if (downloadMode === "Video And Audio") {
     document.getElementById("download-path").placeholder = "default: /playlists/%(uploader)s/%(playlist)s/video/%(title)s.%(ext)s";
     if (input.length > 0) {
@@ -252,16 +240,6 @@ function changeExtension() {
     } else {
       document.getElementById("output-path-indicator").innerHTML = "/playlists/%(uploader)s/%(playlist)s/video/%(title)s.%(ext)s"
     }
-
-    fileExtensions.options[0].value = "any";
-    fileExtensions.options[0].text = "any (recommended for now)";
-    fileExtensions.options[1].value = "mp4";
-    fileExtensions.options[1].text = "mp4";
-
-    downloadQualities.options[0].value = "best";
-    downloadQualities.options[0].text = "best";
-    downloadQualities.options[1].value = "worst";
-    downloadQualities.options[1].text = "worst"
   }
 }
 
