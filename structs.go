@@ -155,6 +155,10 @@ type DeleteTargetPayload struct {
 	Type string
 }
 
+type GetCheckingIntervalPayload struct {
+	Type string
+}
+
 type CheckingIntervalPayload struct {
 	CheckingInterval string
 	Time             string

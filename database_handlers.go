@@ -196,18 +196,27 @@ func (t DownloadTarget) GetFromDatabase() (out DownloadTarget, err error) {
 }
 
 func GetCheckingInterval(file string) (int, error) {
+	interval, time, err := GetCheckingIntervalConfig(file)
+	if err != nil {
+		return 0, err
+	}
+
+	if interval == 0 {
+		return 0, nil
+	}
+	return interval * checkingIntervalMultipliers[time], nil
+}
+
+func GetCheckingIntervalConfig(file string) (int, string, error) {
 	cf, ok := confs[file]
 	if !ok {
-		return 0, fmt.Errorf("GetFromDatabase: bad conf type")
+		return 0, "", fmt.Errorf("GetFromDatabase: bad conf type")
 	}
 	cf.RLock()
 	defer cf.RUnlock()
 	if len(cf.contents) == 0 {
-		return 0, fmt.Errorf("GetCheckingInterval: empty target list")
+		return 0, "", fmt.Errorf("GetCheckingInterval: empty target list")
 	}
 	target := cf.contents[0]
-	if target.CheckingInterval == 0 {
-		return 0, nil
-	}
-	return target.CheckingInterval * checkingIntervalMultipliers[target.CheckingIntervalTime], nil
+	return target.CheckingInterval, target.CheckingIntervalTime, nil
 }

@@ -60,6 +60,29 @@ function displayDownloadHistory(channelName, downloadHistory) {
     })
 }
 
+function getCheckingInterval() {
+    let type = document.getElementById("list-type").value;
+
+    let getCheckingInterval = {
+        type
+    };
+
+    const options = {
+        method: "POST",
+        body: JSON.stringify(getCheckingInterval),
+        headers: new Headers({
+            "Content-Type": "application/json"
+        })
+    };
+
+    fetch("/api/get-checking-interval", options)
+        .then(res => res.json())
+        .then(interval => {
+            document.getElementById("checking-interval").value = interval.CheckingInterval
+            document.getElementById("time").value = interval.Time
+        });
+}
+
 function updateCheckingInterval() {
     startSpinner("update-checking-interval-spinner");
     let checkingInterval = document.getElementById("checking-interval").value;

@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -207,6 +208,30 @@ func HandleCheckAllTargets(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ReturnResponse(w, res)
+	return
+}
+
+func HandleGetCheckingInterval(w http.ResponseWriter, r *http.Request) {
+	log.Info("received a request to get the checking interval")
+	w.Header().Set("Content-Type", "application/json")
+	var getCheckingInterval GetCheckingIntervalPayload
+	err := json.NewDecoder(r.Body).Decode(&getCheckingInterval)
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+		return
+	}
+	interval, time, err := GetCheckingIntervalConfig(getCheckingInterval.Type)
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_CHECKING_INTERVAL", Message: "There was an error while getting the checking interval: " + err.Error()})
+		return
+	}
+	result := CheckingIntervalPayload{
+		CheckingInterval: strconv.Itoa(interval),
+		Time:             time,
+		Type:             getCheckingInterval.Type,
+	}
+	json.NewEncoder(w).Encode(result)
+	log.Info("Returning checking-interval %v", result)
 	return
 }
 
