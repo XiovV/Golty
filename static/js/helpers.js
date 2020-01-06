@@ -60,26 +60,15 @@ function displayDownloadHistory(channelName, downloadHistory) {
     })
 }
 
-function setCheckingInterval() {
-    let checkingIntervalInput = document.getElementById("checking-interval").value;
-    let time = document.getElementById("time").value;
-
-    if (time === "minutes") {
-        return checkingIntervalInput
-    } else if (time === "hours") {
-        return  checkingIntervalInput * 60
-    } else if (time === "days") {
-        return checkingIntervalInput * 1440
-    }
-}
-
 function updateCheckingInterval() {
     startSpinner("update-checking-interval-spinner");
-    let checkingInterval = setCheckingInterval();
+    let checkingInterval = document.getElementById("checking-interval").value;
+    let time = document.getElementById("time").value;
     let type = document.getElementById("list-type").value;
 
     let interval = {
       checkingInterval: checkingInterval.toString(),
+      time: time,
       type
     };
 

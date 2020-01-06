@@ -73,9 +73,9 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if targetData.DownloadMode == "Audio Only" {
-			target = DownloadTarget{URL: targetData.URL, DownloadMode: targetData.DownloadMode, Name: targetMetadata.Playlist, PreferredExtensionForAudio: targetData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: targetData.Type, DownloadPath: targetData.DownloadPath}
+			target = DownloadTarget{URL: targetData.URL, DownloadMode: targetData.DownloadMode, Name: targetMetadata.Playlist, PreferredExtensionForAudio: targetData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), Type: targetData.Type, DownloadPath: targetData.DownloadPath}
 		} else if targetData.DownloadMode == "Video And Audio" {
-			target = DownloadTarget{URL: targetData.URL, DownloadMode: targetData.DownloadMode, Name: targetMetadata.Playlist, PreferredExtensionForVideo: targetData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: targetData.Type, DownloadPath: targetData.DownloadPath}
+			target = DownloadTarget{URL: targetData.URL, DownloadMode: targetData.DownloadMode, Name: targetMetadata.Playlist, PreferredExtensionForVideo: targetData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), Type: targetData.Type, DownloadPath: targetData.DownloadPath}
 		}
 
 		err = target.Download(targetData.DownloadQuality, targetData.FileExtension, targetData.DownloadEntire)
@@ -221,7 +221,7 @@ func HandleUpdateCheckingInterval(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, errRes)
 		return
 	}
-	err = UpdateCheckingInterval(interval.Type, interval.CheckingInterval)
+	err = UpdateCheckingInterval(interval.Type, interval.Time, interval.CheckingInterval)
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_UPDATING_CHECKING_INTERVAL", Message: "There was an updating the checking interval: " + err.Error()}
 		ReturnResponse(w, errRes)
