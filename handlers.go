@@ -231,7 +231,7 @@ func HandleGetCheckingInterval(w http.ResponseWriter, r *http.Request) {
 		Type:             getCheckingInterval.Type,
 	}
 	json.NewEncoder(w).Encode(result)
-	log.Info("Returning checking-interval %v", result)
+	log.Info("Returning checking-interval: ", result)
 	return
 }
 
