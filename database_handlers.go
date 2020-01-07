@@ -69,7 +69,7 @@ func (db *Database) load() error {
 	return nil
 }
 
-func UpdateCheckingInterval(file, interval string) error {
+func UpdateCheckingInterval(file, time, intervalStr string) error {
 	log.Info("update checking interval")
 	cf, ok := confs[file]
 	if !ok {
@@ -78,8 +78,17 @@ func UpdateCheckingInterval(file, interval string) error {
 	if len(cf.contents) == 0 {
 		return fmt.Errorf("UpdateCheckingInterval: empty config list")
 	}
+	interval, err := strconv.Atoi(intervalStr)
+	if err != nil {
+		return fmt.Errorf("UpdateCheckingInterval: non-numeric interval %w", err)
+	}
+	_, ok = checkingIntervalMultipliers[time]
+	if !ok {
+		return fmt.Errorf("UpdateCheckingInterval: bad multiplier")
+	}
 	cf.Lock()
 	cf.contents[0].CheckingInterval = interval
+	cf.contents[0].CheckingIntervalTime = time
 	cf.write()
 	cf.Unlock()
 	return nil
@@ -187,14 +196,27 @@ func (t DownloadTarget) GetFromDatabase() (out DownloadTarget, err error) {
 }
 
 func GetCheckingInterval(file string) (int, error) {
+	interval, time, err := GetCheckingIntervalConfig(file)
+	if err != nil {
+		return 0, err
+	}
+
+	if interval == 0 {
+		return 0, nil
+	}
+	return interval * checkingIntervalMultipliers[time], nil
+}
+
+func GetCheckingIntervalConfig(file string) (int, string, error) {
 	cf, ok := confs[file]
 	if !ok {
-		return 0, fmt.Errorf("GetFromDatabase: bad conf type")
+		return 0, "", fmt.Errorf("GetFromDatabase: bad conf type")
 	}
 	cf.RLock()
 	defer cf.RUnlock()
 	if len(cf.contents) == 0 {
-		return 0, fmt.Errorf("GetCheckingInterval: empty target list")
+		return 0, "", fmt.Errorf("GetCheckingInterval: empty target list")
 	}
-	return strconv.Atoi(cf.contents[0].CheckingInterval)
+	target := cf.contents[0]
+	return target.CheckingInterval, target.CheckingIntervalTime, nil
 }

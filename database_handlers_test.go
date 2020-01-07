@@ -16,7 +16,6 @@ var targets = []DownloadTarget{
 		PreferredExtensionForVideo: "",
 		DownloadHistory:            nil,
 		LastChecked:                "",
-		CheckingInterval:           "",
 		Type:                       "Channel",
 	},
 	{
@@ -28,7 +27,6 @@ var targets = []DownloadTarget{
 		PreferredExtensionForVideo: "mp4",
 		DownloadHistory:            nil,
 		LastChecked:                "",
-		CheckingInterval:           "",
 		Type:                       "Channel",
 	},
 	{
@@ -40,7 +38,8 @@ var targets = []DownloadTarget{
 		PreferredExtensionForVideo: "mp4",
 		DownloadHistory:            nil,
 		LastChecked:                "",
-		CheckingInterval:           "5",
+		CheckingInterval:           5,
+		CheckingIntervalTime:       "minutes",
 		Type:                       "Playlist",
 	},
 }

@@ -36,34 +36,6 @@ function addPlaylist() {
     });
 }
 
-function updateCheckingInterval() {
-  startSpinner("update-checking-interval-spinner");
-  let checkingInterval = setCheckingInterval();
-
-
-  let type = "Playlist";
-
-  let interval = {
-    checkingInterval: checkingInterval.toString(),
-    type
-  };
-
-  const options = {
-    method: "POST",
-    body: JSON.stringify(interval),
-    headers: new Headers({
-      "Content-Type": "application/json"
-    })
-  };
-
-  fetch("/api/update-checking-interval", options)
-      .then(res => res.json())
-      .then(res => {
-        handleResponse(res)
-        stopSpinner("update-checking-interval-spinner")
-      });
-}
-
 function checkPlaylist(id) {
   startSpinner(id+"-spinner");
   let URL = id;
