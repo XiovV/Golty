@@ -103,6 +103,7 @@ func main() {
 	r.HandleFunc("/api/get", HandleGetTargets).Methods("POST")
 	r.HandleFunc("/api/check-all", HandleCheckAllTargets).Methods("POST")
 
+	r.HandleFunc("/api/get-checking-interval", HandleGetCheckingInterval).Methods("POST")
 	r.HandleFunc("/api/update-checking-interval", HandleUpdateCheckingInterval).Methods("POST")
 
 	r.HandleFunc("/api/get-videos", HandleGetVideos).Methods("GET")

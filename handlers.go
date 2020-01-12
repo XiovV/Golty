@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -73,9 +74,9 @@ func HandleAddTarget(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if targetData.DownloadMode == "Audio Only" {
-			target = DownloadTarget{URL: targetData.URL, DownloadMode: targetData.DownloadMode, Name: targetMetadata.Playlist, PreferredExtensionForAudio: targetData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: targetData.Type, DownloadPath: targetData.DownloadPath}
+			target = DownloadTarget{URL: targetData.URL, DownloadMode: targetData.DownloadMode, Name: targetMetadata.Playlist, PreferredExtensionForAudio: targetData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), Type: targetData.Type, DownloadPath: targetData.DownloadPath}
 		} else if targetData.DownloadMode == "Video And Audio" {
-			target = DownloadTarget{URL: targetData.URL, DownloadMode: targetData.DownloadMode, Name: targetMetadata.Playlist, PreferredExtensionForVideo: targetData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), CheckingInterval: "", Type: targetData.Type, DownloadPath: targetData.DownloadPath}
+			target = DownloadTarget{URL: targetData.URL, DownloadMode: targetData.DownloadMode, Name: targetMetadata.Playlist, PreferredExtensionForVideo: targetData.FileExtension, DownloadHistory: []string{}, LastChecked: time.Now().Format("01-02-2006 15:04:05"), Type: targetData.Type, DownloadPath: targetData.DownloadPath}
 		}
 
 		err = target.Download(targetData.DownloadQuality, targetData.FileExtension, targetData.DownloadEntire)
@@ -210,6 +211,30 @@ func HandleCheckAllTargets(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func HandleGetCheckingInterval(w http.ResponseWriter, r *http.Request) {
+	log.Info("received a request to get the checking interval")
+	w.Header().Set("Content-Type", "application/json")
+	var getCheckingInterval GetCheckingIntervalPayload
+	err := json.NewDecoder(r.Body).Decode(&getCheckingInterval)
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_PARSING_DATA", Message: "There was an error parsing json: " + err.Error()})
+		return
+	}
+	interval, time, err := GetCheckingIntervalConfig(getCheckingInterval.Type)
+	if err != nil {
+		ReturnResponse(w, Response{Type: "Error", Key: "ERROR_GETTING_CHECKING_INTERVAL", Message: "There was an error while getting the checking interval: " + err.Error()})
+		return
+	}
+	result := CheckingIntervalPayload{
+		CheckingInterval: strconv.Itoa(interval),
+		Time:             time,
+		Type:             getCheckingInterval.Type,
+	}
+	json.NewEncoder(w).Encode(result)
+	log.Info("Returning checking-interval: ", result)
+	return
+}
+
 func HandleUpdateCheckingInterval(w http.ResponseWriter, r *http.Request) {
 	log.Info("received a request to update the checking interval")
 	w.Header().Set("Content-Type", "application/json")
@@ -221,7 +246,7 @@ func HandleUpdateCheckingInterval(w http.ResponseWriter, r *http.Request) {
 		ReturnResponse(w, errRes)
 		return
 	}
-	err = UpdateCheckingInterval(interval.Type, interval.CheckingInterval)
+	err = UpdateCheckingInterval(interval.Type, interval.Time, interval.CheckingInterval)
 	if err != nil {
 		errRes = Response{Type: "Error", Key: "ERROR_UPDATING_CHECKING_INTERVAL", Message: "There was an updating the checking interval: " + err.Error()}
 		ReturnResponse(w, errRes)

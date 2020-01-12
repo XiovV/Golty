@@ -8,7 +8,7 @@
   <title>GoAutoYT - Dashboard</title>
   
 </head>
-<body onload="getPlaylists()">
+<body onload="getPlaylists(); getCheckingInterval();">
   <ul class="nav nav-pills justify-content-center mt-3">
     <li class="nav-item">
       <a class="nav-link" href="/">Channels</a>
@@ -91,6 +91,7 @@
     <div class="form-group form-inline">
       <label for="checking-interval">Check All Playlists Every: </label>
       <input type="number" class="form-control ml-1" id="checking-interval">
+      <input type="hidden" id="list-type" value="Playlist">
       <div class="form-group ml-2">
         <select class="form-control" id="time">
           <option value="minutes">minutes</option>
