@@ -25,7 +25,7 @@ type TargetMetadata struct {
 	ID                 string      `json:"id"`
 	DislikeCount       int         `json:"dislike_count"`
 	PlaylistID         string      `json:"playlist_id"`
-	Abr                int         `json:"abr"`
+	//Abr                int         `json:"abr"`
 	UploaderURL        string      `json:"uploader_url"`
 	Categories         []string    `json:"categories"`
 	Fps                int         `json:"fps"`
@@ -61,7 +61,7 @@ type TargetMetadata struct {
 			UserAgent      string `json:"User-Agent"`
 		} `json:"http_headers"`
 		Acodec string `json:"acodec"`
-		Abr    int    `json:"abr,omitempty"`
+		//Abr    int    `json:"abr,omitempty"`
 	} `json:"requested_formats"`
 	AutomaticCaptions struct {
 	} `json:"automatic_captions"`
@@ -102,7 +102,7 @@ type TargetMetadata struct {
 		URL               string  `json:"url"`
 		Vcodec            string  `json:"vcodec"`
 		FormatNote        string  `json:"format_note"`
-		Abr               int     `json:"abr,omitempty"`
+		//Abr               int     `json:"abr,omitempty"`
 		PlayerURL         string  `json:"player_url"`
 		DownloaderOptions struct {
 			HTTPChunkSize int `json:"http_chunk_size"`
