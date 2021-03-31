@@ -14,7 +14,7 @@ Features
 Getting Started (without Docker)
 ------------
 ### Prerequisites
-* **Windows, Mac or Linux** - Only tested on Linux, but should work on Mac and Windows
+* **Windows, Mac, or Linux** - Only tested on Linux, but should work on Mac and Windows
 * **Go, version 1.13.4 or newer**
 * **youtube-dl**
 
@@ -32,12 +32,12 @@ Getting Started (with Docker)
 ------------
 ### Prerequisites
 * **Docker** - Built on 19.03.3
-* **Docker Compose** - Build on 1.24.0
+* **Docker Compose** - Built on 1.24.0
 
 ### Configuring The Container
 [Docker Hub Image](https://hub.docker.com/r/xiovv/go-auto-yt)
 
-The `docker-compose.yml` file in the repository can be used as a guide for setting up your own containers. The only thing that needs to be checked is the `volumes` section. If you keep the default, you need to ensure that there are _downloads_ and _config_ folders in the same directory as the `docker-compose.yml` file. Otherwise, feel free to modify those mapping to your own local directories. [Docker Bind Mount Docs](https://docs.docker.com/storage/bind-mounts/)
+The `docker-compose.yml` file in the repository can be used as a guide for setting up your containers. The only thing that needs to be checked is the `volumes` section. If you keep the default, you need to ensure that there are _downloads_ and _config_ folders in the same directory as the `docker-compose.yml` file. Otherwise, feel free to modify those mapping to your local directories. [Docker Bind Mount Docs](https://docs.docker.com/storage/bind-mounts/)
 
 ```YAML
 volumes:
@@ -49,7 +49,7 @@ volumes:
     #  - config:/app/config # docker volume mapping
 ```
 
-If you wish to use Docker volume mappings, comment out the local folder lines and uncomment the docker volume lines. You must also uncomment the root `volumes` section at the bottom of the sample YAML file. This will instruct docker to create the volumes. 
+If you wish to use Docker volume mappings, comment out the local folder lines and uncomment the docker volume lines. You must also uncomment the root `volumes` section at the bottom of the sample YAML file. This will instruct Docker to create the volumes. 
 
 ```YAML
 volumes:
@@ -120,7 +120,7 @@ volumes:
   certs:
 ```
 
-Using the above config, make below additions to the go-auto-yt `docker-compose.yml`:
+Using the above config, make the below additions to the go-auto-yt `docker-compose.yml`:
 
 ```YAML
 labels:
@@ -167,7 +167,7 @@ labels:
 ```
 
 ##### NGINX
-Using NGINX as a reverse proxy has a number of different implementations. Official documentation lives [here](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/). [Jwilder's docker container](https://github.com/jwilder/nginx-proxy) is a popular choice for a containerised version. NGINX doesn't automatically fetch SSL certificates for you like the other solutions so if you need that, consider an additional service such as [this one](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion). An example of using the two together can be found [here](https://github.com/dangerous-tech/docker-composes/tree/master/proxy).
+Using NGINX as a reverse proxy has several different implementations. Official documentation lives [here](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/). [Jwilder's docker container](https://github.com/jwilder/nginx-proxy) is a popular choice for a containerized version. NGINX doesn't automatically fetch SSL certificates for you like the other solutions so if you need that, consider an additional service such as [this one](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion). An example of using the two together can be found [here](https://github.com/dangerous-tech/docker-composes/tree/master/proxy).
 
 ```YAML
 services:
@@ -196,7 +196,7 @@ volumes:
   dhparam:
 ```
 
-Add the below environemnt variables to your go-auto-yt `docker-compose.yml` file to have them proxied by the container with the above config:
+Add the below environment variables to your go-auto-yt `docker-compose.yml` file to have them proxied by the container with the above config:
 
 ```YAML
 environment:
