@@ -5,7 +5,7 @@ Development of Golty V2 has officially started (took me long enough), here are a
 <img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile.png" width=30% height=30% alt="Mobile Videos Tab View"> 
 
 ## Desktop view (Videos Tab)
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop.png" alt="Desktop Videos Tab View">
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop2.png" alt="Desktop Videos Tab View">
 
 
 
