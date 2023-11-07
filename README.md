@@ -1,7 +1,18 @@
+# Golty V2 Sneak Peek
+Development of Golty V2 has officially started (took me long enough), here are a couple of previews of the new design:
+
+## Mobile view (Videos Tab)
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile.png" width=30% height=30% alt="Mobile Videos Tab View"> 
+
+## Desktop view (Videos Tab)
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop.png" alt="Desktop Videos Tab View">
+
+
+
 # Golty
 <p align="center">Golty makes it easy for you to automatically download videos from as many YouTube channels as you'd like.</p>
 <p align="center"><a href="https://travis-ci.com/xiovv/go-auto-yt"><img src="https://travis-ci.org/XiovV/go-auto-yt.svg?branch=master" alt="Build Status"></a><p>
-<p align="center"><img src="https://raw.githubusercontent.com/XiovV/go-auto-yt/master/demo.png" width=700 alt="Screenshot of Example Documentation created with Slate"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/XiovV/go-auto-yt/master/demo.png" width=700 alt="Golty Dashboard"></p>
 
 Features
 ------------
