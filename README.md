@@ -1,11 +1,11 @@
 # Golty V2 Sneak Peek
 Development of Golty V2 has officially started (took me long enough), here are a couple of previews of the new design:
 
-## Mobile view (Videos Tab)
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile.png" width=30% height=30% alt="Mobile Videos Tab View"> 
+## Channels Tab
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile_channels.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_channels.png" width=70% height=auto alt="Desktop Channels Tab View">
 
-## Desktop view (Videos Tab)
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop2.png" alt="Desktop Videos Tab View">
+## Videos Tab
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile.png" width=25% height=auto alt="Mobile Videos Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop2.png" width=70% height=auto alt="Desktop Videos Tab View">
 
 
 
