@@ -4,8 +4,11 @@ Development of Golty V2 has officially started (took me long enough), here are a
 ## Channels Tab
 <img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile_channels.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_channels.png" width=70% height=auto alt="Desktop Channels Tab View">
 
+## Channel Videos Tab
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile_channel_videos.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_channel_videos.png" width=70% height=auto alt="Desktop Channels Tab View">
+
 ## Videos Tab
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile.png" width=25% height=auto alt="Mobile Videos Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop2.png" width=70% height=auto alt="Desktop Videos Tab View">
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile.png" width=25% height=auto alt="Mobile Videos Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_videos.png" width=70% height=auto alt="Desktop Videos Tab View">
 
 
 
