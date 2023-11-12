@@ -13,6 +13,8 @@ Development of Golty V2 has officially started (took me long enough), here are a
 ## Download Video Form
 <img src="https://raw.githubusercontent.com/XiovV/Golty/master/download_video_mobile.png" width=25% height=auto alt="Download Video Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/download_video_desktop.png" width=70% height=auto alt="Download Video Desktop Form">
 
+## Add Channel Form
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/add_channel_mobile.png" width=25% height=auto alt="Add Channel Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/add_channel_desktop.png" width=70% height=auto alt="Add Channel Desktop Form">
 
 
 
