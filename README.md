@@ -1,45 +1,54 @@
 # Golty V2 Sneak Peek
+
 Development of Golty v2 has officially started (took me long enough), here are a couple of previews of the new design:
 
 ## Channels Tab
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile_channels.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_channels.png" width=70% height=auto alt="Desktop Channels Tab View">
+
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile_channels.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/desktop_channels.png" width=70% height=auto alt="Desktop Channels Tab View">
 
 ## Channel Videos Tab
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile_channel_videos.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_channel_videos.png" width=70% height=auto alt="Desktop Channels Tab View">
+
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile_channel_videos.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/desktop_channel_videos.png" width=70% height=auto alt="Desktop Channels Tab View">
 
 ## Videos Tab
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile.png" width=25% height=auto alt="Mobile Videos Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_videos.png" width=70% height=auto alt="Desktop Videos Tab View">
+
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile.png" width=25% height=auto alt="Mobile Videos Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/demog_images/desktop_videos.png" width=70% height=auto alt="Desktop Videos Tab View">
 
 ## Download Video Form
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/download_video_mobile.png" width=25% height=auto alt="Download Video Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/download_video_desktop.png" width=70% height=auto alt="Download Video Desktop Form">
+
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/download_video_mobile.png" width=25% height=auto alt="Download Video Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/download_video_desktop.png" width=70% height=auto alt="Download Video Desktop Form">
 
 ## Add Channel Form
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/add_channel_mobile.png" width=25% height=auto alt="Add Channel Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/add_channel_desktop.png" width=70% height=auto alt="Add Channel Desktop Form">
 
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/add_channel_mobile.png" width=25% height=auto alt="Add Channel Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/add_channel_desktop.png" width=70% height=auto alt="Add Channel Desktop Form">
 
 # ⚠️ Warning
+
 The documentation you see below is now completely outdated and cannot be used. The documentation will be updated slowly as I'm working on Golty v2.
+
 # Golty
 
 <p align="center">Golty makes it easy for you to automatically download videos from as many YouTube channels as you'd like.</p>
 <p align="center"><img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/demo.png" width=700 alt="Golty Dashboard"></p>
 
-Features
-------------
-* **Clean, very simple design** - The dashboard only contains an input form where you can add a channel and configure checking intervals and what to download, and a little list of all your channels where you can delete them or tell the server to check for new uploads immediately.
+## Features
 
-* **Everything is on a single page** - You can view and control everything from just one page. 
+- **Clean, very simple design** - The dashboard only contains an input form where you can add a channel and configure checking intervals and what to download, and a little list of all your channels where you can delete them or tell the server to check for new uploads immediately.
 
-* **Makes downloading videos/audio automatically very easy** - Just paste a link of a channel you want to download, set a checking interval and that's it, the server will keep checking for new uploads and download if necessary.
+- **Everything is on a single page** - You can view and control everything from just one page.
 
-Getting Started (without Docker)
-------------
+- **Makes downloading videos/audio automatically very easy** - Just paste a link of a channel you want to download, set a checking interval and that's it, the server will keep checking for new uploads and download if necessary.
+
+## Getting Started (without Docker)
+
 ### Prerequisites
-* **Windows, Mac or Linux** - Only tested on Linux, but should work on Mac and Windows
-* **Go, version 1.13.4 or newer**
-* **youtube-dl**
+
+- **Windows, Mac or Linux** - Only tested on Linux, but should work on Mac and Windows
+- **Go, version 1.13.4 or newer**
+- **youtube-dl**
 
 ### Setting Up (Tested on Linux, but should work on Mac. Windows - not sure)
+
 ```
 git clone https://github.com/XiovV/go-auto-yt.git
 cd go-auto-yt
@@ -49,13 +58,15 @@ go build
 
 You can now go to http://localhost:8080 and start using Golty.
 
-Getting Started (with Docker)
-------------
+## Getting Started (with Docker)
+
 ### Prerequisites
-* **Docker** - Built on 19.03.3
-* **Docker Compose** - Build on 1.24.0
+
+- **Docker** - Built on 19.03.3
+- **Docker Compose** - Build on 1.24.0
 
 ### Configuring The Container
+
 [Docker Hub Image](https://hub.docker.com/r/xiovv/go-auto-yt)
 
 The `docker-compose.yml` file in the repository can be used as a guide for setting up your own containers. The only thing that needs to be checked is the `volumes` section. If you keep the default, you need to ensure that there are _downloads_ and _config_ folders in the same directory as the `docker-compose.yml` file. Otherwise, feel free to modify those mapping to your own local directories. [Docker Bind Mount Docs](https://docs.docker.com/storage/bind-mounts/)
@@ -70,7 +81,7 @@ volumes:
     #  - config:/app/config # docker volume mapping
 ```
 
-If you wish to use Docker volume mappings, comment out the local folder lines and uncomment the docker volume lines. You must also uncomment the root `volumes` section at the bottom of the sample YAML file. This will instruct docker to create the volumes. 
+If you wish to use Docker volume mappings, comment out the local folder lines and uncomment the docker volume lines. You must also uncomment the root `volumes` section at the bottom of the sample YAML file. This will instruct docker to create the volumes.
 
 ```YAML
 volumes:
@@ -97,12 +108,15 @@ environment:
 ```
 
 ### Running The Container
+
 Once the configuration is complete, `docker-compose up -d` will pull and run the container for you in the background. The container will now be accessible from http://localhost:8080 (or whichever port you've modified it to) on that machine. Using `docker logs` will show the container logs for troubleshooting.
 
 #### Reverse Proxies
+
 If you'd like to have multiple services run over a single port, Reverse Proxies can be used with the docker container. Popular options are [Traefik](https://containo.us/traefik/), [Caddy](https://caddyserver.com/) and [NGINX](https://github.com/jwilder/nginx-proxy).
 
 ##### Traefik
+
 Traefik is a popular option as a reverse proxy because it has official docker support and a high level of configurability. A `docker-compose` example for a Traefik v2 container itself is below:
 
 ```YAML
@@ -156,6 +170,7 @@ labels:
 More advanced configuration options can be found [in the docs](https://docs.traefik.io/routing/providers/docker/).
 
 ##### Caddy
+
 Caddy is still at v1 (v2 is currently in beta, use at your own risk) and at this time doesn't have an official docker image. [Community offerings exist](https://github.com/caddyserver/caddy/wiki/Docker-Containers) so if you're set on using Caddy then take a look at some of those. There's an example of one in use below. _You can also set a custom Caddyfile if you do some [reading on the topic](https://caddyserver.com/v1/docs/caddyfile)._
 
 ```YAML
@@ -188,6 +203,7 @@ labels:
 ```
 
 ##### NGINX
+
 Using NGINX as a reverse proxy has a number of different implementations. Official documentation lives [here](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/). [Jwilder's docker container](https://github.com/jwilder/nginx-proxy) is a popular choice for a containerised version. NGINX doesn't automatically fetch SSL certificates for you like the other solutions so if you need that, consider an additional service such as [this one](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion). An example of using the two together can be found [here](https://github.com/dangerous-tech/docker-composes/tree/master/proxy).
 
 ```YAML
@@ -229,9 +245,10 @@ environment:
 ```
 
 ### Roadmap
-* Login screen
-* Ability to change channel/playlist preferences
-* Custom video resolution selection
-* Notifications when a new upload is detected
-* Specify after what amount of time to automatically delete videos
-* Support more file extensions
+
+- Login screen
+- Ability to change channel/playlist preferences
+- Custom video resolution selection
+- Notifications when a new upload is detected
+- Specify after what amount of time to automatically delete videos
+- Support more file extensions
