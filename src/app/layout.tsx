@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import BottomNav from "./components/bottom-nav";
-import SideNav from "./components/side-nav";
-import TopBar from "./components/top-bar";
+import BottomNav from "./components/navigation/bottom-nav";
+import SideNav from "./components/navigation/side-nav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +25,6 @@ export default function RootLayout({
           </div>
 
           <div className="flex-grow overflow-y-auto bg-[#101419]">
-            <TopBar />
             {children}
           </div>
 

@@ -13,7 +13,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import NavItem from "./nav-item";
-import GoltyLogo from "./svgs/GoltyLogo.svg";
+import GoltyLogo from "../svgs/GoltyLogo.svg";
 import Image from "next/image";
 
 const libraryLinks = [
