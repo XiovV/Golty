@@ -20,7 +20,7 @@ Development of Golty V2 has officially started (took me long enough), here are a
 
 # Golty
 <p align="center">Golty makes it easy for you to automatically download videos from as many YouTube channels as you'd like.</p>
-<p align="center"><img src="https://raw.githubusercontent.com/XiovV/Golty/demo_images/master/demo.png" width=700 alt="Golty Dashboard"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/demo.png" width=700 alt="Golty Dashboard"></p>
 
 Features
 ------------
