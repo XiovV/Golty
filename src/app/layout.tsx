@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className}`}>
         <div className="flex h-screen flex-col lg:flex-row">
-          <div className="hidden lg:block w-full flex-none lg:w-64">
+          <div className="hidden lg:block w-full flex-none lg:w-80">
             <SideNav />
           </div>
 
