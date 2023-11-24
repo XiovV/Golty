@@ -17,7 +17,7 @@ export default function TopBar({
   desktopIcons,
 }: TopBarProps) {
   return (
-    <div className="lg:bg-[#1D1F24] p-5 top w-full">
+    <div className="lg:bg-[#1D1F24] p-4 top w-full">
       <div className="hidden lg:flex justify-between">
         <SearchBar />
 
