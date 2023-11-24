@@ -2,26 +2,25 @@
 Development of Golty V2 has officially started (took me long enough), here are a couple of previews of the new design:
 
 ## Channels Tab
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile_channels.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_channels.png" width=70% height=auto alt="Desktop Channels Tab View">
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile_channels.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_channels.png" width=70% height=auto alt="Desktop Channels Tab View">
 
 ## Channel Videos Tab
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile_channel_videos.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_channel_videos.png" width=70% height=auto alt="Desktop Channels Tab View">
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile_channel_videos.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_channel_videos.png" width=70% height=auto alt="Desktop Channels Tab View">
 
 ## Videos Tab
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/mobile.png" width=25% height=auto alt="Mobile Videos Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_videos.png" width=70% height=auto alt="Desktop Videos Tab View">
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile.png" width=25% height=auto alt="Mobile Videos Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_videos.png" width=70% height=auto alt="Desktop Videos Tab View">
 
 ## Download Video Form
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/download_video_mobile.png" width=25% height=auto alt="Download Video Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/download_video_desktop.png" width=70% height=auto alt="Download Video Desktop Form">
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/download_video_mobile.png" width=25% height=auto alt="Download Video Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/download_video_desktop.png" width=70% height=auto alt="Download Video Desktop Form">
 
 ## Add Channel Form
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/add_channel_mobile.png" width=25% height=auto alt="Add Channel Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/add_channel_desktop.png" width=70% height=auto alt="Add Channel Desktop Form">
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/add_channel_mobile.png" width=25% height=auto alt="Add Channel Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/add_channel_desktop.png" width=70% height=auto alt="Add Channel Desktop Form">
 
 
 
 # Golty
 <p align="center">Golty makes it easy for you to automatically download videos from as many YouTube channels as you'd like.</p>
-<p align="center"><a href="https://travis-ci.com/xiovv/go-auto-yt"><img src="https://travis-ci.org/XiovV/go-auto-yt.svg?branch=master" alt="Build Status"></a><p>
-<p align="center"><img src="https://raw.githubusercontent.com/XiovV/go-auto-yt/master/demo.png" width=700 alt="Golty Dashboard"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/XiovV/Golty/demo_images/master/demo.png" width=700 alt="Golty Dashboard"></p>
 
 Features
 ------------
