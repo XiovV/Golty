@@ -12,6 +12,7 @@ import {
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import NavItem from "./nav-item";
 
 const libraryLinks = [
   { name: "Channels", href: "/channels", icon: TvIcon },
@@ -53,21 +54,13 @@ export default function SideNav() {
 
       <p className="text-[#676D75] font-semibold py-3">Settings</p>
       {settingsLinks.map((link) => {
-        const LinkIcon = link.icon;
-
         return (
-          <Link
-            href={link.href}
-            className={clsx(
-              "flex text-[#676D75] font-semibold text-lg py-3 px-4 rounded-[16px] items-center gap-3 hover:bg-[#292E37]",
-              {
-                "text-[#ffffff] font-bold bg-[#292E37]": link.href === pathname,
-              }
-            )}
-          >
-            <LinkIcon className="h-7 " />
-            <p>{link.name}</p>
-          </Link>
+          <NavItem
+            link={link.href}
+            name={link.name}
+            isActive={link.href === pathname}
+            icon={link.icon}
+          />
         );
       })}
     </div>
