@@ -1,5 +1,5 @@
 # Golty V2 Sneak Peek
-Development of Golty V2 has officially started (took me long enough), here are a couple of previews of the new design:
+Development of Golty v2 has officially started (took me long enough), here are a couple of previews of the new design:
 
 ## Channels Tab
 <img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile_channels.png" width=25% height=auto alt="Mobile Channels Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/desktop_channels.png" width=70% height=auto alt="Desktop Channels Tab View">
@@ -17,8 +17,10 @@ Development of Golty V2 has officially started (took me long enough), here are a
 <img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/add_channel_mobile.png" width=25% height=auto alt="Add Channel Mobile Form"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/add_channel_desktop.png" width=70% height=auto alt="Add Channel Desktop Form">
 
 
-
+# ⚠️ Warning
+The documentation you see below is now completely outdated and cannot be used. The documentation will be updated slowly as I'm working on Golty v2.
 # Golty
+
 <p align="center">Golty makes it easy for you to automatically download videos from as many YouTube channels as you'd like.</p>
 <p align="center"><img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/demo.png" width=700 alt="Golty Dashboard"></p>
 
