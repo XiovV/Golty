@@ -12,7 +12,7 @@ Development of Golty v2 has officially started (took me long enough), here are a
 
 ## Videos Tab
 
-<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile.png" width=25% height=auto alt="Mobile Videos Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/demog_images/desktop_videos.png" width=70% height=auto alt="Desktop Videos Tab View">
+<img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/mobile.png" width=25% height=auto alt="Mobile Videos Tab View"> <img src="https://raw.githubusercontent.com/XiovV/Golty/master/demo_images/desktop_videos.png" width=70% height=auto alt="Desktop Videos Tab View">
 
 ## Download Video Form
 
