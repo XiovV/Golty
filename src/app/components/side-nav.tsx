@@ -13,6 +13,8 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import NavItem from "./nav-item";
+import GoltyLogo from "./svgs/GoltyLogo.svg";
+import Image from "next/image";
 
 const libraryLinks = [
   { name: "Channels", href: "/channels", icon: TvIcon },
@@ -31,6 +33,11 @@ export default function SideNav() {
   const pathname = usePathname();
   return (
     <div className="h-full px-6 py-4 bg-[#1D1F24]">
+      <div className="flex items-center gap-3 pb-3">
+        <Image priority src={GoltyLogo} alt="Golty Logo" />
+        <p className="text-white text-2xl font-bold">Golty</p>
+      </div>
+
       <p className="text-[#676D75] font-semibold pb-3">Library</p>
 
       {libraryLinks.map((link) => {
