@@ -23,7 +23,15 @@ export default function TopBar({
 
         <div className="flex gap-8">
           {desktopIcons.map((icon) => {
-            return <Image priority src={icon} alt="" className="h-auto w-6" />;
+            return (
+              <Image
+                key={icon}
+                priority
+                src={icon}
+                alt=""
+                className="h-auto w-6"
+              />
+            );
           })}
 
           <Image priority src={profile} alt="" className="h-auto w-8" />
@@ -35,7 +43,15 @@ export default function TopBar({
 
         <div className="flex gap-8 lg:hidden">
           {mobileIcons.map((icon) => {
-            return <Image priority src={icon} alt="" className="h-auto w-6" />;
+            return (
+              <Image
+                key={icon}
+                priority
+                src={icon}
+                alt=""
+                className="h-auto w-6"
+              />
+            );
           })}
         </div>
       </div>

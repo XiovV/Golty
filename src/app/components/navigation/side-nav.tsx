@@ -45,6 +45,7 @@ export default function SideNav() {
 
         return (
           <Link
+            key={link.name}
             href={link.href}
             className={clsx(
               "flex text-[#676D75] text-lg font-semibold py-3 px-4 rounded-[16px] items-center gap-3 hover:bg-[#292E37]",
@@ -63,6 +64,7 @@ export default function SideNav() {
       {settingsLinks.map((link) => {
         return (
           <NavItem
+            key={link.name}
             link={link.href}
             name={link.name}
             isActive={link.href === pathname}
