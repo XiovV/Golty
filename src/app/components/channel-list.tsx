@@ -5,7 +5,16 @@ interface ChannelListProps {
   channels: IChannel[];
 }
 
-export default function ChannelList({ channels }: ChannelListProps) {
+async function fetchChannels(): Promise<IChannel[]> {
+  const res = await fetch(`${process.env.API_URL}/channels`, {
+    cache: "no-store",
+  });
+
+  return await res.json();
+}
+
+export default async function ChannelList() {
+  const channels = await fetchChannels();
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:flex-wrap lg:gap-x-12">
       {channels.map((channel) => {

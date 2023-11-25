@@ -6,18 +6,10 @@ import TopBar from "../components/navigation/top-bar";
 import Channel from "../components/channel";
 import { Channel as IChannel } from "../types/channel";
 import ChannelList from "../components/channel-list";
-
-async function fetchChannels(): Promise<IChannel[]> {
-  const res = await fetch(`${process.env.API_URL}/channels`, {
-    cache: "no-store",
-  });
-
-  return await res.json();
-}
+import { Suspense } from "react";
+import ChannelLoading from "../components/channel-loading";
 
 export default async function Home() {
-  const channels = await fetchChannels();
-
   return (
     <main>
       <TopBar
@@ -32,7 +24,9 @@ export default async function Home() {
         </h1>
 
         <div className="mx-3 mt-5 lg:mx-1">
-          <ChannelList channels={channels} />
+          <Suspense fallback={<ChannelLoading />}>
+            <ChannelList />
+          </Suspense>
         </div>
       </div>
     </main>
