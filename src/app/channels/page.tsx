@@ -1,12 +1,10 @@
-import TopBar from "../components/navigation/top-bar";
-import search from "../components/svgs/search.svg";
-import sort from "../components/svgs/sort.svg";
-import add from "../components/svgs/add.svg";
-import { MdOutlineSort } from "react-icons/md";
-import { IoSearch } from "react-icons/io5";
+import Image from "next/image";
 import { FiPlus } from "react-icons/fi";
+import { IoSearch } from "react-icons/io5";
+import { MdOutlineSort } from "react-icons/md";
+import TopBar from "../components/navigation/top-bar";
 
-export default function Page() {
+export default function Home() {
   return (
     <main>
       <TopBar

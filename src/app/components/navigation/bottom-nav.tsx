@@ -13,7 +13,7 @@ import NavItem from "./nav-item";
 const links = [
   { name: "Channels", href: "/channels", icon: PiTelevisionFill },
   { name: "Playlists", href: "/playlists", icon: FaListUl },
-  { name: "Videos", href: "/", icon: FaRegPlayCircle },
+  { name: "Videos", href: "/videos", icon: FaRegPlayCircle },
   { name: "Settings", href: "/settings", icon: IoMdSettings },
   { name: "Admin", href: "/user", icon: FaUser },
 ];

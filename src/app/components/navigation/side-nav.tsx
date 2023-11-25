@@ -15,7 +15,7 @@ import { FaBell } from "react-icons/fa";
 const libraryLinks = [
   { name: "Channels", href: "/channels", icon: PiTelevisionFill },
   { name: "Playlists", href: "/playlists", icon: FaListUl },
-  { name: "Videos", href: "/", icon: FaRegPlayCircle },
+  { name: "Videos", href: "/videos", icon: FaRegPlayCircle },
 ];
 
 const settingsLinks = [
