@@ -28,12 +28,12 @@ export default function Channel({
             <p>{name}</p>
           </Link>
           <div className="flex gap-1 text-[#676D75] text-sm">
-            <p>{totalVideos}</p>
+            <p>{totalVideos} videos</p>
             <p>•</p>
             <p>{totalSize}</p>
           </div>
         </div>
-        <button className="rounded-full bg-white text-black text-sm py-1 font-semibold">
+        <button className="rounded-full bg-white text-black text-sm py-1 font-semibold w-20">
           Check
         </button>
       </div>
