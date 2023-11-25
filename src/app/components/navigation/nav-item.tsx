@@ -16,13 +16,13 @@ export default function NavItem({ link, name, isActive, icon }: NavItemProps) {
     <Link
       href={link}
       className={clsx(
-        "flex text-[#676D75] font-semibold text-lg py-3 px-4 mb-1 rounded-[16px] items-center gap-3 hover:bg-[#292E37]",
+        "flex flex-col justify-center items-center text-[#676D75] text-sm font-semibold lg:flex-row lg:justify-normal lg:text-lg lg:py-3 lg:px-4 lg:mb-1 lg:rounded-[16px] lg:gap-3 lg:hover:bg-[#292e37]",
         {
-          "text-[#ffffff] font-bold bg-[#292E37]": isActive,
+          "text-[#ffffff]": isActive,
         }
       )}
     >
-      <LinkIcon className="h-5 w-auto" />
+      <LinkIcon className="h-5 w-auto lg:h-6 mb-1" />
       <p>{name}</p>
     </Link>
   );
