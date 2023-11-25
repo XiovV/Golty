@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import profile from "../svgs/profile.svg";
-import SearchBar from "./SearhBar";
+import SearchBar from "./SearchBar";
 
 interface TopBarProps {
   title: string;
