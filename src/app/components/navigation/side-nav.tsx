@@ -48,7 +48,7 @@ export default function SideNav() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex text-[#676D75] text-lg font-semibold py-3 px-4 rounded-[16px] items-center gap-3 hover:bg-[#292E37]",
+              "flex text-[#676D75] text-lg font-semibold py-3 px-4 mb-1 rounded-[16px] items-center gap-3 hover:bg-[#292E37]",
               {
                 "text-[#ffffff] font-bold bg-[#292E37]": link.href === pathname,
               }
