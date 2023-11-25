@@ -37,12 +37,14 @@ export default function SideNav() {
       <p className="text-[#676D75] font-semibold pb-3">Library</p>
 
       {libraryLinks.map((link) => {
+        const isActive = pathname.includes(link.href);
+
         return (
           <NavItem
             key={link.name}
             link={link.href}
             name={link.name}
-            isActive={link.href === pathname}
+            isActive={isActive}
             icon={link.icon}
           />
         );
