@@ -26,12 +26,13 @@ export default function BottomNav() {
       className={`fixed flex flex-row bottom-0 w-full justify-evenly bg-[#1D1F24] gap-6 py-3 px-4`}
     >
       {links.map((link) => {
+        const isActive = pathname.includes(link.href);
         return (
           <NavItem
             key={link.name}
             link={link.href}
             name={link.name}
-            isActive={link.href === pathname}
+            isActive={isActive}
             icon={link.icon}
           />
         );
