@@ -6,6 +6,7 @@ interface ChannelProps {
   name: string;
   totalVideos: number;
   totalSize: string;
+  checkButton?: boolean;
 }
 
 export default function Channel({
@@ -13,6 +14,7 @@ export default function Channel({
   name,
   totalVideos,
   totalSize,
+  checkButton,
 }: ChannelProps) {
   const channelUrl = `channels/${name}`;
 
@@ -33,9 +35,11 @@ export default function Channel({
             <p>{totalSize}</p>
           </div>
         </div>
-        <button className="rounded-full bg-white text-black text-sm py-1 font-semibold w-20">
-          Check
-        </button>
+        {checkButton && (
+          <button className="rounded-full bg-white text-black text-sm py-1 font-semibold w-20">
+            Check
+          </button>
+        )}
       </div>
     </div>
   );

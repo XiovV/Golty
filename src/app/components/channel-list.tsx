@@ -1,10 +1,6 @@
 import Channel from "./channel";
 import { Channel as IChannel } from "../types/channel";
 
-interface ChannelListProps {
-  channels: IChannel[];
-}
-
 async function fetchChannels(): Promise<IChannel[]> {
   const res = await fetch(`${process.env.API_URL}/channels`, {
     cache: "no-store",
@@ -25,6 +21,7 @@ export default async function ChannelList() {
             name={channel.name}
             totalVideos={channel.totalVideos}
             totalSize={channel.totalSize}
+            checkButton
           />
         );
       })}
