@@ -2,12 +2,12 @@ import Image from "next/image";
 import { FiPlus } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { MdOutlineSort } from "react-icons/md";
-import TopBar from "../components/navigation/top-bar";
-import Channel from "../components/channel";
+import TopBar from "../components/navigation/TopBar";
+import Channel from "../components/channels/Channel";
 import { Channel as IChannel } from "../types/channel";
-import ChannelList from "../components/channel-list";
+import ChannelList from "../components/channels/ChannelList";
 import { Suspense } from "react";
-import ChannelLoading from "../components/channel-loading";
+import ChannelLoading from "../components/channels/ChannelLoading";
 
 export default async function Home() {
   return (

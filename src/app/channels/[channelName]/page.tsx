@@ -1,4 +1,4 @@
-import TopBar from "@/app/components/navigation/top-bar";
+import TopBar from "@/app/components/navigation/TopBar";
 import { FiPlus } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { MdOutlineSort } from "react-icons/md";
@@ -7,7 +7,7 @@ import { IoMdSettings } from "react-icons/io";
 import { Channel as IChannel } from "@/app/types/channel";
 
 import { FiTrash } from "react-icons/fi";
-import Channel from "@/app/components/channel";
+import Channel from "@/app/components/channels/Channel";
 
 async function fetchChannel(channelName: string): Promise<IChannel> {
   const res = await fetch(`${process.env.API_URL}/channels/${channelName}`, {

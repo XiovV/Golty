@@ -1,5 +1,5 @@
-import Channel from "./channel";
-import { Channel as IChannel } from "../types/channel";
+import Channel from "./Channel";
+import { Channel as IChannel } from "../../types/channel";
 
 async function fetchChannels(): Promise<IChannel[]> {
   const res = await fetch(`${process.env.API_URL}/channels`, {

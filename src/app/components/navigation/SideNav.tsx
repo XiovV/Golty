@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import NavItem from "./nav-item";
+import NavItem from "./NavItem";
 import GoltyLogo from "../svgs/GoltyLogo.svg";
 import Image from "next/image";
 import { FaListUl } from "react-icons/fa";

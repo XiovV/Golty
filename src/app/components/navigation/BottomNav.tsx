@@ -1,14 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { FaListUl } from "react-icons/fa";
 import { PiTelevisionFill } from "react-icons/pi";
 import { FaRegPlayCircle } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
-import NavItem from "./nav-item";
+import NavItem from "./NavItem";
 
 const links = [
   { name: "Channels", href: "/channels", icon: PiTelevisionFill },

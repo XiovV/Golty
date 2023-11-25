@@ -1,5 +1,3 @@
-import Image from "next/image";
-import search from "../svgs/search.svg";
 import { IoSearch } from "react-icons/io5";
 
 export default function SearchBar() {
