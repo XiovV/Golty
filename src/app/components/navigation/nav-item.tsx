@@ -22,7 +22,7 @@ export default function NavItem({ link, name, isActive, icon }: NavItemProps) {
         }
       )}
     >
-      <LinkIcon className="h-5 w-auto lg:h-6 mb-1" />
+      <LinkIcon className="h-5 w-auto lg:h-6" />
       <p>{name}</p>
     </Link>
   );
