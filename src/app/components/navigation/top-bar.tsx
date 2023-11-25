@@ -29,7 +29,7 @@ export default function TopBar({
                 priority
                 src={icon}
                 alt=""
-                className="h-auto w-6"
+                className="h-auto w-5"
               />
             );
           })}
@@ -49,7 +49,7 @@ export default function TopBar({
                 priority
                 src={icon}
                 alt=""
-                className="h-auto w-6"
+                className="h-auto w-5"
               />
             );
           })}
