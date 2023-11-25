@@ -1,4 +1,4 @@
-import Channel from "./Channel";
+import ChannelCard from "./ChannelCard";
 import { Channel as IChannel } from "../../types/channel";
 
 async function fetchChannels(): Promise<IChannel[]> {
@@ -15,7 +15,7 @@ export default async function ChannelList() {
     <div className="flex flex-col gap-6 lg:flex-row lg:flex-wrap lg:gap-x-12">
       {channels.map((channel) => {
         return (
-          <Channel
+          <ChannelCard
             key={channel.name}
             avatarUrl={channel.avatarUrl}
             name={channel.name}

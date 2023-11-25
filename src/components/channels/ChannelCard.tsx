@@ -9,7 +9,7 @@ interface ChannelProps {
   checkButton?: boolean;
 }
 
-export default function Channel({
+export default function ChannelCard({
   avatarUrl,
   name,
   totalVideos,

@@ -2,12 +2,10 @@ import Image from "next/image";
 import { FiPlus } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { MdOutlineSort } from "react-icons/md";
-import TopBar from "../components/navigation/TopBar";
-import Channel from "../components/channels/Channel";
-import { Channel as IChannel } from "../types/channel";
-import ChannelList from "../components/channels/ChannelList";
 import { Suspense } from "react";
-import ChannelLoading from "../components/channels/ChannelLoading";
+import TopBar from "@/components/navigation/TopBar";
+import ChannelList from "@/components/channels/ChannelList";
+import ChannelCardSkeleton from "@/components/channels/ChannelCardSkeleton";
 
 export default async function Home() {
   return (
@@ -24,7 +22,7 @@ export default async function Home() {
         </h1>
 
         <div className="mx-3 mt-5 lg:mx-1">
-          <Suspense fallback={<ChannelLoading />}>
+          <Suspense fallback={<ChannelCardSkeleton />}>
             <ChannelList />
           </Suspense>
         </div>
