@@ -1,22 +1,20 @@
 "use client";
 
-import {
-  TvIcon,
-  ListBulletIcon,
-  PlayCircleIcon,
-  Cog6ToothIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
+import { FaListUl } from "react-icons/fa";
+import { PiTelevisionFill } from "react-icons/pi";
+import { FaRegPlayCircle } from "react-icons/fa";
+import { IoMdSettings } from "react-icons/io";
+import { FaUser } from "react-icons/fa";
 
 const links = [
-  { name: "Channels", href: "/channels", icon: TvIcon },
-  { name: "Playlists", href: "/playlists", icon: ListBulletIcon },
-  { name: "Videos", href: "/", icon: PlayCircleIcon },
-  { name: "Settings", href: "/settings", icon: Cog6ToothIcon },
-  { name: "Admin", href: "/user", icon: UserCircleIcon },
+  { name: "Channels", href: "/channels", icon: PiTelevisionFill },
+  { name: "Playlists", href: "/playlists", icon: FaListUl },
+  { name: "Videos", href: "/", icon: FaRegPlayCircle },
+  { name: "Settings", href: "/settings", icon: IoMdSettings },
+  { name: "Admin", href: "/user", icon: FaUser },
 ];
 
 export default function BottomNav() {
@@ -33,11 +31,11 @@ export default function BottomNav() {
           <Link key={link.name} href={link.href}>
             <div
               className={clsx(
-                "flex flex-col justify-center text-[#676D75] text-sm",
+                "flex flex-col justify-center items-center text-[#676D75] text-sm",
                 { "text-[#ffffff]": link.href === pathname }
               )}
             >
-              <LinkIcon className="h-8" />
+              <LinkIcon className="h-8 w-auto" />
               <p>{link.name}</p>
             </div>
           </Link>

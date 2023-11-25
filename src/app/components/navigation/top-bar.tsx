@@ -1,7 +1,6 @@
-"use client";
+// "use client";
 
 import Image from "next/image";
-import search from "../svgs/search.svg";
 import profile from "../svgs/profile.svg";
 import SearchBar from "./search-bar";
 
@@ -17,21 +16,14 @@ export default function TopBar({
   desktopIcons,
 }: TopBarProps) {
   return (
-    <div className="lg:bg-[#1D1F24] p-4 top w-full">
-      <div className="hidden lg:flex justify-between">
+    <div className="lg:bg-[#1D1F24] p-4 top w-full text-[#ffffff]">
+      <div className="hidden lg:flex justify-between items-center">
         <SearchBar />
 
         <div className="flex gap-8">
           {desktopIcons.map((icon) => {
-            return (
-              <Image
-                key={icon}
-                priority
-                src={icon}
-                alt=""
-                className="h-auto w-5"
-              />
-            );
+            const LinkIcon = icon;
+            return <LinkIcon key={icon} className="h-auto w-6" />;
           })}
 
           <Image priority src={profile} alt="" className="h-auto w-8" />
@@ -43,15 +35,8 @@ export default function TopBar({
 
         <div className="flex gap-8 lg:hidden">
           {mobileIcons.map((icon) => {
-            return (
-              <Image
-                key={icon}
-                priority
-                src={icon}
-                alt=""
-                className="h-auto w-5"
-              />
-            );
+            const LinkIcon = icon;
+            return <LinkIcon key={icon} className="h-auto w-6" />;
           })}
         </div>
       </div>

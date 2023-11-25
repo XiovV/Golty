@@ -1,32 +1,28 @@
 "use client";
 
-import {
-  ListBulletIcon,
-  PlayCircleIcon,
-  TvIcon,
-  DocumentDuplicateIcon,
-  UsersIcon,
-  BugAntIcon,
-  BellAlertIcon,
-} from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import NavItem from "./nav-item";
 import GoltyLogo from "../svgs/GoltyLogo.svg";
 import Image from "next/image";
+import { FaListUl } from "react-icons/fa";
+import { PiTelevisionFill } from "react-icons/pi";
+import { FaRegPlayCircle } from "react-icons/fa";
+import { MdVideoLibrary } from "react-icons/md";
+import { HiUsers } from "react-icons/hi";
+import { MdBugReport } from "react-icons/md";
+import { FaBell } from "react-icons/fa";
 
 const libraryLinks = [
-  { name: "Channels", href: "/channels", icon: TvIcon },
-  { name: "Playlists", href: "/playlists", icon: ListBulletIcon },
-  { name: "Videos", href: "/", icon: PlayCircleIcon },
+  { name: "Channels", href: "/channels", icon: PiTelevisionFill },
+  { name: "Playlists", href: "/playlists", icon: FaListUl },
+  { name: "Videos", href: "/", icon: FaRegPlayCircle },
 ];
 
 const settingsLinks = [
-  { name: "Libraries", href: "/libraries", icon: DocumentDuplicateIcon },
-  { name: "Users", href: "/users", icon: UsersIcon },
-  { name: "Logs", href: "/logs", icon: BugAntIcon },
-  { name: "Notifications", href: "/notifications", icon: BellAlertIcon },
+  { name: "Libraries", href: "/libraries", icon: MdVideoLibrary },
+  { name: "Users", href: "/users", icon: HiUsers },
+  { name: "Logs", href: "/logs", icon: MdBugReport },
+  { name: "Notifications", href: "/notifications", icon: FaBell },
 ];
 
 export default function SideNav() {
@@ -41,26 +37,19 @@ export default function SideNav() {
       <p className="text-[#676D75] font-semibold pb-3">Library</p>
 
       {libraryLinks.map((link) => {
-        const LinkIcon = link.icon;
-
         return (
-          <Link
+          <NavItem
             key={link.name}
-            href={link.href}
-            className={clsx(
-              "flex text-[#676D75] text-lg font-semibold py-3 px-4 mb-1 rounded-[16px] items-center gap-3 hover:bg-[#292E37]",
-              {
-                "text-[#ffffff] font-bold bg-[#292E37]": link.href === pathname,
-              }
-            )}
-          >
-            <LinkIcon className="h-7 " />
-            <p>{link.name}</p>
-          </Link>
+            link={link.href}
+            name={link.name}
+            isActive={link.href === pathname}
+            icon={link.icon}
+          />
         );
       })}
 
       <p className="text-[#676D75] font-semibold py-3">Settings</p>
+
       {settingsLinks.map((link) => {
         return (
           <NavItem
