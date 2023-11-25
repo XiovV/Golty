@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 interface ChannelProps {
   avatarUrl: string;
@@ -13,13 +14,19 @@ export default function Channel({
   totalVideos,
   totalSize,
 }: ChannelProps) {
+  const channelUrl = `channels/${name}`;
+
   return (
     <div className="flex gap-3 text-white">
-      <Image priority alt="" src={avatarUrl} width={85} height={100} />
+      <Link href={channelUrl}>
+        <Image priority alt="" src={avatarUrl} width={85} height={85} />
+      </Link>
 
       <div className="flex flex-col justify-between text-lg">
         <div className="flex flex-col">
-          <p>{name}</p>
+          <Link href={channelUrl}>
+            <p>{name}</p>
+          </Link>
           <div className="flex gap-1 text-[#676D75] text-sm">
             <p>{totalVideos}</p>
             <p>•</p>
