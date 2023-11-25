@@ -4,15 +4,10 @@ import { IoSearch } from "react-icons/io5";
 import { MdOutlineSort } from "react-icons/md";
 import TopBar from "../components/navigation/top-bar";
 import Channel from "../components/channel";
+import { Channel as IChannel } from "../types/channel";
+import ChannelList from "../components/channel-list";
 
-interface Channel {
-  avatarUrl: string;
-  name: string;
-  totalVideos: number;
-  totalSize: string;
-}
-
-async function fetchChannels(): Promise<Channel[]> {
+async function fetchChannels(): Promise<IChannel[]> {
   const res = await fetch(`${process.env.API_URL}/channels`, {
     cache: "no-store",
   });
@@ -37,18 +32,7 @@ export default async function Home() {
         </h1>
 
         <div className="mx-3 mt-5 lg:mx-1">
-          <div className="flex flex-col gap-6 lg:flex-row lg:flex-wrap lg:gap-x-12">
-            {channels.map((channel) => {
-              return (
-                <Channel
-                  avatarUrl={channel.avatarUrl}
-                  name={channel.name}
-                  totalVideos={channel.totalVideos}
-                  totalSize={channel.totalSize}
-                />
-              );
-            })}
-          </div>
+          <ChannelList channels={channels} />
         </div>
       </div>
     </main>
