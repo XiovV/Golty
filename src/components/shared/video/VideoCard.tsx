@@ -22,7 +22,7 @@ export default function VideoCard({
   dateDownloaded,
 }: VideoCardProps) {
   return (
-    <div className="flex flex-col gap-3 w-[350px] mx-auto">
+    <div className="flex flex-col gap-3 w-[350px]">
       <VideoThumbnail thumbnailUrl={thumbnailUrl} />
 
       <div className="flex gap-3 items-start">

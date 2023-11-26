@@ -10,7 +10,7 @@ export default async function VideosList({
 }: VideosListProps) {
   const videos = await channelVideosResponse;
   return (
-    <div className="flex flex-col gap-3 flex-wrap">
+    <div className="flex flex-col gap-5 lg:flex-row lg:flex-wrap content-start items-start">
       {videos.map((video) => {
         return (
           <VideoCard
