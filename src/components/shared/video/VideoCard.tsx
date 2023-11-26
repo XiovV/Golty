@@ -6,7 +6,7 @@ import ChannelAvatar from "@/components/channel/ChannelAvatar";
 interface VideoCardProps {
   thumbnailUrl: string;
   title: string;
-  avatar: string;
+  avatar?: string;
   channelName?: string;
   videoSize: string;
   dateDownloaded: string;
@@ -20,14 +20,13 @@ export default function VideoCard({
   channelName,
   videoSize,
   dateDownloaded,
-  showAvatar,
 }: VideoCardProps) {
   return (
     <div className="flex flex-col gap-3 w-[350px] mx-auto">
       <VideoThumbnail thumbnailUrl={thumbnailUrl} />
 
       <div className="flex gap-3 items-start">
-        {showAvatar && <ChannelAvatar avatarUrl={avatar} size={40} />}
+        {avatar && <ChannelAvatar avatarUrl={avatar} size={40} />}
 
         <VideoInformation
           videoTitle={title}

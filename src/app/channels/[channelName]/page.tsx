@@ -8,7 +8,8 @@ import { Channel as IChannel } from "@/types/channel";
 
 import { FiTrash } from "react-icons/fi";
 import ChannelCard from "@/components/channel/ChannelCard";
-import VideoCard from "@/components/shared/video/VideoCard";
+import { Video } from "@/types/video";
+import VideosList from "@/components/shared/video/VideosList";
 
 async function fetchChannel(channelName: string): Promise<IChannel> {
   const res = await fetch(`${process.env.API_URL}/channels/${channelName}`, {
@@ -18,12 +19,24 @@ async function fetchChannel(channelName: string): Promise<IChannel> {
   return await res.json();
 }
 
+async function fetchChannelVideos(channelName: string): Promise<Video[]> {
+  const res = await fetch(
+    `${process.env.VIDEOS_API_URL}/videos/channel/${channelName}`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  return res.json();
+}
+
 export default async function Page({
   params,
 }: {
   params: { channelName: string };
 }) {
   const channel = await fetchChannel(params.channelName);
+  const channelVideosResponse = fetchChannelVideos(params.channelName);
 
   return (
     <main>
@@ -43,6 +56,7 @@ export default async function Page({
 
         <div className="flex flex-col mx-auto">
           {/* TODO: display videos list here */}
+          <VideosList channelVideosResponse={channelVideosResponse} />
         </div>
       </div>
     </main>
