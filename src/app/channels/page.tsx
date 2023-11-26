@@ -4,8 +4,8 @@ import { IoSearch } from "react-icons/io5";
 import { MdOutlineSort } from "react-icons/md";
 import { Suspense } from "react";
 import TopBar from "@/components/navigation/TopBar";
-import ChannelList from "@/components/channels/ChannelList";
-import ChannelCardSkeleton from "@/components/channels/ChannelCardSkeleton";
+import ChannelList from "@/components/channel/ChannelList";
+import ChannelCardSkeleton from "@/components/channel/ChannelCardSkeleton";
 
 export default async function Home() {
   return (
