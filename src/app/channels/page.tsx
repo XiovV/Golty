@@ -6,8 +6,19 @@ import { Suspense } from "react";
 import TopBar from "@/components/navigation/TopBar";
 import ChannelList from "@/components/channel/ChannelList";
 import ChannelListSkeleton from "@/components/channel/ChannelCardSkeleton";
+import { Channel as IChannel } from "@/types/channel";
+
+async function fetchChannels(): Promise<IChannel[]> {
+  const res = await fetch(`${process.env.API_URL}/channels`, {
+    cache: "no-store",
+  });
+
+  return res.json();
+}
 
 export default async function Home() {
+  const channels = fetchChannels();
+
   return (
     <main>
       <TopBar
@@ -23,7 +34,7 @@ export default async function Home() {
 
         <div className="mx-3 mt-5 lg:mx-1">
           <Suspense fallback={<ChannelListSkeleton />}>
-            <ChannelList />
+            <ChannelList channelsResponse={channels} />
           </Suspense>
         </div>
       </div>

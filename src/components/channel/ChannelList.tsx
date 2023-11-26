@@ -1,16 +1,15 @@
 import ChannelCard from "./ChannelCard";
 import { Channel as IChannel } from "../../types/channel";
 
-async function fetchChannels(): Promise<IChannel[]> {
-  const res = await fetch(`${process.env.API_URL}/channels`, {
-    cache: "no-store",
-  });
-
-  return await res.json();
+interface ChannelListProps {
+  channelsResponse: Promise<IChannel[]>;
 }
 
-export default async function ChannelList() {
-  const channels = await fetchChannels();
+export default async function ChannelList({
+  channelsResponse,
+}: ChannelListProps) {
+  const channels = await channelsResponse;
+
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:flex-wrap lg:gap-x-12">
       {channels.map((channel) => {
