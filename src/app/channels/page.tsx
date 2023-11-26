@@ -5,7 +5,7 @@ import { MdOutlineSort } from "react-icons/md";
 import { Suspense } from "react";
 import TopBar from "@/components/navigation/TopBar";
 import ChannelList from "@/components/channel/ChannelList";
-import ChannelCardSkeleton from "@/components/channel/ChannelCardSkeleton";
+import ChannelListSkeleton from "@/components/channel/ChannelCardSkeleton";
 
 export default async function Home() {
   return (
@@ -22,7 +22,7 @@ export default async function Home() {
         </h1>
 
         <div className="mx-3 mt-5 lg:mx-1">
-          <Suspense fallback={<ChannelCardSkeleton />}>
+          <Suspense fallback={<ChannelListSkeleton />}>
             <ChannelList />
           </Suspense>
         </div>
