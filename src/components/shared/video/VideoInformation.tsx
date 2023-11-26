@@ -9,7 +9,7 @@ interface VideoInformationProps {
 
 export default function VideoInformation({
   videoTitle,
-  channelName,
+  channelName = "",
   videoSize,
   dateDownloaded,
 }: VideoInformationProps) {
@@ -18,7 +18,7 @@ export default function VideoInformation({
       <p className="text-white text-xs">{videoTitle}</p>
 
       <VideoMeta
-        channelName={channelName ? channelName : ""}
+        channelName={channelName}
         videoSize={videoSize}
         dateDownloaded={dateDownloaded}
       />

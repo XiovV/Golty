@@ -1,5 +1,5 @@
 interface VideoMetaProps {
-  channelName: string;
+  channelName?: string;
   videoSize: string;
   dateDownloaded: string;
 }
