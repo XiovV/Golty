@@ -55,7 +55,6 @@ export default async function Page({
         />
 
         <div className="mx-auto lg:mx-5">
-          {/* TODO: display videos list here */}
           <VideosList channelVideosResponse={channelVideosResponse} />
         </div>
       </div>
