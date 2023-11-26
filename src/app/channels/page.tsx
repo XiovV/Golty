@@ -7,6 +7,7 @@ import TopBar from "@/components/navigation/TopBar";
 import ChannelList from "@/components/channel/ChannelList";
 import ChannelListSkeleton from "@/components/channel/ChannelCardSkeleton";
 import { Channel as IChannel } from "@/types/channel";
+import AddChannelButton from "@/components/channel/AddChannelButton";
 
 async function fetchChannels(): Promise<IChannel[]> {
   const res = await fetch(`${process.env.API_URL}/channels`, {
@@ -23,8 +24,8 @@ export default async function Home() {
     <main>
       <TopBar
         title="Channels"
-        mobileIcons={[IoSearch, MdOutlineSort, FiPlus]}
-        desktopIcons={[MdOutlineSort, FiPlus]}
+        mobileButtons={[IoSearch, MdOutlineSort, AddChannelButton]}
+        desktopButtons={[MdOutlineSort, AddChannelButton]}
       />
 
       <div className="m-5">

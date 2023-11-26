@@ -3,17 +3,18 @@
 import Image from "next/image";
 import profile from "../svgs/profile.svg";
 import SearchBar from "./SearchBar";
+import AddChannelButton from "../channel/AddChannelButton";
 
 interface TopBarProps {
   title: string;
-  mobileIcons: any[];
-  desktopIcons: any[];
+  mobileButtons: any[];
+  desktopButtons: any[];
 }
 
 export default function TopBar({
   title,
-  mobileIcons,
-  desktopIcons,
+  mobileButtons,
+  desktopButtons,
 }: TopBarProps) {
   return (
     <div className="lg:bg-[#1D1F24] p-4 top w-full text-[#ffffff]">
@@ -21,9 +22,9 @@ export default function TopBar({
         <SearchBar />
 
         <div className="flex gap-8">
-          {desktopIcons.map((icon) => {
-            const LinkIcon = icon;
-            return <LinkIcon key={icon} className="h-auto w-6" />;
+          {desktopButtons.map((button) => {
+            const Button = button;
+            return <Button key={button} />;
           })}
 
           <Image priority src={profile} alt="" className="h-auto w-8" />
@@ -34,9 +35,9 @@ export default function TopBar({
         <p className="text-2xl text-white font-medium lg:hidden">{title}</p>
 
         <div className="flex gap-8 lg:hidden">
-          {mobileIcons.map((icon) => {
-            const LinkIcon = icon;
-            return <LinkIcon key={icon} className="h-auto w-6" />;
+          {mobileButtons.map((button) => {
+            const Button = button;
+            return <Button key={button} />;
           })}
         </div>
       </div>

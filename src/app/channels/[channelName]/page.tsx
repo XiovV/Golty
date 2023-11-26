@@ -42,8 +42,8 @@ export default async function Page({
     <main>
       <TopBar
         title={params.channelName}
-        mobileIcons={[IoSearch, LuRefreshCw, MdOutlineSort, IoMdSettings]}
-        desktopIcons={[LuRefreshCw, MdOutlineSort, IoMdSettings, FiTrash]}
+        mobileButtons={[IoSearch, LuRefreshCw, MdOutlineSort, IoMdSettings]}
+        desktopButtons={[LuRefreshCw, MdOutlineSort, IoMdSettings, FiTrash]}
       />
 
       <div className="flex flex-col gap-8 m-5">
