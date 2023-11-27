@@ -25,6 +25,21 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 
+async function addChannel(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+
+  const formData = new FormData(e.currentTarget);
+
+  const body = {
+    channelUrl: formData.get("channelUrl"),
+    downloadVideo: formData.get("video") == null ? false : true,
+    resolution: formData.get("resolution"),
+    format: formData.get("format"),
+  };
+
+  console.log(body);
+}
+
 export default function AddChannelButton() {
   return (
     <Dialog>
@@ -37,24 +52,12 @@ export default function AddChannelButton() {
         <DialogHeader>
           <div className="flex flex-col gap-6">
             <DialogTitle>Add a channel</DialogTitle>
-            <div className="grid w-full max-w-sm items-center gap-2">
-              <Label htmlFor="channelUrl">Channel URL</Label>
-              <Input
-                type="channelUrl"
-                id="channelUrl"
-                placeholder="Channel URL"
-              />
-            </div>
-
-            <AddChannelForm />
           </div>
         </DialogHeader>
 
-        <DialogFooter className="mt-3">
-          <Button type="submit" variant="outline">
-            Add Channel
-          </Button>
-        </DialogFooter>
+        <form onSubmit={addChannel} className="flex flex-col gap-6">
+          <AddChannelForm />
+        </form>
       </DialogContent>
     </Dialog>
   );
@@ -62,14 +65,32 @@ export default function AddChannelButton() {
 
 function AddChannelForm() {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-row justify-between">
-        <AddChannelFormCheckboxGroup />
-        <AddChannelFormSelectGroup />
+    <>
+      <div className="grid w-full max-w-sm items-center gap-2">
+        <Label htmlFor="channelUrl">Channel URL</Label>
+        <Input
+          type="channelUrl"
+          id="channelUrl"
+          name="channelUrl"
+          placeholder="Channel URL"
+        />
       </div>
 
-      <AddChannelFormSwitchGroup />
-    </div>
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-row justify-between">
+          <AddChannelFormCheckboxGroup />
+          <AddChannelFormSelectGroup />
+        </div>
+
+        <AddChannelFormSwitchGroup />
+      </div>
+
+      <DialogFooter>
+        <Button type="submit" variant="outline">
+          Add Channel
+        </Button>
+      </DialogFooter>
+    </>
   );
 }
 
@@ -80,7 +101,7 @@ interface SwitchProps {
 function Switch({ label }: SwitchProps) {
   return (
     <div className="flex items-center space-x-2">
-      <SwitchShadcn id={label} />
+      <SwitchShadcn id={label} name={label.toLowerCase()} />
       <Label htmlFor={label}>{label}</Label>
     </div>
   );
@@ -112,7 +133,7 @@ interface AddChannelFormCheckboxProps {
 function Checkbox({ label, checked }: AddChannelFormCheckboxProps) {
   return (
     <div className="flex items-center space-x-2">
-      <CheckboxShadcn id={label} checked={checked} />
+      <CheckboxShadcn id={label} checked={checked} name={label.toLowerCase()} />
       <label
         htmlFor={label}
         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -126,13 +147,14 @@ function Checkbox({ label, checked }: AddChannelFormCheckboxProps) {
 function AddChannelFormSelectGroup() {
   return (
     <div className="flex gap-2">
-      <Select>
+      <Select name="format" defaultValue="auto">
         <SelectTrigger className="w-[90px]">
           <SelectValue placeholder="Auto" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Format</SelectLabel>
+            <SelectItem value="auto">Auto</SelectItem>
             <SelectItem value="m4a">m4a</SelectItem>
             <SelectItem value="mp3">mp3</SelectItem>
             <SelectItem value="mp4">mp4</SelectItem>
@@ -140,7 +162,7 @@ function AddChannelFormSelectGroup() {
         </SelectContent>
       </Select>
 
-      <Select>
+      <Select name="resolution" defaultValue="2160p">
         <SelectTrigger className="w-[90px]">
           <SelectValue placeholder="2160p" />
         </SelectTrigger>
