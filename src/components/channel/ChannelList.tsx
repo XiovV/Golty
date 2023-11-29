@@ -10,6 +10,8 @@ export default async function ChannelList({
 }: ChannelListProps) {
   const channels = await channelsResponse;
 
+  console.log(channels);
+
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:flex-wrap lg:gap-x-12">
       {channels.map((channel) => {

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import SideNav from "@/components/navigation/SideNav";
 import BottomNav from "@/components/navigation/BottomNav";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,11 +13,19 @@ export const metadata: Metadata = {
   description: "Archiving YouTube has never been easier!",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession();
+
+  if (!session || !session.user) {
+    redirect("/auth/signin");
+  }
+
+  console.log(session);
+
   return (
     <html lang="en">
       <body className={`${inter.className}`}>

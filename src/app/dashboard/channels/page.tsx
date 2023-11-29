@@ -8,6 +8,8 @@ import ChannelList from "@/components/channel/ChannelList";
 import ChannelListSkeleton from "@/components/channel/ChannelCardSkeleton";
 import { Channel as IChannel } from "@/types/channel";
 import AddChannelButton from "@/components/channel/AddChannelButton";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 async function fetchChannels(): Promise<IChannel[]> {
   const res = await fetch(`${process.env.API_URL}/channels`, {

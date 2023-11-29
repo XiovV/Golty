@@ -10,11 +10,12 @@ const nextConfig = {
       },
     ],
   },
+  pageExtensions: ["ts", "tsx"],
   async redirects() {
     return [
       {
-        source: "/",
-        destination: "/channels",
+        source: "/dashboard",
+        destination: "/dashboard/channels",
         permanent: true,
       },
     ];
