@@ -10,6 +10,8 @@ import { FiTrash } from "react-icons/fi";
 import ChannelCard from "@/components/channel/ChannelCard";
 import { Video } from "@/types/video";
 import VideosList from "@/components/shared/video/VideosList";
+import { Suspense } from "react";
+import VideosListSkeleton from "@/components/shared/video/VideosListSkeleton";
 
 async function fetchChannel(channelName: string): Promise<IChannel> {
   const res = await fetch(`${process.env.API_URL}/channels/${channelName}`, {
@@ -55,7 +57,9 @@ export default async function Page({
         />
 
         <div className="mx-auto lg:mx-5">
-          <VideosList channelVideosResponse={channelVideosResponse} />
+          <Suspense fallback={<VideosListSkeleton />}>
+            <VideosList channelVideosResponse={channelVideosResponse} />
+          </Suspense>
         </div>
       </div>
     </main>
