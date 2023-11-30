@@ -22,8 +22,6 @@ func main() {
 
 	server := api.New(c, logger)
 
-	logger.Info("server is listening...", zap.String("port", c.Port))
-
 	err = server.Start()
 	if err != nil {
 		logger.Error("failed to initialise server", zap.Error(err))

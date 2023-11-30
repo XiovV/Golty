@@ -19,7 +19,7 @@ func New(config *config.Config, logger *zap.Logger) *Server {
 
 func (s *Server) Start() error {
 	e := echo.New()
-	e.Use(middleware.CORS())
+	e.Use(middleware.CORS(), middleware.Logger())
 
 	v1 := e.Group("/v1")
 	usersPublic := v1.Group("/users")
