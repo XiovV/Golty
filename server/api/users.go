@@ -7,7 +7,7 @@ import (
 )
 
 func (s *Server) loginUserHandler(c echo.Context) error {
-	fmt.Println("LOGIN USER")
-
+	userToken := s.getUserToken(c)
+	fmt.Println(userToken)
 	return nil
 }
