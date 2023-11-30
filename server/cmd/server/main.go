@@ -5,7 +5,6 @@ import (
 	"golty/config"
 	zapLogger "golty/logger"
 	"log"
-	"net/http"
 
 	"go.uber.org/zap"
 )
@@ -26,7 +25,7 @@ func main() {
 
 	logger.Info("server is listening...", zap.String("port", c.Port))
 
-	err = http.ListenAndServe(":"+c.Port, router)
+	err = router.Start(":" + c.Port)
 	if err != nil {
 		logger.Error("failed to initialise server", zap.Error(err))
 	}
