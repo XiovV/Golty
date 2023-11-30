@@ -1,0 +1,8 @@
+package api
+
+const (
+	PRODUCTION_ENV  = "PRODUCTION"
+	LOCAL_ENV       = "LOCAL"
+	DEVELOPMENT_ENV = "DEVELOPMENT"
+	STAGING_ENV     = "STAGING"
+)
