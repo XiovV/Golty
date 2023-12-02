@@ -1,6 +1,9 @@
 package config
 
 import (
+	"errors"
+	"os"
+
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
@@ -11,8 +14,16 @@ type Config struct {
 
 func New() (*Config, error) {
 	var cfg Config
+	if _, err := os.Stat(".env"); errors.Is(err, os.ErrNotExist) {
+		err := cleanenv.ReadEnv(&cfg)
+		if err != nil {
+			return nil, err
+		}
 
-	err := cleanenv.ReadEnv(&cfg)
+		return &cfg, err
+	}
+
+	err := cleanenv.ReadConfig(".env", &cfg)
 	if err != nil {
 		return nil, err
 	}

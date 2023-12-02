@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"golty/config"
 
 	echojwt "github.com/labstack/echo-jwt/v4"
@@ -21,6 +22,8 @@ func New(config *config.Config, logger *zap.Logger) *Server {
 func (s *Server) Start() error {
 	e := echo.New()
 	e.Use(middleware.CORS(), middleware.Logger())
+
+	fmt.Println(s.Config)
 
 	v1 := e.Group("/v1")
 	usersPublic := v1.Group("/users")
