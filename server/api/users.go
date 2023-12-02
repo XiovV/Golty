@@ -2,19 +2,34 @@ package api
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/alexedwards/argon2id"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
 func (s *Server) loginUserHandler(c echo.Context) error {
 	var loginUserRequest struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
+		Username string `json:"username" validate:"required,lte=100"`
+		Password string `json:"password" validate:"required"`
 	}
 
 	if err := c.Bind(&loginUserRequest); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "json input is invalid")
+	}
+
+	validate := validator.New()
+
+	err := validate.Struct(loginUserRequest)
+	if err != nil {
+		var inputError struct {
+			Errors []string `json:"errors"`
+		}
+
+		inputError.Errors = strings.Split(err.Error(), "\n")
+
+		return echo.NewHTTPError(http.StatusBadRequest, inputError)
 	}
 
 	user, err := s.Repository.FindUserByUsername(loginUserRequest.Username)
