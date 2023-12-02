@@ -22,6 +22,7 @@ func New(config *config.Config, logger *zap.Logger, repository *repository.Repos
 
 func (s *Server) Start() error {
 	e := echo.New()
+	e.HideBanner = true
 	e.Use(middleware.CORS(), middleware.Logger())
 
 	v1 := e.Group("/v1")
