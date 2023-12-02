@@ -26,6 +26,11 @@ func main() {
 		logger.Fatal("could not init database", zap.Error(err))
 	}
 
+	err = initServer(repository, logger)
+	if err != nil {
+		logger.Fatal("could not initialise server", zap.Error(err))
+	}
+
 	server := api.New(c, logger, repository)
 
 	err = server.Start()

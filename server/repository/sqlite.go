@@ -1,9 +1,14 @@
 package repository
 
 import (
+	"context"
+	"time"
+
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 )
+
+const DefaultQueryTimeout = 5
 
 type Repository struct {
 	db *sqlx.DB
@@ -16,4 +21,8 @@ func New(dbPath string) (*Repository, error) {
 	}
 
 	return &Repository{db: db}, nil
+}
+
+func newBackgroundContext(duration int) (context.Context, context.CancelFunc) {
+	return context.WithTimeout(context.Background(), time.Duration(duration)*time.Second)
 }
