@@ -1,6 +1,8 @@
 package api
 
 import (
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -22,6 +24,28 @@ type UserToken struct {
 type jwtCustomClaims struct {
 	UserToken
 	jwt.RegisteredClaims
+}
+
+func (s *Server) generateNewToken(id int, username string, isAdmin bool) (string, error) {
+	claims := &jwtCustomClaims{
+		UserToken{
+			Id:       id,
+			Username: username,
+			Admin:    isAdmin,
+		},
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	t, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		return "", err
+	}
+
+	return t, nil
 }
 
 func (s *Server) getUserToken(c echo.Context) UserToken {

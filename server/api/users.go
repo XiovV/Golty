@@ -1,8 +1,10 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/go-playground/validator/v10"
@@ -41,6 +43,25 @@ func (s *Server) loginUserHandler(c echo.Context) error {
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "incorrect username or password")
 	}
+
+	isAdmin := false
+	if user.Admin == 1 {
+		isAdmin = true
+	}
+
+	token, err := s.generateNewToken(user.ID, user.Username, isAdmin)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
+	}
+
+	cookie := &http.Cookie{
+		Name:     "Authorization",
+		Value:    fmt.Sprintf("Bearer %s", token),
+		Expires:  time.Now().Add(time.Hour * 72),
+		HttpOnly: true,
+	}
+
+	c.SetCookie(cookie)
 
 	return c.NoContent(http.StatusOK)
 }
