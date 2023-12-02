@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Port        string `env:"PORT" env-default:"8080"`
 	Environment string `env:"ENVIRONMENT" env-default:"PRODUCTION"`
+	SQLiteDir   string `env:"SQLITE_DIR"`
 }
 
 func New() (*Config, error) {

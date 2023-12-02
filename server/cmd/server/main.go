@@ -4,6 +4,7 @@ import (
 	"golty/api"
 	"golty/config"
 	zapLogger "golty/logger"
+	"golty/repository"
 	"log"
 
 	"go.uber.org/zap"
@@ -20,7 +21,12 @@ func main() {
 		log.Fatalln("could not init logger:", err)
 	}
 
-	server := api.New(c, logger)
+	repository, err := repository.New(c.SQLiteDir)
+	if err != nil {
+		logger.Fatal("could not init database", zap.Error(err))
+	}
+
+	server := api.New(c, logger, repository)
 
 	err = server.Start()
 	if err != nil {

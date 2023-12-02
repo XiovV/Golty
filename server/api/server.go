@@ -1,8 +1,8 @@
 package api
 
 import (
-	"fmt"
 	"golty/config"
+	"golty/repository"
 
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -11,19 +11,18 @@ import (
 )
 
 type Server struct {
-	Config *config.Config
-	Logger *zap.Logger
+	Config     *config.Config
+	Logger     *zap.Logger
+	Repository *repository.Repository
 }
 
-func New(config *config.Config, logger *zap.Logger) *Server {
-	return &Server{Config: config, Logger: logger}
+func New(config *config.Config, logger *zap.Logger, repository *repository.Repository) *Server {
+	return &Server{Config: config, Logger: logger, Repository: repository}
 }
 
 func (s *Server) Start() error {
 	e := echo.New()
 	e.Use(middleware.CORS(), middleware.Logger())
-
-	fmt.Println(s.Config)
 
 	v1 := e.Group("/v1")
 	usersPublic := v1.Group("/users")
