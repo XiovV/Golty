@@ -23,13 +23,9 @@ func (s *Server) loginUserHandler(c echo.Context) error {
 
 	err := validate.Struct(loginUserRequest)
 	if err != nil {
-		var inputError struct {
-			Errors []string `json:"errors"`
-		}
+		errors := strings.Split(err.Error(), "\n")
 
-		inputError.Errors = strings.Split(err.Error(), "\n")
-
-		return echo.NewHTTPError(http.StatusBadRequest, inputError)
+		return echo.NewHTTPError(http.StatusBadRequest, echo.Map{"errors": errors})
 	}
 
 	user, err := s.Repository.FindUserByUsername(loginUserRequest.Username)
