@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/go-playground/validator/v10"
@@ -18,6 +17,7 @@ func (s *Server) loginUserHandler(c echo.Context) error {
 	}
 
 	if err := c.Bind(&loginUserRequest); err != nil {
+		fmt.Println(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "json input is invalid")
 	}
 
@@ -54,14 +54,5 @@ func (s *Server) loginUserHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
 	}
 
-	cookie := &http.Cookie{
-		Name:     "Authorization",
-		Value:    fmt.Sprintf("Bearer %s", token),
-		Expires:  time.Now().Add(time.Hour * 72),
-		HttpOnly: true,
-	}
-
-	c.SetCookie(cookie)
-
-	return c.NoContent(http.StatusOK)
+	return c.JSON(http.StatusOK, echo.Map{"token": token})
 }
