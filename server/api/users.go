@@ -32,16 +32,16 @@ func (s *Server) loginUserHandler(c echo.Context) error {
 
 	user, err := s.Repository.FindUserByUsername(loginUserRequest.Username)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "incorrect username or password")
+		return echo.NewHTTPError(http.StatusUnauthorized, "incorrect username or password")
 	}
 
 	ok, err := argon2id.ComparePasswordAndHash(loginUserRequest.Password, user.Password)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "incorrect username or password")
+		return echo.NewHTTPError(http.StatusUnauthorized, "incorrect username or password")
 	}
 
 	if !ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "incorrect username or password")
+		return echo.NewHTTPError(http.StatusUnauthorized, "incorrect username or password")
 	}
 
 	isAdmin := false
@@ -54,5 +54,5 @@ func (s *Server) loginUserHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
 	}
 
-	return c.JSON(http.StatusOK, echo.Map{"token": token})
+	return c.JSON(http.StatusOK, echo.Map{"accessToken": token, "refreshToken": ""})
 }
