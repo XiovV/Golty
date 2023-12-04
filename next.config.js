@@ -18,6 +18,11 @@ const nextConfig = {
         destination: "/dashboard/channels",
         permanent: true,
       },
+      {
+        source: "/",
+        destination: "/dashboard/channels",
+        permanent: true,
+      },
     ];
   },
 };
