@@ -4,6 +4,7 @@ import (
 	"golty/config"
 	"golty/repository"
 
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
@@ -28,6 +29,11 @@ func (s *Server) Start() error {
 	usersPublic := v1.Group("/users")
 
 	usersPublic.POST("/login", s.loginUserHandler)
+
+	usersAuth := v1.Group("/users")
+	usersAuth.Use(echojwt.WithConfig(jwtConfig))
+
+	usersAuth.GET("/me", s.getLoggedInUser)
 
 	return e.Start(":" + s.Config.Port)
 }

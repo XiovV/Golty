@@ -20,6 +20,19 @@ func (r *Repository) FindUserByUsername(username string) (User, error) {
 	return user, nil
 }
 
+func (r *Repository) FindUserByID(id int) (User, error) {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
+
+	var user User
+	err := r.db.GetContext(ctx, &user, "SELECT id, username, password FROM users WHERE id = $1", id)
+	if err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
 func (r *Repository) InsertUser(user User) error {
 	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
 	defer cancel()
