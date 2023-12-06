@@ -3,8 +3,6 @@ import { Inter } from "next/font/google";
 import "../globals.css";
 import SideNav from "@/components/navigation/SideNav";
 import BottomNav from "@/components/navigation/BottomNav";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,8 +16,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // redirect("/auth/signin");
-
   return (
     <html lang="en">
       <body className={`${inter.className}`}>

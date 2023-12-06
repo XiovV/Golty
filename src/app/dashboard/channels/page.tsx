@@ -20,7 +20,7 @@ async function fetchChannels(): Promise<IChannel[]> {
 }
 
 export default async function Home() {
-  const channels = fetchChannels();
+  // const channels = fetchChannels();
 
   return (
     <main>
@@ -36,9 +36,9 @@ export default async function Home() {
         </h1>
 
         <div className="mx-3 mt-5 lg:mx-1">
-          <Suspense fallback={<ChannelListSkeleton />}>
+          {/* <Suspense fallback={<ChannelListSkeleton />}>
             <ChannelList channelsResponse={channels} />
-          </Suspense>
+          </Suspense> */}
         </div>
       </div>
     </main>
