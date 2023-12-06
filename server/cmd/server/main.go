@@ -5,6 +5,7 @@ import (
 	"golty/config"
 	zapLogger "golty/logger"
 	"golty/repository"
+	"golty/ytdl"
 	"log"
 
 	"go.uber.org/zap"
@@ -31,7 +32,9 @@ func main() {
 		logger.Fatal("could not initialise server", zap.Error(err))
 	}
 
-	server := api.New(c, logger, repository)
+	ytdl := ytdl.New("yt-dlp")
+
+	server := api.New(c, logger, repository, ytdl)
 
 	err = server.Start()
 	if err != nil {
