@@ -8,7 +8,7 @@ import (
 )
 
 func (s *Server) getChannelInfo(c echo.Context) error {
-	channelName := c.Param("channelName")
+	channelName := c.Param("channelUrl")
 
 	channelInfo, err := s.Ytdl.GetChannelInfo(channelName)
 	if err != nil {

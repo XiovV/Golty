@@ -2,7 +2,6 @@ package ytdl
 
 import (
 	"encoding/json"
-	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -15,8 +14,7 @@ type ChannelInfo struct {
 	} `json:"avatar"`
 }
 
-func (y *Ytdl) GetChannelInfo(channelName string) (ChannelInfo, error) {
-	channelUrl := fmt.Sprintf("https://www.youtube.com/%s", channelName)
+func (y *Ytdl) GetChannelInfo(channelUrl string) (ChannelInfo, error) {
 	ytdlArgs := []string{"--playlist-items", "0", "-J", channelUrl}
 
 	cmd := exec.Command(y.BaseCommand, ytdlArgs...)

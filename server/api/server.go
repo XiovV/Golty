@@ -41,7 +41,7 @@ func (s *Server) Start() error {
 
 	channels := v1.Group("/channels")
 	{
-		channels.GET("/info/:channelName", s.getChannelInfo)
+		channels.GET("/info/:channelUrl", s.getChannelInfo)
 	}
 
 	return e.Start(":" + s.Config.Port)
