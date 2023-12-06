@@ -24,6 +24,11 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
+import { BaseSyntheticEvent, useState } from "react";
+import { Heading1 } from "lucide-react";
+import { Channel } from "diagnostics_channel";
+import { unescape } from "querystring";
+import ChannelCard from "./ChannelCard";
 
 async function addChannel(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
@@ -63,7 +68,42 @@ export default function AddChannelButton() {
   );
 }
 
+interface ChannelInfo {
+  uploader_id: string;
+  uploader: string;
+  avatar: Avatar;
+}
+
+interface Avatar {
+  url: string;
+}
+
 function AddChannelForm() {
+  const [loading, setLoading] = useState(false);
+  const [channelInfo, setChannelInfo] = useState<ChannelInfo>();
+
+  async function getChannelInfo(e: BaseSyntheticEvent) {
+    const channelUrl = e.target.value;
+
+    if (!channelUrl) {
+      return;
+    }
+
+    console.log("sending req");
+
+    setLoading(true);
+    const res = await fetch(
+      `http://localhost:8080/v1/channels/info/${channelUrl}`,
+      { cache: "no-cache" }
+    );
+
+    const channelInfo: ChannelInfo = await res.json();
+    setLoading(false);
+    setChannelInfo(channelInfo);
+
+    console.log("res", channelInfo);
+  }
+
   return (
     <>
       <div className="grid w-full max-w-sm items-center gap-2">
@@ -73,8 +113,20 @@ function AddChannelForm() {
           id="channelUrl"
           name="channelUrl"
           placeholder="Channel URL"
+          onBlur={getChannelInfo}
         />
       </div>
+
+      {loading && <h1>Loading...</h1>}
+
+      {!loading && channelInfo && (
+        <ChannelCard
+          avatarUrl={channelInfo.avatar.url}
+          name={channelInfo.uploader}
+          totalVideos={0}
+          totalSize={""}
+        />
+      )}
 
       <div className="flex flex-col gap-6">
         <div className="flex flex-row justify-between">

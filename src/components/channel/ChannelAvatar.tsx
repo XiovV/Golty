@@ -7,12 +7,15 @@ interface ChannelAvatarProps {
 
 export default function ChannelAvatar({ avatarUrl, size }: ChannelAvatarProps) {
   return (
-    <Image
-      priority
-      src={avatarUrl}
-      width={size}
-      height={size}
-      alt="channel avatar"
-    />
+    <div className="rounded-full">
+      <Image
+        className="rounded-full"
+        priority
+        src={avatarUrl}
+        width={size}
+        height={size}
+        alt="channel avatar"
+      />
+    </div>
   );
 }
