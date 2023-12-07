@@ -180,13 +180,19 @@ function AddChannelForm() {
 interface SwitchProps {
   label: string;
   name: string;
+  defaultChecked?: boolean;
   disabled?: boolean;
 }
 
-function Switch({ label, disabled, name }: SwitchProps) {
+function Switch({ label, defaultChecked, disabled, name }: SwitchProps) {
   return (
     <div className="flex items-center space-x-2">
-      <SwitchShadcn id={label} name={name} disabled={disabled} />
+      <SwitchShadcn
+        id={label}
+        name={name}
+        disabled={disabled}
+        defaultChecked={defaultChecked}
+      />
       <Label htmlFor={label}>{label}</Label>
     </div>
   );
@@ -203,11 +209,13 @@ function AddChannelFormSwitchGroup({ disabled }: SwitchGroupProps) {
         label="Automatically download new uploads"
         name="downloadAutomatically"
         disabled={disabled}
+        defaultChecked
       />
       <Switch
         label="Download the entire channel"
         name="downloadEntireChannel"
         disabled={disabled}
+        defaultChecked
       />
     </div>
   );
@@ -220,8 +228,8 @@ interface CheckboxGroupProps {
 function AddChannelFormCheckboxGroup({ disabled }: CheckboxGroupProps) {
   return (
     <div className="flex flex-col gap-2 ">
-      <Checkbox label="Video" name="video" disabled={disabled} />
-      <Checkbox label="Audio" name="audio" disabled={disabled} />
+      <Checkbox label="Video" name="video" disabled={disabled} defaultChecked />
+      <Checkbox label="Audio" name="audio" disabled={disabled} defaultChecked />
     </div>
   );
 }
@@ -229,16 +237,16 @@ function AddChannelFormCheckboxGroup({ disabled }: CheckboxGroupProps) {
 interface CheckboxProps {
   label: string;
   name: string;
-  checked?: boolean;
+  defaultChecked?: boolean;
   disabled?: boolean;
 }
 
-function Checkbox({ label, checked, disabled, name }: CheckboxProps) {
+function Checkbox({ label, defaultChecked, disabled, name }: CheckboxProps) {
   return (
     <div className="flex items-center space-x-2">
       <CheckboxShadcn
         id={label}
-        checked={checked}
+        defaultChecked={defaultChecked}
         name={name}
         disabled={disabled}
       />
