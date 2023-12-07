@@ -26,26 +26,40 @@ import { Button } from "../ui/button";
 import { BaseSyntheticEvent, useRef, useState } from "react";
 import ChannelInfoCard from "./ChannelInfoCard";
 import ChannelInfoCardSkeleton from "./ChannelInfoCardSkeleton";
-
-async function addChannel(e: React.FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-
-  const formData = new FormData(e.currentTarget);
-
-  const body = {
-    channelUrl: formData.get("channelUrl"),
-    downloadVideo: Boolean(formData.get("video")),
-    downloadAudio: Boolean(formData.get("audio")),
-    resolution: formData.get("resolution"),
-    format: formData.get("format"),
-    downloadAutomatically: Boolean(formData.get("downloadAutomatically")),
-    downloadEntireChannel: Boolean(formData.get("downloadEntireChannel")),
-  };
-
-  console.log(body);
-}
+import { useToast } from "../ui/use-toast";
 
 export default function AddChannelButton() {
+  const { toast } = useToast();
+
+  async function addChannel(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const body = {
+      channelUrl: formData.get("channelUrl"),
+      downloadVideo: Boolean(formData.get("video")),
+      downloadAudio: Boolean(formData.get("audio")),
+      resolution: formData.get("resolution"),
+      format: formData.get("format"),
+      downloadAutomatically: Boolean(formData.get("downloadAutomatically")),
+      downloadEntireChannel: Boolean(formData.get("downloadEntireChannel")),
+    };
+
+    const res = await fetch("http://localhost:8080/v1/channels", {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    console.log(res.status);
+
+    toast({
+      title: "Channel added Successfully",
+      description: "foobar",
+    });
+  }
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -137,9 +151,17 @@ function AddChannelForm() {
       </div>
 
       <DialogFooter>
-        <Button type="submit" variant="outline" disabled={!channelInfo}>
-          Add Channel
-        </Button>
+        {!channelInfo && (
+          <Button type="submit" variant="outline" disabled={!channelInfo}>
+            Add Channel
+          </Button>
+        )}
+
+        {!loading && channelInfo && (
+          <Button type="submit" variant="outline" disabled={!channelInfo}>
+            Add {channelInfo.uploader}
+          </Button>
+        )}
       </DialogFooter>
     </>
   );
