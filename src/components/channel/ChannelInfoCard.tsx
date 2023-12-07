@@ -3,17 +3,17 @@ import Link from "next/link";
 
 interface ChannelInfoCardProps {
   avatarUrl: string;
+  channelUrl: string;
   name: string;
   handle: string;
 }
 
 export default function ChannelInfoCard({
   avatarUrl,
+  channelUrl,
   name,
   handle,
 }: ChannelInfoCardProps) {
-  const channelUrl = `channels/${name}`;
-
   return (
     <div className="flex gap-3 text-white">
       <Link href={channelUrl}>

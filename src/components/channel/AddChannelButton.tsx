@@ -24,12 +24,13 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
-import { BaseSyntheticEvent, useState } from "react";
+import { BaseSyntheticEvent, useRef, useState } from "react";
 import { Heading1 } from "lucide-react";
 import { Channel } from "diagnostics_channel";
 import { unescape } from "querystring";
 import ChannelCard from "./ChannelCard";
 import ChannelInfoCard from "./ChannelInfoCard";
+import ChannelInfoCardSkeleton from "./ChannelInfoCardSkeleton";
 
 async function addChannel(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
@@ -83,6 +84,7 @@ interface Avatar {
 function AddChannelForm() {
   const [loading, setLoading] = useState(false);
   const [channelInfo, setChannelInfo] = useState<ChannelInfo>();
+  const channelUrlRef = useRef<HTMLInputElement>(null);
 
   async function getChannelInfo(e: BaseSyntheticEvent) {
     const channelUrl = e.target.value;
@@ -112,16 +114,18 @@ function AddChannelForm() {
           name="channelUrl"
           placeholder="Channel URL"
           onBlur={getChannelInfo}
+          ref={channelUrlRef}
         />
       </div>
 
-      {loading && <h1>Loading...</h1>}
+      {loading && <ChannelInfoCardSkeleton />}
 
       {!loading && channelInfo && (
         <ChannelInfoCard
           avatarUrl={channelInfo.avatar.url}
           name={channelInfo.uploader}
           handle={channelInfo.uploader_id}
+          channelUrl={channelUrlRef.current?.value!}
         />
       )}
 
