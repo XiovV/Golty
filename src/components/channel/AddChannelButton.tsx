@@ -38,6 +38,8 @@ async function addChannel(e: React.FormEvent<HTMLFormElement>) {
     downloadAudio: Boolean(formData.get("audio")),
     resolution: formData.get("resolution"),
     format: formData.get("format"),
+    downloadAutomatically: Boolean(formData.get("downloadAutomatically")),
+    downloadEntireChannel: Boolean(formData.get("downloadEntireChannel")),
   };
 
   console.log(body);
@@ -145,13 +147,14 @@ function AddChannelForm() {
 
 interface SwitchProps {
   label: string;
+  name: string;
   disabled?: boolean;
 }
 
-function Switch({ label, disabled }: SwitchProps) {
+function Switch({ label, disabled, name }: SwitchProps) {
   return (
     <div className="flex items-center space-x-2">
-      <SwitchShadcn id={label} name={label.toLowerCase()} disabled={disabled} />
+      <SwitchShadcn id={label} name={name} disabled={disabled} />
       <Label htmlFor={label}>{label}</Label>
     </div>
   );
@@ -164,8 +167,16 @@ interface SwitchGroupProps {
 function AddChannelFormSwitchGroup({ disabled }: SwitchGroupProps) {
   return (
     <div className="flex flex-col gap-2">
-      <Switch label="Automatically download new uploads" disabled={disabled} />
-      <Switch label="Download the entire channel" disabled={disabled} />
+      <Switch
+        label="Automatically download new uploads"
+        name="downloadAutomatically"
+        disabled={disabled}
+      />
+      <Switch
+        label="Download the entire channel"
+        name="downloadEntireChannel"
+        disabled={disabled}
+      />
     </div>
   );
 }
@@ -177,25 +188,26 @@ interface CheckboxGroupProps {
 function AddChannelFormCheckboxGroup({ disabled }: CheckboxGroupProps) {
   return (
     <div className="flex flex-col gap-2 ">
-      <Checkbox label="Video" disabled={disabled} />
-      <Checkbox label="Audio" disabled={disabled} />
+      <Checkbox label="Video" name="video" disabled={disabled} />
+      <Checkbox label="Audio" name="audio" disabled={disabled} />
     </div>
   );
 }
 
 interface CheckboxProps {
   label: string;
+  name: string;
   checked?: boolean;
   disabled?: boolean;
 }
 
-function Checkbox({ label, checked, disabled }: CheckboxProps) {
+function Checkbox({ label, checked, disabled, name }: CheckboxProps) {
   return (
     <div className="flex items-center space-x-2">
       <CheckboxShadcn
         id={label}
         checked={checked}
-        name={label.toLowerCase()}
+        name={name}
         disabled={disabled}
       />
       <label
