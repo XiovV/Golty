@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
-import { BaseSyntheticEvent, useRef, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useRef, useState } from "react";
 import { Heading1 } from "lucide-react";
 import { Channel } from "diagnostics_channel";
 import { unescape } from "querystring";
@@ -84,6 +84,7 @@ interface Avatar {
 function AddChannelForm() {
   const [loading, setLoading] = useState(false);
   const [channelInfo, setChannelInfo] = useState<ChannelInfo>();
+  const [disableInputs, setDisableInputs] = useState(true);
   const channelUrlRef = useRef<HTMLInputElement>(null);
 
   async function getChannelInfo(e: BaseSyntheticEvent) {
@@ -93,6 +94,7 @@ function AddChannelForm() {
       return;
     }
 
+    setChannelInfo(undefined);
     setLoading(true);
     const res = await fetch(
       `http://localhost:8080/v1/channels/info/${channelUrl}`,
