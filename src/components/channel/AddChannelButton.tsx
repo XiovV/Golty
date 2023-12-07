@@ -37,7 +37,8 @@ async function addChannel(e: React.FormEvent<HTMLFormElement>) {
 
   const body = {
     channelUrl: formData.get("channelUrl"),
-    downloadVideo: formData.get("video") == null ? false : true,
+    downloadVideo: Boolean(formData.get("video")),
+    downloadAudio: Boolean(formData.get("audio")),
     resolution: formData.get("resolution"),
     format: formData.get("format"),
   };
@@ -89,8 +90,6 @@ function AddChannelForm() {
       return;
     }
 
-    console.log("sending req");
-
     setLoading(true);
     const res = await fetch(
       `http://localhost:8080/v1/channels/info/${channelUrl}`,
@@ -100,8 +99,6 @@ function AddChannelForm() {
     const channelInfo: ChannelInfo = await res.json();
     setLoading(false);
     setChannelInfo(channelInfo);
-
-    console.log("res", channelInfo);
   }
 
   return (
@@ -130,15 +127,15 @@ function AddChannelForm() {
 
       <div className="flex flex-col gap-6">
         <div className="flex flex-row justify-between">
-          <AddChannelFormCheckboxGroup />
-          <AddChannelFormSelectGroup />
+          <AddChannelFormCheckboxGroup disabled={!channelInfo} />
+          <AddChannelFormSelectGroup disabled={!channelInfo} />
         </div>
 
-        <AddChannelFormSwitchGroup />
+        <AddChannelFormSwitchGroup disabled={!channelInfo} />
       </div>
 
       <DialogFooter>
-        <Button type="submit" variant="outline">
+        <Button type="submit" variant="outline" disabled={!channelInfo}>
           Add Channel
         </Button>
       </DialogFooter>
@@ -148,44 +145,59 @@ function AddChannelForm() {
 
 interface SwitchProps {
   label: string;
+  disabled?: boolean;
 }
 
-function Switch({ label }: SwitchProps) {
+function Switch({ label, disabled }: SwitchProps) {
   return (
     <div className="flex items-center space-x-2">
-      <SwitchShadcn id={label} name={label.toLowerCase()} />
+      <SwitchShadcn id={label} name={label.toLowerCase()} disabled={disabled} />
       <Label htmlFor={label}>{label}</Label>
     </div>
   );
 }
 
-function AddChannelFormSwitchGroup() {
+interface SwitchGroupProps {
+  disabled: boolean;
+}
+
+function AddChannelFormSwitchGroup({ disabled }: SwitchGroupProps) {
   return (
     <div className="flex flex-col gap-2">
-      <Switch label="Automatically download new uploads" />
-      <Switch label="Download the entire channel" />
+      <Switch label="Automatically download new uploads" disabled={disabled} />
+      <Switch label="Download the entire channel" disabled={disabled} />
     </div>
   );
 }
 
-function AddChannelFormCheckboxGroup() {
+interface CheckboxGroupProps {
+  disabled?: boolean;
+}
+
+function AddChannelFormCheckboxGroup({ disabled }: CheckboxGroupProps) {
   return (
     <div className="flex flex-col gap-2 ">
-      <Checkbox label="Video" />
-      <Checkbox label="Audio" />
+      <Checkbox label="Video" disabled={disabled} />
+      <Checkbox label="Audio" disabled={disabled} />
     </div>
   );
 }
 
-interface AddChannelFormCheckboxProps {
+interface CheckboxProps {
   label: string;
   checked?: boolean;
+  disabled?: boolean;
 }
 
-function Checkbox({ label, checked }: AddChannelFormCheckboxProps) {
+function Checkbox({ label, checked, disabled }: CheckboxProps) {
   return (
     <div className="flex items-center space-x-2">
-      <CheckboxShadcn id={label} checked={checked} name={label.toLowerCase()} />
+      <CheckboxShadcn
+        id={label}
+        checked={checked}
+        name={label.toLowerCase()}
+        disabled={disabled}
+      />
       <label
         htmlFor={label}
         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -196,10 +208,14 @@ function Checkbox({ label, checked }: AddChannelFormCheckboxProps) {
   );
 }
 
-function AddChannelFormSelectGroup() {
+interface SelectGroupProps {
+  disabled?: boolean;
+}
+
+function AddChannelFormSelectGroup({ disabled }: SelectGroupProps) {
   return (
     <div className="flex gap-2">
-      <Select name="format" defaultValue="auto">
+      <Select name="format" defaultValue="auto" disabled={disabled}>
         <SelectTrigger className="w-[90px]">
           <SelectValue placeholder="Auto" />
         </SelectTrigger>
@@ -214,7 +230,7 @@ function AddChannelFormSelectGroup() {
         </SelectContent>
       </Select>
 
-      <Select name="resolution" defaultValue="2160p">
+      <Select name="resolution" defaultValue="2160p" disabled={disabled}>
         <SelectTrigger className="w-[90px]">
           <SelectValue placeholder="2160p" />
         </SelectTrigger>
