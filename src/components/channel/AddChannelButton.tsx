@@ -2,7 +2,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -24,11 +23,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
-import { BaseSyntheticEvent, useEffect, useRef, useState } from "react";
-import { Heading1 } from "lucide-react";
-import { Channel } from "diagnostics_channel";
-import { unescape } from "querystring";
-import ChannelCard from "./ChannelCard";
+import { BaseSyntheticEvent, useRef, useState } from "react";
 import ChannelInfoCard from "./ChannelInfoCard";
 import ChannelInfoCardSkeleton from "./ChannelInfoCardSkeleton";
 
@@ -84,7 +79,6 @@ interface Avatar {
 function AddChannelForm() {
   const [loading, setLoading] = useState(false);
   const [channelInfo, setChannelInfo] = useState<ChannelInfo>();
-  const [disableInputs, setDisableInputs] = useState(true);
   const channelUrlRef = useRef<HTMLInputElement>(null);
 
   async function getChannelInfo(e: BaseSyntheticEvent) {
