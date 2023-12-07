@@ -167,17 +167,11 @@ function AddChannelForm() {
       </div>
 
       <DialogFooter>
-        {!channelInfo && (
-          <Button type="submit" variant="outline" disabled={!channelInfo}>
-            Add Channel
-          </Button>
-        )}
+        <Button type="submit" variant="outline" disabled={!channelInfo}>
+          {!channelInfo && "Add Channel"}
 
-        {!loading && channelInfo && (
-          <Button type="submit" variant="outline" disabled={!channelInfo}>
-            Add {channelInfo.uploader}
-          </Button>
-        )}
+          {!loading && channelInfo && `Add ${channelInfo.uploader}`}
+        </Button>
       </DialogFooter>
     </>
   );
