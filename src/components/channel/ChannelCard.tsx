@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import ChannelAvatar from "./ChannelAvatar";
 
 interface ChannelProps {
   avatarUrl: string;
@@ -21,14 +22,7 @@ export default function ChannelCard({
   return (
     <div className="flex gap-3 text-white">
       <Link href={channelUrl}>
-        <Image
-          priority
-          alt=""
-          src={avatarUrl}
-          width={85}
-          height={85}
-          className="rounded-full"
-        />
+        <ChannelAvatar avatarUrl={avatarUrl} size={85} />
       </Link>
 
       <div className="flex flex-col justify-between text-lg">

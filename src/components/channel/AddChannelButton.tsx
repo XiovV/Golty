@@ -29,6 +29,7 @@ import { Heading1 } from "lucide-react";
 import { Channel } from "diagnostics_channel";
 import { unescape } from "querystring";
 import ChannelCard from "./ChannelCard";
+import ChannelInfoCard from "./ChannelInfoCard";
 
 async function addChannel(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
@@ -117,11 +118,10 @@ function AddChannelForm() {
       {loading && <h1>Loading...</h1>}
 
       {!loading && channelInfo && (
-        <ChannelCard
+        <ChannelInfoCard
           avatarUrl={channelInfo.avatar.url}
           name={channelInfo.uploader}
-          totalVideos={0}
-          totalSize={""}
+          handle={channelInfo.uploader_id}
         />
       )}
 
