@@ -4,6 +4,8 @@ import "../globals.css";
 import SideNav from "@/components/navigation/SideNav";
 import BottomNav from "@/components/navigation/BottomNav";
 import { Toaster } from "@/components/ui/toaster";
+import { authOptions } from "../api/auth/[...nextauth]/authOptions";
+import { getServerSession } from "next-auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +19,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+
+  console.log(session);
+
   return (
     <html lang="en">
       <body className={`${inter.className}`}>

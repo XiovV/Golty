@@ -26,6 +26,7 @@ import { Button } from "../ui/button";
 import { BaseSyntheticEvent, useRef, useState } from "react";
 import ChannelInfoCard from "./ChannelInfoCard";
 import ChannelInfoCardSkeleton from "./ChannelInfoCardSkeleton";
+import { useDebouncedCallback } from "use-debounce";
 import { useToast } from "../ui/use-toast";
 
 interface ErrorResponse {
@@ -109,10 +110,8 @@ function AddChannelForm() {
   const [channelInfo, setChannelInfo] = useState<ChannelInfo>();
   const channelUrlRef = useRef<HTMLInputElement>(null);
 
-  async function getChannelInfo(e: BaseSyntheticEvent) {
-    const channelUrl = e.target.value;
-
-    if (!channelUrl) {
+  const getChannelInfo = useDebouncedCallback(async (channelUrl: string) => {
+    if (!channelUrl || !channelUrl.includes("https://www.youtube.com/")) {
       return;
     }
 
@@ -123,10 +122,15 @@ function AddChannelForm() {
       { cache: "no-cache" }
     );
 
+    if (res.status !== 200) {
+      setLoading(false);
+      return;
+    }
+
     const channelInfo: ChannelInfo = await res.json();
     setLoading(false);
     setChannelInfo(channelInfo);
-  }
+  }, 500);
 
   return (
     <>
@@ -137,7 +141,7 @@ function AddChannelForm() {
           id="channelUrl"
           name="channelUrl"
           placeholder="Channel URL"
-          onBlur={getChannelInfo}
+          onChange={(e) => getChannelInfo(e.target.value)}
           ref={channelUrlRef}
         />
       </div>
