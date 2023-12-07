@@ -28,6 +28,10 @@ import ChannelInfoCard from "./ChannelInfoCard";
 import ChannelInfoCardSkeleton from "./ChannelInfoCardSkeleton";
 import { useToast } from "../ui/use-toast";
 
+interface ErrorResponse {
+  message: string;
+}
+
 export default function AddChannelButton() {
   const { toast } = useToast();
 
@@ -52,11 +56,19 @@ export default function AddChannelButton() {
       headers: { "Content-Type": "application/json" },
     });
 
-    console.log(res.status);
+    if (res.status !== 201) {
+      const err: ErrorResponse = await res.json();
+
+      toast({
+        title: "Unable to add the channel!",
+        description: err.message,
+      });
+
+      return;
+    }
 
     toast({
-      title: "Channel added Successfully",
-      description: "foobar",
+      title: "Channel added successfully!",
     });
   }
 
