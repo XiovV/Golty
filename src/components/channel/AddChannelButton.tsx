@@ -7,12 +7,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useRef } from "react";
 import { IconContext } from "react-icons";
 import { FiPlus } from "react-icons/fi";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { Checkbox as CheckboxShadcn } from "../ui/checkbox";
-import { Switch as SwitchShadcn } from "../ui/switch";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
@@ -22,57 +23,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Button } from "../ui/button";
-import { BaseSyntheticEvent, useRef, useState } from "react";
+import { Switch as SwitchShadcn } from "../ui/switch";
 import ChannelInfoCard from "./ChannelInfoCard";
 import ChannelInfoCardSkeleton from "./ChannelInfoCardSkeleton";
-import { useDebouncedCallback } from "use-debounce";
-import { useToast } from "../ui/use-toast";
-
-interface ErrorResponse {
-  message: string;
-}
+import {
+  useAddChannel,
+  useFetchChannelInfo,
+} from "@/hooks/channel/channelHooks";
 
 export default function AddChannelButton() {
-  const { toast } = useToast();
-
-  async function addChannel(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-
-    const body = {
-      channelUrl: formData.get("channelUrl"),
-      downloadVideo: Boolean(formData.get("video")),
-      downloadAudio: Boolean(formData.get("audio")),
-      resolution: formData.get("resolution"),
-      format: formData.get("format"),
-      downloadAutomatically: Boolean(formData.get("downloadAutomatically")),
-      downloadEntireChannel: Boolean(formData.get("downloadEntireChannel")),
-    };
-
-    const res = await fetch("http://localhost:8080/v1/channels", {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (res.status !== 201) {
-      const err: ErrorResponse = await res.json();
-
-      toast({
-        title: "Unable to add the channel!",
-        description: err.message,
-      });
-
-      return;
-    }
-
-    toast({
-      title: "Channel added successfully!",
-    });
-  }
-
   return (
     <Dialog>
       <DialogTrigger>
@@ -82,58 +41,22 @@ export default function AddChannelButton() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <div className="flex flex-col gap-6">
-            <DialogTitle>Add a channel</DialogTitle>
-          </div>
+          <DialogTitle>Add a channel</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={addChannel} className="flex flex-col gap-6">
-          <AddChannelForm />
-        </form>
+        <AddChannelForm />
       </DialogContent>
     </Dialog>
   );
 }
 
-interface ChannelInfo {
-  uploader_id: string;
-  uploader: string;
-  avatar: Avatar;
-}
-
-interface Avatar {
-  url: string;
-}
-
 function AddChannelForm() {
-  const [loading, setLoading] = useState(false);
-  const [channelInfo, setChannelInfo] = useState<ChannelInfo>();
+  const { loading, channelInfo, getChannelInfo } = useFetchChannelInfo();
+  const { addChannel } = useAddChannel();
   const channelUrlRef = useRef<HTMLInputElement>(null);
 
-  const getChannelInfo = useDebouncedCallback(async (channelUrl: string) => {
-    if (!channelUrl || !channelUrl.includes("https://www.youtube.com/")) {
-      return;
-    }
-
-    setChannelInfo(undefined);
-    setLoading(true);
-    const res = await fetch(
-      `http://localhost:8080/v1/channels/info/${channelUrl}`,
-      { cache: "no-cache" }
-    );
-
-    if (res.status !== 200) {
-      setLoading(false);
-      return;
-    }
-
-    const channelInfo: ChannelInfo = await res.json();
-    setLoading(false);
-    setChannelInfo(channelInfo);
-  }, 500);
-
   return (
-    <>
+    <form onSubmit={addChannel} className="flex flex-col gap-6">
       <div className="grid w-full max-w-sm items-center gap-2">
         <Label htmlFor="channelUrl">Channel URL</Label>
         <Input
@@ -173,7 +96,7 @@ function AddChannelForm() {
           {!loading && channelInfo && `Add ${channelInfo.uploader}`}
         </Button>
       </DialogFooter>
-    </>
+    </form>
   );
 }
 
