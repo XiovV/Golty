@@ -20,7 +20,7 @@ interface AddChannelRequest {
   channel: {
     channelUrl: string;
     channelName: string;
-    channelId: string;
+    channelHandle: string;
     avatarUrl: string;
   };
   downloadSettings: {
@@ -48,7 +48,7 @@ export const useAddChannel = () => {
       channel: {
         channelUrl: formData.get("channelUrl")!.toString(),
         channelName: channelInfo.uploader,
-        channelId: channelInfo.uploader_id,
+        channelHandle: channelInfo.uploader_id,
         avatarUrl: channelInfo.avatar.url,
       },
       downloadSettings: {
