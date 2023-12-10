@@ -40,7 +40,9 @@ func (s *Server) Start() error {
 	}
 
 	channels := v1.Group("/channels")
+	// channels.Use(echojwt.WithConfig(jwtConfig))
 	{
+		channels.POST("", s.addChannel)
 		channels.GET("/info/:channelUrl", s.getChannelInfo)
 	}
 
