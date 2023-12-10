@@ -16,22 +16,49 @@ interface ErrorResponse {
   message: string;
 }
 
+interface AddChannelRequest {
+  channel: {
+    channelUrl: string;
+    channelName: string;
+    channelId: string;
+    avatarUrl: string;
+  };
+  downloadSettings: {
+    downloadVideo: boolean;
+    downloadAudio: boolean;
+    format: string;
+    resolution: string;
+    downloadAutomatically: boolean;
+    downloadEntireChannel: boolean;
+  };
+}
+
 export const useAddChannel = () => {
   const { toast } = useToast();
 
-  const addChannel = async (e: React.FormEvent<HTMLFormElement>) => {
+  const addChannel = async (
+    e: React.FormEvent<HTMLFormElement>,
+    channelInfo: ChannelInfo,
+  ) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
 
-    const body = {
-      channelUrl: formData.get("channelUrl"),
-      downloadVideo: Boolean(formData.get("video")),
-      downloadAudio: Boolean(formData.get("audio")),
-      resolution: formData.get("resolution"),
-      format: formData.get("format"),
-      downloadAutomatically: Boolean(formData.get("downloadAutomatically")),
-      downloadEntireChannel: Boolean(formData.get("downloadEntireChannel")),
+    const body: AddChannelRequest = {
+      channel: {
+        channelUrl: formData.get("channelUrl")!.toString(),
+        channelName: channelInfo.uploader,
+        channelId: channelInfo.uploader_id,
+        avatarUrl: channelInfo.avatar.url,
+      },
+      downloadSettings: {
+        downloadVideo: Boolean(formData.get("video")),
+        downloadAudio: Boolean(formData.get("audio")),
+        resolution: formData.get("resolution")!.toString(),
+        format: formData.get("format")!.toString(),
+        downloadAutomatically: Boolean(formData.get("downloadAutomatically")),
+        downloadEntireChannel: Boolean(formData.get("downloadEntireChannel")),
+      },
     };
 
     const res = await fetch("http://localhost:8080/v1/channels", {
@@ -44,7 +71,7 @@ export const useAddChannel = () => {
       const err: ErrorResponse = await res.json();
 
       toast({
-        title: "Unable to add the channel!",
+        title: `Unable to add the channel! (${res.status} ${res.statusText})`,
         description: err.message,
       });
 
@@ -52,7 +79,7 @@ export const useAddChannel = () => {
     }
 
     toast({
-      title: "Channel added successfully!",
+      title: `${channelInfo.uploader} added successfully!`,
     });
   };
 

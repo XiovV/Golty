@@ -56,7 +56,10 @@ function AddChannelForm() {
   const channelUrlRef = useRef<HTMLInputElement>(null);
 
   return (
-    <form onSubmit={addChannel} className="flex flex-col gap-6">
+    <form
+      onSubmit={(e) => addChannel(e, channelInfo)}
+      className="flex flex-col gap-6"
+    >
       <div className="grid w-full max-w-sm items-center gap-2">
         <Label htmlFor="channelUrl">Channel URL</Label>
         <Input
