@@ -31,6 +31,7 @@ import {
   useFetchChannelInfo,
 } from "@/hooks/channel/channelHooks";
 import { useState } from "react";
+import { audioExtensions, resolutions, videoExtensions } from "@/app/const";
 
 export default function AddChannelButton() {
   return (
@@ -50,17 +51,6 @@ export default function AddChannelButton() {
     </Dialog>
   );
 }
-
-const videoExtensions: string[] = ["m4a", "mp4", "webm", "flv", "ogg", "3gp"];
-const audioExtensions: string[] = [
-  "aac",
-  "alac",
-  "flac",
-  "mp3",
-  "opus",
-  "vorbis",
-  "wav",
-];
 
 function AddChannelForm() {
   const [downloadExtensions, setDownloadExtensions] =
@@ -108,12 +98,10 @@ function AddChannelForm() {
                 name="video"
                 disabled={!channelInfo}
                 onCheckedChange={(checked) => {
-                  if (checked) {
-                    setDownloadExtensions(videoExtensions);
-                    return;
-                  }
-
-                  setDownloadExtensions(audioExtensions);
+                  const extensions = checked
+                    ? videoExtensions
+                    : audioExtensions;
+                  setDownloadExtensions(extensions);
                 }}
               />
               <label
@@ -141,46 +129,21 @@ function AddChannelForm() {
           </div>
 
           <div className="flex gap-2">
-            <Select name="format" defaultValue="auto" disabled={!channelInfo}>
-              <SelectTrigger className="w-[90px]">
-                <SelectValue placeholder="Auto" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Format</SelectLabel>
-                  <SelectItem value="auto">Auto</SelectItem>
+            <Dropdown
+              items={downloadExtensions}
+              name="format"
+              label="Format"
+              defaultValue="Auto"
+              disabled={!channelInfo}
+            />
 
-                  {downloadExtensions.map((extension) => (
-                    <SelectItem key={extension} value={extension}>
-                      {extension}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
-            <Select
+            <Dropdown
+              items={resolutions}
               name="resolution"
+              label="Resolution"
               defaultValue="2160p"
               disabled={!channelInfo}
-            >
-              <SelectTrigger className="w-[90px]">
-                <SelectValue placeholder="2160p" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Resolution</SelectLabel>
-                  <SelectItem value="2160p">2160p</SelectItem>
-                  <SelectItem value="1440p">1440p</SelectItem>
-                  <SelectItem value="1080p">1080p</SelectItem>
-                  <SelectItem value="720p">720p</SelectItem>
-                  <SelectItem value="480p">480p</SelectItem>
-                  <SelectItem value="360p">360p</SelectItem>
-                  <SelectItem value="240p">240p</SelectItem>
-                  <SelectItem value="144p">144p</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            />
           </div>
         </div>
 
@@ -208,6 +171,41 @@ function AddChannelForm() {
         </Button>
       </DialogFooter>
     </form>
+  );
+}
+
+interface DropdownProps {
+  items: string[];
+  name: string;
+  label: string;
+  defaultValue: string;
+  disabled?: boolean;
+}
+
+function Dropdown({
+  items,
+  name,
+  defaultValue,
+  label,
+  disabled,
+}: DropdownProps) {
+  return (
+    <Select name={name} defaultValue={defaultValue} disabled={disabled}>
+      <SelectTrigger className="w-[90px]">
+        <SelectValue placeholder="Auto" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>{label}</SelectLabel>
+
+          {items.map((item) => (
+            <SelectItem key={item} value={item}>
+              {item}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 }
 
