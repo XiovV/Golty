@@ -5,11 +5,9 @@ import { useToast } from "../../components/ui/use-toast";
 interface ChannelInfo {
   uploader_id: string;
   uploader: string;
-  avatar: Avatar;
-}
-
-interface Avatar {
-  url: string;
+  avatar: {
+    url: string;
+  };
 }
 
 interface ErrorResponse {
