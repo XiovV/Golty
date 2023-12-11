@@ -19,7 +19,8 @@ export default async function ChannelList() {
           <ChannelCard
             key={channel.channelName}
             avatarUrl={channel.avatarUrl}
-            name={channel.channelName}
+            channelName={channel.channelName}
+            channelHandle={channel.channelHandle}
             totalVideos={channel.totalVideos}
             totalSize={channel.totalSize}
             checkButton

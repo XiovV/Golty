@@ -3,7 +3,8 @@ import ChannelAvatar from "./ChannelAvatar";
 
 interface ChannelProps {
   avatarUrl: string;
-  name: string;
+  channelName: string;
+  channelHandle: string;
   totalVideos: number;
   totalSize: string;
   checkButton?: boolean;
@@ -11,12 +12,13 @@ interface ChannelProps {
 
 export default function ChannelCard({
   avatarUrl,
-  name,
+  channelName,
+  channelHandle,
   totalVideos,
   totalSize,
   checkButton,
 }: ChannelProps) {
-  const channelUrl = `channels/${name}`;
+  const channelUrl = `channels/${channelHandle}`;
 
   return (
     <div className="flex gap-3 text-white">
@@ -27,7 +29,7 @@ export default function ChannelCard({
       <div className="flex flex-col justify-between text-lg">
         <div className="flex flex-col">
           <Link href={channelUrl}>
-            <p>{name}</p>
+            <p>{channelName}</p>
           </Link>
           <div className="flex gap-1 text-[#676D75] text-sm">
             <p>{totalVideos} videos</p>

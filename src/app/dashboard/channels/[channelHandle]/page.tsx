@@ -1,49 +1,40 @@
 import TopBar from "@/components/navigation/TopBar";
-import { FiPlus } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { MdOutlineSort } from "react-icons/md";
 import { LuRefreshCw } from "react-icons/lu";
 import { IoMdSettings } from "react-icons/io";
-import { Channel as IChannel } from "@/types/channel";
+import { Channel } from "@/types/channel";
 
 import { FiTrash } from "react-icons/fi";
 import ChannelCard from "@/components/channel/ChannelCard";
-import { Video } from "@/types/video";
 import VideosList from "@/components/shared/video/VideosList";
 import { Suspense } from "react";
 import VideosListSkeleton from "@/components/shared/video/VideosListSkeleton";
 
-async function fetchChannel(channelName: string): Promise<IChannel> {
-  const res = await fetch(`${process.env.API_URL}/channels/${channelName}`, {
-    cache: "no-store",
-  });
-
-  return await res.json();
-}
-
-async function fetchChannelVideos(channelName: string): Promise<Video[]> {
+async function fetchChannel(channelHandle: string): Promise<Channel> {
   const res = await fetch(
-    `${process.env.VIDEOS_API_URL}/videos/channel/${channelName}`,
+    `http://localhost:8080/v1/channels/${channelHandle}`,
     {
       cache: "no-store",
-    }
+    },
   );
 
-  return res.json();
+  const channel: Channel = await res.json();
+
+  return channel;
 }
 
 export default async function Page({
   params,
 }: {
-  params: { channelName: string };
+  params: { channelHandle: string };
 }) {
-  const channel = await fetchChannel(params.channelName);
-  const channelVideosResponse = fetchChannelVideos(params.channelName);
+  const channel = await fetchChannel(params.channelHandle);
 
   return (
     <main>
       <TopBar
-        title={params.channelName}
+        title={params.channelHandle}
         mobileButtons={[IoSearch, LuRefreshCw, MdOutlineSort, IoMdSettings]}
         desktopButtons={[LuRefreshCw, MdOutlineSort, IoMdSettings, FiTrash]}
       />
@@ -51,16 +42,17 @@ export default async function Page({
       <div className="flex flex-col gap-8 m-5">
         <ChannelCard
           avatarUrl={channel.avatarUrl}
-          name={channel.name}
+          channelName={channel.channelName}
+          channelHandle={channel.channelHandle}
           totalVideos={channel.totalVideos}
           totalSize={channel.totalSize}
         />
 
-        <div className="mx-auto lg:mx-5">
+        {/*  <div className="mx-auto lg:mx-5">
           <Suspense fallback={<VideosListSkeleton />}>
             <VideosList channelVideosResponse={channelVideosResponse} />
           </Suspense>
-        </div>
+        </div> */}
       </div>
     </main>
   );
