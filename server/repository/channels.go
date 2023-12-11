@@ -1,11 +1,11 @@
 package repository
 
 type Channel struct {
-	ID            int
-	ChannelUrl    string
-	ChannelName   string
-	ChannelHandle string
-	AvatarUrl     string
+	ID            int    `db:"id"`
+	ChannelUrl    string `db:"channelUrl"`
+	ChannelName   string `db:"channelName"`
+	ChannelHandle string `db:"channelHandle"`
+	AvatarUrl     string `db:"avatarUrl"`
 }
 
 func (r *Repository) InsertChannel(channel Channel) error {
@@ -18,4 +18,18 @@ func (r *Repository) InsertChannel(channel Channel) error {
 	}
 
 	return nil
+}
+
+func (r *Repository) GetChannels() ([]Channel, error) {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
+
+	channels := []Channel{}
+
+	err := r.db.SelectContext(ctx, &channels, "SELECT id, channelUrl, channelName, channelHandle, avatarUrl FROM channels")
+	if err != nil {
+		return channels, err
+	}
+
+	return channels, nil
 }

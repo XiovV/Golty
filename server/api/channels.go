@@ -64,3 +64,36 @@ func (s *Server) addChannel(c echo.Context) error {
 
 	return c.NoContent(http.StatusCreated)
 }
+
+func (s *Server) getChannels(c echo.Context) error {
+	channels, err := s.Repository.GetChannels()
+	if err != nil {
+		s.Logger.Error("could not get all channels", zap.Error(err))
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	type channelResponse struct {
+		ID            int    `json:"id"`
+		ChannelName   string `json:"channelName"`
+		ChannelHandle string `json:"channelHandle"`
+		ChannelUrl    string `json:"channelUrl"`
+		AvatarUrl     string `json:"avatarUrl"`
+		TotalVideos   int    `json:"totalVideos"`
+		TotalSize     string `json:"totalSize"`
+	}
+
+	channelResponses := []channelResponse{}
+	for _, channel := range channels {
+		channelResponses = append(channelResponses, channelResponse{
+			ID:            channel.ID,
+			ChannelName:   channel.ChannelName,
+			ChannelHandle: channel.ChannelHandle,
+			ChannelUrl:    channel.ChannelUrl,
+			AvatarUrl:     channel.AvatarUrl,
+			TotalVideos:   0,
+			TotalSize:     "0 GB",
+		})
+	}
+
+	return c.JSON(http.StatusOK, channelResponses)
+}
