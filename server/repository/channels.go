@@ -33,3 +33,17 @@ func (r *Repository) GetChannels() ([]Channel, error) {
 
 	return channels, nil
 }
+
+func (r *Repository) GetChannelByHandle(channelHandle string) (Channel, error) {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
+
+	channel := Channel{}
+
+	err := r.db.GetContext(ctx, &channel, "SELECT id, channelUrl, channelName, channelHandle, avatarUrl FROM channels WHERE channelHandle = $1", channelHandle)
+	if err != nil {
+		return Channel{}, err
+	}
+
+	return channel, nil
+}

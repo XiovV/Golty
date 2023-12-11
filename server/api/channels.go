@@ -97,3 +97,25 @@ func (s *Server) getChannels(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, channelResponses)
 }
+
+func (s *Server) getChannel(c echo.Context) error {
+	channelHandle := strings.Replace(c.Param("channelHandle"), "%40", "@", 1)
+
+	channel, err := s.Repository.GetChannelByHandle(channelHandle)
+	if err != nil {
+		s.Logger.Error("could not get channel by handle", zap.Error(err), zap.String("channelHandle", channelHandle))
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	type channelResponse struct {
+		ID            int    `json:"id"`
+		ChannelName   string `json:"channelName"`
+		ChannelHandle string `json:"channelHandle"`
+		ChannelUrl    string `json:"channelUrl"`
+		AvatarUrl     string `json:"avatarUrl"`
+		TotalVideos   int    `json:"totalVideos"`
+		TotalSize     string `json:"totalSize"`
+	}
+
+	return c.JSON(http.StatusOK, channelResponse{ID: channel.ID, ChannelName: channel.ChannelName, ChannelHandle: channel.ChannelHandle, ChannelUrl: channel.ChannelUrl, AvatarUrl: channel.AvatarUrl, TotalVideos: 0, TotalSize: "0 GB"})
+}
