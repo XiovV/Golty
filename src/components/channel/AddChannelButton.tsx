@@ -113,7 +113,7 @@ function AddChannelForm() {
                     return;
                   }
 
-                  setDownloadExtensions(videoExtensions);
+                  setDownloadExtensions(audioExtensions);
                 }}
               />
               <label
