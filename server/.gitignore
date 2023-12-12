@@ -1,3 +1,5 @@
 cmd/server/server
+cmd/server/videos
 .env
 data/
+

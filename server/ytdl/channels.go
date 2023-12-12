@@ -1,8 +1,10 @@
 package ytdl
 
 import (
-	"fmt"
+	"go.uber.org/zap"
 )
+
+const CHANNELS_DEFAULT_OUTPUT = "videos/channels/%(uploader)s/%(id)s.%(ext)s"
 
 type ChannelInfo struct {
 	UploaderID string `json:"uploader_id"`
@@ -15,8 +17,8 @@ type ChannelInfo struct {
 type ChannelDownloadOptions struct {
 	Video                    bool
 	Audio                    bool
-	Extension                string
-	Quality                  string
+	Format                   string
+	Resolution               string
 	AutomaticallyDownloadNew bool
 	DownloadEntire           bool
 }
@@ -40,27 +42,41 @@ func (y *Ytdl) GetChannelInfo(channelUrl string) (ChannelInfo, error) {
 	return channelInfo, err
 }
 
-func (y *Ytdl) GetChannelVideos(channelUrl string) (ChannelVideos, error) {
+func (y *Ytdl) GetChannelVideos(channelUrl string) ([]string, error) {
 	ytdlOutput, err := y.exec("--get-id", "--flat-playlist", channelUrl)
 	if err != nil {
-		return ChannelVideos{}, err
+		return nil, err
 	}
 
 	var channelVideos ChannelVideos
 	err = y.jq(string(ytdlOutput), &channelVideos, "-nR", "{ \"videos\": [inputs] }")
 	if err != nil {
-		return ChannelVideos{}, err
+		return nil, err
 	}
 
-	return channelVideos, nil
+	return channelVideos.Videos, nil
 }
 
 func (y *Ytdl) DownloadChannel(channelUrl string, downloadOptions ChannelDownloadOptions) {
+	y.logger.Info("getting channel videos", zap.String("channelUrl", channelUrl))
 	channelVideos, err := y.GetChannelVideos(channelUrl)
 	if err != nil {
-		fmt.Println("could not get channel videos", err)
+		y.logger.Error("could not get channel videos", zap.Error(err), zap.String("channelUrl", channelUrl))
 		return
 	}
 
-	fmt.Printf("%+v\n", channelVideos)
+	y.logger.Info("got channel videos successfully", zap.String("channelUrl", channelUrl), zap.Int("numberOfVideos", len(channelVideos)))
+
+	videoDownloadOptions := VideoDownloadOptions{Video: downloadOptions.Video, Audio: downloadOptions.Audio, Resolution: downloadOptions.Resolution, Output: CHANNELS_DEFAULT_OUTPUT}
+
+	for _, video := range channelVideos {
+		y.logger.Info("downloading video", zap.String("channelUrl", channelUrl), zap.String("videoId", video))
+		err = y.downloadVideo(video, videoDownloadOptions)
+		if err != nil {
+			y.logger.Error("downloading video failed", zap.Error(err), zap.String("channelUrl", channelUrl), zap.String("videoId", video))
+			return
+		}
+
+		y.logger.Info("video downloaded successfully", zap.String("channelUrl", channelUrl), zap.String("videoId", video))
+	}
 }

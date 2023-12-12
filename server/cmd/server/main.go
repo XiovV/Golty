@@ -32,7 +32,7 @@ func main() {
 		logger.Fatal("could not initialise server", zap.Error(err))
 	}
 
-	ytdl := ytdl.New("yt-dlp")
+	ytdl := ytdl.New("yt-dlp", logger)
 
 	server := api.New(c, logger, repository, ytdl)
 

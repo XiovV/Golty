@@ -70,7 +70,7 @@ func (s *Server) addChannel(c echo.Context) error {
 	// }
 
 	s.Logger.Info("downloading channel", zap.String("channelName", channel.ChannelName))
-	go s.Ytdl.DownloadChannel(channel.ChannelUrl, ytdl.ChannelDownloadOptions{})
+	go s.Ytdl.DownloadChannel(channel.ChannelUrl, ytdl.ChannelDownloadOptions{Video: addChannelRequest.DownloadSettings.DownloadVideo, Audio: addChannelRequest.DownloadSettings.DownloadAudio, Resolution: addChannelRequest.DownloadSettings.Resolution})
 
 	return c.NoContent(http.StatusCreated)
 }
