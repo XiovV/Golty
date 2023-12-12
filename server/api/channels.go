@@ -2,10 +2,11 @@ package api
 
 import (
 	"golty/repository"
-	"golty/ytdl"
+	"golty/service"
 	"net/http"
 	"strings"
 
+	"github.com/gookit/goutil/dump"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
@@ -71,7 +72,7 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 	}
 
 	s.Logger.Debug("inserting channel into the database", zap.String("channelUrl", channel.ChannelUrl))
-	err := s.Repository.InsertChannel(channel)
+	createdChannel, err := s.Repository.InsertChannel(channel)
 	if err != nil {
 		s.Logger.Error("could not insert channel", zap.Error(err), zap.String("channelName", channel.ChannelName))
 
@@ -83,11 +84,13 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 	}
 	s.Logger.Debug("channel successfully inserted into the database", zap.String("channelName", channel.ChannelName))
 
+	dump.P(createdChannel)
+
 	s.Logger.Info("downloading channel", zap.String("channelName", channel.ChannelName))
 
-	channelDownloadOptions := ytdl.ChannelDownloadOptions{Video: addChannelRequest.DownloadSettings.DownloadVideo, Audio: addChannelRequest.DownloadSettings.DownloadAudio, Resolution: addChannelRequest.DownloadSettings.Resolution}
+	channelDownloadOptions := service.ChannelDownloadOptions{Video: addChannelRequest.DownloadSettings.DownloadVideo, Audio: addChannelRequest.DownloadSettings.DownloadAudio, Resolution: addChannelRequest.DownloadSettings.Resolution}
 
-	go s.Ytdl.DownloadChannel(channel.ChannelUrl, channelDownloadOptions)
+	go s.ChannelsService.DownloadChannel(createdChannel, channelDownloadOptions)
 
 	return c.NoContent(http.StatusCreated)
 }

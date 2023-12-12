@@ -5,6 +5,7 @@ import (
 	"golty/config"
 	zapLogger "golty/logger"
 	"golty/repository"
+	"golty/service"
 	"golty/ytdl"
 	"log"
 
@@ -34,7 +35,9 @@ func main() {
 
 	ytdl := ytdl.New("yt-dlp", logger)
 
-	server := api.New(c, logger, repository, ytdl)
+	channelsService := service.NewChannelsService(repository, logger, ytdl)
+
+	server := api.New(c, logger, repository, channelsService, ytdl)
 
 	err = server.Start()
 	if err != nil {

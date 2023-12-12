@@ -3,6 +3,7 @@ package api
 import (
 	"golty/config"
 	"golty/repository"
+	"golty/service"
 	"golty/ytdl"
 
 	echojwt "github.com/labstack/echo-jwt/v4"
@@ -12,14 +13,15 @@ import (
 )
 
 type Server struct {
-	Config     *config.Config
-	Logger     *zap.Logger
-	Repository *repository.Repository
-	Ytdl       *ytdl.Ytdl
+	Config          *config.Config
+	Logger          *zap.Logger
+	Repository      *repository.Repository
+	ChannelsService *service.ChannelsService
+	Ytdl            *ytdl.Ytdl
 }
 
-func New(config *config.Config, logger *zap.Logger, repository *repository.Repository, ytdl *ytdl.Ytdl) *Server {
-	return &Server{Config: config, Logger: logger, Repository: repository, Ytdl: ytdl}
+func New(config *config.Config, logger *zap.Logger, repository *repository.Repository, channelsService *service.ChannelsService, ytdl *ytdl.Ytdl) *Server {
+	return &Server{Config: config, Logger: logger, Repository: repository, ChannelsService: channelsService, Ytdl: ytdl}
 }
 
 func (s *Server) Start() error {

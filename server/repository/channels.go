@@ -8,16 +8,17 @@ type Channel struct {
 	AvatarUrl     string `db:"avatarUrl"`
 }
 
-func (r *Repository) InsertChannel(channel Channel) error {
+func (r *Repository) InsertChannel(channel Channel) (Channel, error) {
 	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
 	defer cancel()
 
-	_, err := r.db.ExecContext(ctx, "INSERT INTO channels (channelUrl, channelName, channelHandle, avatarUrl) VALUES ($1, $2, $3, $4)", channel.ChannelUrl, channel.ChannelName, channel.ChannelHandle, channel.AvatarUrl)
+	var newChannel Channel
+	err := r.db.GetContext(ctx, &newChannel, "INSERT INTO channels (channelUrl, channelName, channelHandle, avatarUrl) VALUES ($1, $2, $3, $4) RETURNING *;", channel.ChannelUrl, channel.ChannelName, channel.ChannelHandle, channel.AvatarUrl)
 	if err != nil {
-		return err
+		return Channel{}, err
 	}
 
-	return nil
+	return newChannel, err
 }
 
 func (r *Repository) GetChannels() ([]Channel, error) {
@@ -28,7 +29,7 @@ func (r *Repository) GetChannels() ([]Channel, error) {
 
 	err := r.db.SelectContext(ctx, &channels, "SELECT id, channelUrl, channelName, channelHandle, avatarUrl FROM channels ORDER BY id DESC")
 	if err != nil {
-		return channels, err
+		return nil, err
 	}
 
 	return channels, nil
