@@ -53,11 +53,13 @@ func (s *Server) addChannel(c echo.Context) error {
 
 	if !addChannelRequest.DownloadSettings.DownloadVideo && !addChannelRequest.DownloadSettings.DownloadAudio {
 		s.Logger.Warn("either video or audio checkboxes must be checked", zap.Bool("downloadVideo", addChannelRequest.DownloadSettings.DownloadVideo), zap.Bool("downloadAudio", addChannelRequest.DownloadSettings.DownloadAudio))
+
 		return echo.NewHTTPError(http.StatusBadRequest, "Either the Video or the Audio checkbox must be checked, or both.")
 	}
 
 	if !addChannelRequest.DownloadSettings.DownloadAutomatically && !addChannelRequest.DownloadSettings.DownloadEntireChannel {
 		s.Logger.Warn("automatically download new uploads and download the entire channel switches aren't toggled", zap.Bool("downloadAutomatically", addChannelRequest.DownloadSettings.DownloadAutomatically), zap.Bool("downloadEntireChannel", addChannelRequest.DownloadSettings.DownloadEntireChannel))
+
 		return echo.NewHTTPError(http.StatusBadRequest, "Please toggle either the 'Automatically download new uploads' or 'Download the entire channel' switch, or both.")
 	}
 
@@ -68,19 +70,24 @@ func (s *Server) addChannel(c echo.Context) error {
 		AvatarUrl:     addChannelRequest.Channel.AvatarUrl,
 	}
 
-	// err := s.Repository.InsertChannel(channel)
-	// if err != nil {
-	// 	s.Logger.Error("could not insert channel", zap.Error(err), zap.String("channelName", addChannelRequest.Channel.ChannelName))
-	//
-	// 	if strings.Contains(err.Error(), "UNIQUE constraint failed") {
-	// 		return echo.NewHTTPError(http.StatusBadRequest, "This channel already exists!")
-	// 	}
-	//
-	// 	return echo.NewHTTPError(http.StatusInternalServerError, err)
-	// }
+	s.Logger.Debug("inserting channel into the database", zap.String("channelUrl", channel.ChannelUrl))
+	err := s.Repository.InsertChannel(channel)
+	if err != nil {
+		s.Logger.Error("could not insert channel", zap.Error(err), zap.String("channelName", channel.ChannelName))
+
+		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			return echo.NewHTTPError(http.StatusBadRequest, "This channel already exists!")
+		}
+
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+	s.Logger.Debug("channel successfully inserted into the database", zap.String("channelName", channel.ChannelName))
 
 	s.Logger.Info("downloading channel", zap.String("channelName", channel.ChannelName))
-	go s.Ytdl.DownloadChannel(channel.ChannelUrl, ytdl.ChannelDownloadOptions{Video: addChannelRequest.DownloadSettings.DownloadVideo, Audio: addChannelRequest.DownloadSettings.DownloadAudio, Resolution: addChannelRequest.DownloadSettings.Resolution})
+
+	channelDownloadOptions := ytdl.ChannelDownloadOptions{Video: addChannelRequest.DownloadSettings.DownloadVideo, Audio: addChannelRequest.DownloadSettings.DownloadAudio, Resolution: addChannelRequest.DownloadSettings.Resolution}
+
+	go s.Ytdl.DownloadChannel(channel.ChannelUrl, channelDownloadOptions)
 
 	return c.NoContent(http.StatusCreated)
 }
