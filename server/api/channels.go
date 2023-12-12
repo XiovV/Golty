@@ -11,11 +11,17 @@ import (
 )
 
 func (s *Server) getChannelInfo(c echo.Context) error {
-	channelName := c.Param("channelUrl")
+	channelUrl := c.Param("channelUrl")
 
-	channelInfo, err := s.Ytdl.GetChannelInfo(channelName)
+	channelUrlSplit := strings.Split(channelUrl, "/")
+	channelName := channelUrlSplit[len(channelUrlSplit)-1]
+	if strings.Contains(channelName, "@") && len(channelName) == 1 || len(channelName) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "channel name or handle must be provided")
+	}
+
+	channelInfo, err := s.Ytdl.GetChannelInfo(channelUrl)
 	if err != nil {
-		s.Logger.Error("unable to get channel info", zap.Error(err), zap.String("channelName", channelName))
+		s.Logger.Error("unable to get channel info", zap.Error(err), zap.String("channelUrl", channelUrl))
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
