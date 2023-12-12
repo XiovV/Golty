@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (s *Server) getChannelInfo(c echo.Context) error {
+func (s *Server) getChannelInfoHandler(c echo.Context) error {
 	channelUrl := c.Param("channelUrl")
 
 	channelUrlSplit := strings.Split(channelUrl, "/")
@@ -28,7 +28,7 @@ func (s *Server) getChannelInfo(c echo.Context) error {
 	return c.JSON(http.StatusOK, channelInfo)
 }
 
-func (s *Server) addChannel(c echo.Context) error {
+func (s *Server) addChannelHandler(c echo.Context) error {
 	var addChannelRequest struct {
 		Channel struct {
 			ChannelUrl    string `json:"channelUrl"`
@@ -92,7 +92,7 @@ func (s *Server) addChannel(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
-func (s *Server) getChannels(c echo.Context) error {
+func (s *Server) getChannelsHandler(c echo.Context) error {
 	channels, err := s.Repository.GetChannels()
 	if err != nil {
 		s.Logger.Error("could not get all channels", zap.Error(err))
@@ -125,7 +125,7 @@ func (s *Server) getChannels(c echo.Context) error {
 	return c.JSON(http.StatusOK, channelResponses)
 }
 
-func (s *Server) getChannel(c echo.Context) error {
+func (s *Server) getChannelHandler(c echo.Context) error {
 	channelHandle := strings.Replace(c.Param("channelHandle"), "%40", "@", 1)
 
 	channel, err := s.Repository.GetChannelByHandle(channelHandle)
