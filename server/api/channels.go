@@ -51,6 +51,16 @@ func (s *Server) addChannel(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "json input is invalid")
 	}
 
+	if !addChannelRequest.DownloadSettings.DownloadVideo && !addChannelRequest.DownloadSettings.DownloadAudio {
+		s.Logger.Warn("either video or audio checkboxes must be checked", zap.Bool("downloadVideo", addChannelRequest.DownloadSettings.DownloadVideo), zap.Bool("downloadAudio", addChannelRequest.DownloadSettings.DownloadAudio))
+		return echo.NewHTTPError(http.StatusBadRequest, "Either the Video or the Audio checkbox must be checked, or both.")
+	}
+
+	if !addChannelRequest.DownloadSettings.DownloadAutomatically && !addChannelRequest.DownloadSettings.DownloadEntireChannel {
+		s.Logger.Warn("automatically download new uploads and download the entire channel switches aren't toggled", zap.Bool("downloadAutomatically", addChannelRequest.DownloadSettings.DownloadAutomatically), zap.Bool("downloadEntireChannel", addChannelRequest.DownloadSettings.DownloadEntireChannel))
+		return echo.NewHTTPError(http.StatusBadRequest, "Please toggle either the 'Automatically download new uploads' or 'Download the entire channel' switch, or both.")
+	}
+
 	channel := repository.Channel{
 		ChannelUrl:    addChannelRequest.Channel.ChannelUrl,
 		ChannelName:   addChannelRequest.Channel.ChannelName,
