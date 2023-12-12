@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useToast } from "../../components/ui/use-toast";
+import { useRouter } from "next/navigation"
 
 interface ChannelInfo {
   uploader_id: string;
@@ -33,6 +34,7 @@ interface AddChannelRequest {
 
 export const useAddChannel = () => {
   const { toast } = useToast();
+  const router = useRouter();
 
   const addChannel = async (
     e: React.FormEvent<HTMLFormElement>,
@@ -79,6 +81,8 @@ export const useAddChannel = () => {
     toast({
       title: `${channelInfo.uploader} added successfully!`,
     });
+
+    router.refresh()
   };
 
   return { addChannel };
