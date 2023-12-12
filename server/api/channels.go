@@ -2,6 +2,7 @@ package api
 
 import (
 	"golty/repository"
+	"golty/ytdl"
 	"net/http"
 	"strings"
 
@@ -51,16 +52,19 @@ func (s *Server) addChannel(c echo.Context) error {
 		AvatarUrl:     addChannelRequest.Channel.AvatarUrl,
 	}
 
-	err := s.Repository.InsertChannel(channel)
-	if err != nil {
-		s.Logger.Error("could not insert channel", zap.Error(err), zap.String("channelName", addChannelRequest.Channel.ChannelName))
+	// err := s.Repository.InsertChannel(channel)
+	// if err != nil {
+	// 	s.Logger.Error("could not insert channel", zap.Error(err), zap.String("channelName", addChannelRequest.Channel.ChannelName))
+	//
+	// 	if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+	// 		return echo.NewHTTPError(http.StatusBadRequest, "This channel already exists!")
+	// 	}
+	//
+	// 	return echo.NewHTTPError(http.StatusInternalServerError, err)
+	// }
 
-		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
-			return echo.NewHTTPError(http.StatusBadRequest, "This channel already exists!")
-		}
-
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
-	}
+	s.Logger.Info("downloading channel", zap.String("channelName", channel.ChannelName))
+	go s.Ytdl.DownloadChannel(channel.ChannelUrl, ytdl.ChannelDownloadOptions{})
 
 	return c.NoContent(http.StatusCreated)
 }
