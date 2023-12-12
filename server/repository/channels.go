@@ -26,7 +26,7 @@ func (r *Repository) GetChannels() ([]Channel, error) {
 
 	channels := []Channel{}
 
-	err := r.db.SelectContext(ctx, &channels, "SELECT id, channelUrl, channelName, channelHandle, avatarUrl FROM channels")
+	err := r.db.SelectContext(ctx, &channels, "SELECT id, channelUrl, channelName, channelHandle, avatarUrl FROM channels ORDER BY id DESC")
 	if err != nil {
 		return channels, err
 	}
