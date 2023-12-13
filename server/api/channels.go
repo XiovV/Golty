@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gookit/goutil/dump"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
@@ -83,8 +82,6 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 	s.Logger.Debug("channel successfully inserted into the database", zap.String("channelName", channel.ChannelName))
-
-	dump.P(createdChannel)
 
 	s.Logger.Info("downloading channel", zap.String("channelName", channel.ChannelName))
 
