@@ -70,10 +70,12 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 		AvatarUrl:     addChannelRequest.Channel.AvatarUrl,
 	}
 
-	s.Logger.Debug("inserting channel into the database", zap.String("channelUrl", channel.ChannelUrl))
+	log := s.Logger.With(zap.String("channelUrl", channel.ChannelUrl))
+
+	log.Debug("inserting channel into the database")
 	createdChannel, err := s.Repository.InsertChannel(channel)
 	if err != nil {
-		s.Logger.Error("could not insert channel", zap.Error(err), zap.String("channelName", channel.ChannelName))
+		log.Error("could not insert channel", zap.Error(err))
 
 		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
 			return echo.NewHTTPError(http.StatusBadRequest, "This channel already exists!")
@@ -81,10 +83,9 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
-	s.Logger.Debug("channel successfully inserted into the database", zap.String("channelName", channel.ChannelName))
+	log.Debug("channel successfully inserted into the database")
 
-	s.Logger.Info("downloading channel", zap.String("channelName", channel.ChannelName))
-
+	log.Info("downloading channel")
 	channelDownloadOptions := service.ChannelDownloadOptions{Video: addChannelRequest.DownloadSettings.DownloadVideo, Audio: addChannelRequest.DownloadSettings.DownloadAudio, Resolution: addChannelRequest.DownloadSettings.Resolution}
 
 	go s.ChannelsService.DownloadChannel(createdChannel, channelDownloadOptions)

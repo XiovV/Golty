@@ -40,23 +40,26 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 	videoDownloadOptions := ytdl.VideoDownloadOptions{Video: options.Audio, Audio: options.Audio, Resolution: options.Resolution, Output: ytdl.CHANNELS_DEFAULT_OUTPUT}
 
 	for _, videoId := range channelVideos {
-		s.logger.Info("downloading video", zap.String("channelUrl", channel.ChannelUrl), zap.String("videoId", videoId))
+		log := log.With(zap.String("videoId", videoId))
+
+		log.Info("downloading video", zap.String("channelUrl", channel.ChannelUrl))
 		err = s.ytdl.DownloadVideo(videoId, videoDownloadOptions)
 		if err != nil {
-			s.logger.Error("downloading video failed", zap.Error(err), zap.String("channelUrl", channel.ChannelUrl), zap.String("videoId", videoId))
+
+			log.Error("downloading video failed", zap.Error(err))
 			return
 		}
 
-		s.logger.Info("video downloaded successfully", zap.String("channelUrl", channel.ChannelUrl), zap.String("videoId", videoId))
+		log.Info("video downloaded successfully")
 
-		log.Info("extracting video metadata", zap.String("videoId", videoId))
+		log.Info("extracting video metadata")
 		metadata, err := s.ytdl.GetVideoMetadata(videoId)
 		if err != nil {
-			log.Error("could not extract video metadata", zap.Error(err), zap.String("videoId", videoId))
+			log.Error("could not extract video metadata", zap.Error(err))
 			return
 		}
 
-		log.Info("storing video metadata", zap.String("videoId", videoId))
+		log.Info("storing video metadata")
 
 		video := repository.Video{
 			ChannelId:    channel.ID,
