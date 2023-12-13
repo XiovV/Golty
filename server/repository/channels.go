@@ -6,6 +6,8 @@ type Channel struct {
 	ChannelName   string `db:"channelName"`
 	ChannelHandle string `db:"channelHandle"`
 	AvatarUrl     string `db:"avatarUrl"`
+	TotalVideos   int    `db:"totalVideos"`
+	TotalSize     int    `db:"totalSize"`
 }
 
 func (r *Repository) InsertChannel(channel Channel) (Channel, error) {
@@ -27,7 +29,7 @@ func (r *Repository) GetChannels() ([]Channel, error) {
 
 	channels := []Channel{}
 
-	err := r.db.SelectContext(ctx, &channels, "SELECT id, channelUrl, channelName, channelHandle, avatarUrl FROM channels ORDER BY id DESC")
+	err := r.db.SelectContext(ctx, &channels, "SELECT channels.id, channels.channelName, channels.channelHandle, channels.channelUrl, channels.avatarUrl, COUNT(videos.videoId) as totalVideos, COALESCE(SUM(videos.size), 0) as totalSize FROM channels LEFT JOIN videos ON channels.id = videos.channelId GROUP BY channels.id")
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +43,7 @@ func (r *Repository) GetChannelByHandle(channelHandle string) (Channel, error) {
 
 	channel := Channel{}
 
-	err := r.db.GetContext(ctx, &channel, "SELECT id, channelUrl, channelName, channelHandle, avatarUrl FROM channels WHERE channelHandle = $1", channelHandle)
+	err := r.db.GetContext(ctx, &channel, "SELECT channels.id, channels.channelName, channels.channelHandle, channels.channelUrl, channels.avatarUrl, COUNT(videos.videoId) as totalVideos, COALESCE(SUM(videos.size), 0) as totalSize FROM channels LEFT JOIN videos ON channels.id = videos.channelId WHERE channels.channelHandle = $1", channelHandle)
 	if err != nil {
 		return Channel{}, err
 	}

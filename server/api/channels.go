@@ -107,7 +107,7 @@ func (s *Server) getChannelsHandler(c echo.Context) error {
 		ChannelUrl    string `json:"channelUrl"`
 		AvatarUrl     string `json:"avatarUrl"`
 		TotalVideos   int    `json:"totalVideos"`
-		TotalSize     string `json:"totalSize"`
+		TotalSize     int    `json:"totalSize"`
 	}
 
 	channelResponses := []channelResponse{}
@@ -118,8 +118,8 @@ func (s *Server) getChannelsHandler(c echo.Context) error {
 			ChannelHandle: channel.ChannelHandle,
 			ChannelUrl:    channel.ChannelUrl,
 			AvatarUrl:     channel.AvatarUrl,
-			TotalVideos:   0,
-			TotalSize:     "0 GB",
+			TotalVideos:   channel.TotalVideos,
+			TotalSize:     channel.TotalSize,
 		})
 	}
 
@@ -142,8 +142,8 @@ func (s *Server) getChannelHandler(c echo.Context) error {
 		ChannelUrl    string `json:"channelUrl"`
 		AvatarUrl     string `json:"avatarUrl"`
 		TotalVideos   int    `json:"totalVideos"`
-		TotalSize     string `json:"totalSize"`
+		TotalSize     int    `json:"totalSize"`
 	}
 
-	return c.JSON(http.StatusOK, channelResponse{ID: channel.ID, ChannelName: channel.ChannelName, ChannelHandle: channel.ChannelHandle, ChannelUrl: channel.ChannelUrl, AvatarUrl: channel.AvatarUrl, TotalVideos: 0, TotalSize: "0 GB"})
+	return c.JSON(http.StatusOK, channelResponse{ID: channel.ID, ChannelName: channel.ChannelName, ChannelHandle: channel.ChannelHandle, ChannelUrl: channel.ChannelUrl, AvatarUrl: channel.AvatarUrl, TotalVideos: channel.TotalVideos, TotalSize: channel.TotalSize})
 }
