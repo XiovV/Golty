@@ -129,7 +129,7 @@ func (s *Server) getChannelsHandler(c echo.Context) error {
 func (s *Server) getChannelHandler(c echo.Context) error {
 	channelHandle := strings.Replace(c.Param("channelHandle"), "%40", "@", 1)
 
-	channel, err := s.Repository.GetChannelByHandle(channelHandle)
+	channel, err := s.Repository.FindChannelByHandle(channelHandle)
 	if err != nil {
 		s.Logger.Error("could not get channel by handle", zap.Error(err), zap.String("channelHandle", channelHandle))
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
@@ -146,4 +146,42 @@ func (s *Server) getChannelHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, channelResponse{ID: channel.ID, ChannelName: channel.ChannelName, ChannelHandle: channel.ChannelHandle, ChannelUrl: channel.ChannelUrl, AvatarUrl: channel.AvatarUrl, TotalVideos: channel.TotalVideos, TotalSize: channel.TotalSize})
+}
+
+func (s *Server) getChannelVideosHandler(c echo.Context) error {
+	channelHandle := strings.Replace(c.Param("channelHandle"), "%40", "@", 1)
+	log := s.Logger.With(zap.String("channelHandle", channelHandle))
+
+	channel, err := s.Repository.FindChannelByHandle(channelHandle)
+	if err != nil {
+		log.Error("could not find channel", zap.Error(err))
+		return echo.NewHTTPError(http.StatusNotFound, "channel does not exist ")
+	}
+
+	channelVideos, err := s.Repository.GetChannelVideos(channel.ID)
+	if err != nil {
+		log.Error("could not get channel videos", zap.Error(err))
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	type channelVideosResponse struct {
+		VideoId        string `json:"videoId"`
+		Title          string `json:"title"`
+		ThumbnailUrl   string `json:"thumbnailUrl"`
+		Size           int64  `json:"size"`
+		DateDownloaded int64  `json:"dateDownloaded"`
+	}
+
+	response := []channelVideosResponse{}
+	for _, video := range channelVideos {
+		response = append(response, channelVideosResponse{
+			VideoId:        video.VideoId,
+			Title:          video.Title,
+			ThumbnailUrl:   video.ThumbnailUrl,
+			Size:           video.Size,
+			DateDownloaded: 0,
+		})
+	}
+
+	return c.JSON(http.StatusOK, response)
 }

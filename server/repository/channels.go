@@ -37,7 +37,7 @@ func (r *Repository) GetChannels() ([]Channel, error) {
 	return channels, nil
 }
 
-func (r *Repository) GetChannelByHandle(channelHandle string) (Channel, error) {
+func (r *Repository) FindChannelByHandle(channelHandle string) (Channel, error) {
 	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
 	defer cancel()
 

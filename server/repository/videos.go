@@ -20,3 +20,16 @@ func (r *Repository) InsertVideo(video Video) error {
 
 	return nil
 }
+
+func (r *Repository) GetChannelVideos(channelId int) ([]Video, error) {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
+
+	videos := []Video{}
+	err := r.db.SelectContext(ctx, &videos, "SELECT id, channelId, videoId, title, thumbnailUrl, size FROM videos WHERE channelId = $1", channelId)
+	if err != nil {
+		return nil, err
+	}
+
+	return videos, nil
+}
