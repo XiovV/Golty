@@ -179,7 +179,7 @@ func (s *Server) getChannelVideosHandler(c echo.Context) error {
 			Title:          video.Title,
 			ThumbnailUrl:   video.ThumbnailUrl,
 			Size:           video.Size,
-			DateDownloaded: 0,
+			DateDownloaded: video.DateDownloaded,
 		})
 	}
 

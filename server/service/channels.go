@@ -3,6 +3,7 @@ package service
 import (
 	"golty/repository"
 	"golty/ytdl"
+	"time"
 
 	"go.uber.org/zap"
 )
@@ -48,6 +49,7 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 			log.Error("could not download video", zap.Error(err))
 			return
 		}
+		dateDownloaded := time.Now().Unix()
 
 		log.Info("video downloaded successfully")
 
@@ -69,11 +71,12 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 		log.Info("storing video metadata")
 
 		video := repository.Video{
-			ChannelId:    channel.ID,
-			VideoId:      metadata.ID,
-			Title:        metadata.Title,
-			ThumbnailUrl: metadata.ThumbnailURL,
-			Size:         videoSize,
+			ChannelId:      channel.ID,
+			VideoId:        metadata.ID,
+			Title:          metadata.Title,
+			ThumbnailUrl:   metadata.ThumbnailURL,
+			Size:           videoSize,
+			DateDownloaded: dateDownloaded,
 		}
 
 		err = s.repository.InsertVideo(video)
