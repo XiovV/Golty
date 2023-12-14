@@ -45,17 +45,24 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 		log.Info("downloading video", zap.String("channelUrl", channel.ChannelUrl))
 		err = s.ytdl.DownloadVideo(videoId, videoDownloadOptions)
 		if err != nil {
-
-			log.Error("downloading video failed", zap.Error(err))
+			log.Error("could not download video", zap.Error(err))
 			return
 		}
 
 		log.Info("video downloaded successfully")
 
-		log.Info("extracting video metadata")
+		log.Info("getting video metadata")
 		metadata, err := s.ytdl.GetVideoMetadata(videoId)
 		if err != nil {
 			log.Error("could not extract video metadata", zap.Error(err))
+			return
+		}
+
+		log.Info("getting video filesize")
+		channelPath := ytdl.CHANNELS_DIR + channel.ChannelName
+		videoSize, err := s.ytdl.GetVideoSize(channelPath, videoId)
+		if err != nil {
+			log.Error("could not get video file size", zap.Error(err))
 			return
 		}
 
@@ -66,6 +73,7 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 			VideoId:      metadata.ID,
 			Title:        metadata.Title,
 			ThumbnailUrl: metadata.ThumbnailURL,
+			Size:         videoSize,
 		}
 
 		err = s.repository.InsertVideo(video)

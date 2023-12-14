@@ -1,7 +1,5 @@
 package ytdl
 
-const CHANNELS_DEFAULT_OUTPUT = "videos/channels/%(uploader)s/%(id)s.%(ext)s"
-
 type ChannelInfo struct {
 	UploaderID string `json:"uploader_id"`
 	Uploader   string `json:"uploader"`

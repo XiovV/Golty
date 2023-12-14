@@ -2,7 +2,10 @@ package ytdl
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"os"
+	"strings"
 )
 
 type VideoMetadata struct {
@@ -34,4 +37,38 @@ func (y *Ytdl) GetVideoMetadata(videoId string) (VideoMetadata, error) {
 	}
 
 	return videoMetadata, nil
+}
+
+func (y *Ytdl) getVideoFilename(path, videoId string) (string, error) {
+	videos, err := os.ReadDir(path)
+	if err != nil {
+		return "", err
+	}
+
+	for _, video := range videos {
+		if strings.HasPrefix(video.Name(), videoId) {
+			return video.Name(), nil
+		}
+	}
+
+	return "", errors.New("video not found")
+}
+
+func (y *Ytdl) GetVideoSize(path, videoId string) (int64, error) {
+	videoFilename, err := y.getVideoFilename(path, videoId)
+	if err != nil {
+		return 0, err
+	}
+
+	file, err := os.Open(fmt.Sprintf("%s/%s", path, videoFilename))
+	if err != nil {
+		return 0, err
+	}
+
+	fi, err := file.Stat()
+	if err != nil {
+		return 0, err
+	}
+
+	return fi.Size(), nil
 }
