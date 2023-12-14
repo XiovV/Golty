@@ -5,5 +5,5 @@ export interface Channel {
   channelUrl: string;
   avatarUrl: string;
   totalVideos: number;
-  totalSize: string;
+  totalSize: number;
 }

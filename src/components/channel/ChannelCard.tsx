@@ -6,7 +6,7 @@ interface ChannelProps {
   channelName: string;
   channelHandle: string;
   totalVideos: number;
-  totalSize: string;
+  totalSize: number;
   checkButton?: boolean;
 }
 
@@ -34,7 +34,7 @@ export default function ChannelCard({
           <div className="flex gap-1 text-[#676D75] text-sm">
             <p>{totalVideos} videos</p>
             <p>•</p>
-            <p>{totalSize}</p>
+            <p>{formatFileSize(totalSize)}</p>
           </div>
         </div>
         {checkButton && (
@@ -45,4 +45,15 @@ export default function ChannelCard({
       </div>
     </div>
   );
+}
+
+function formatFileSize(bytes: number) {
+  if (bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
