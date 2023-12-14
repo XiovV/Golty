@@ -6,13 +6,16 @@ const nextConfig = {
         protocol: "https",
         hostname: "i.imgur.com",
         port: "",
-        // pathname: "/",
       },
       {
         protocol: "https",
         hostname: "yt3.googleusercontent.com",
         port: "",
-        // pathname: "/",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        port: "",
       },
     ],
   },

@@ -1,19 +1,36 @@
-import { Video } from "@/types/video";
 import VideoCard from "./VideoCard";
 
 interface VideosListProps {
-  channelVideosResponse: Promise<Video[]>;
+  channelHandle: string;
 }
 
-export default async function VideosList({
-  channelVideosResponse,
-}: VideosListProps) {
-  const videos = await channelVideosResponse;
+interface Video {
+  videoId: string;
+  title: string;
+  thumbnailUrl: string;
+  size: number;
+  dateDownloaded: number;
+}
+
+async function fetchVideos(channelHandle: string) {
+  const res = await fetch(
+    `http://localhost:8080/v1/channels/videos/${channelHandle}`,
+  );
+
+  const videos: Video[] = await res.json();
+
+  return videos;
+}
+
+export default async function VideosList({ channelHandle }: VideosListProps) {
+  const videos = await fetchVideos(channelHandle);
+
   return (
     <div className="flex flex-col gap-5 lg:flex-row lg:flex-wrap content-start items-start">
       {videos.map((video) => {
         return (
           <VideoCard
+            key={video.videoId}
             thumbnailUrl={video.thumbnailUrl}
             title={video.title}
             videoSize={video.size}
