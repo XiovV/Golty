@@ -46,7 +46,7 @@ export default async function Page({
           totalSize={channel.totalSize}
         />
 
-        <div className="mx-auto lg:mx-5">
+        <div className="mx-auto lg:mx-5 pb-16">
           <VideosList channelHandle={params.channelHandle} />
         </div>
       </div>
