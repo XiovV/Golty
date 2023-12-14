@@ -32,7 +32,7 @@ export default async function Page({
   return (
     <main>
       <TopBar
-        title={params.channelHandle}
+        title={channel.channelName}
         mobileButtons={[IoSearch, LuRefreshCw, MdOutlineSort, IoMdSettings]}
         desktopButtons={[LuRefreshCw, MdOutlineSort, IoMdSettings, FiTrash]}
       />
