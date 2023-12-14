@@ -66,10 +66,12 @@ func (y *Ytdl) GetVideoSize(path, videoId string) (int64, error) {
 	}
 	defer file.Close()
 
-	fi, err := file.Stat()
+	fileStat, err := file.Stat()
 	if err != nil {
 		return 0, err
 	}
 
-	return fi.Size(), nil
+	size := fileStat.Size()
+
+	return size, nil
 }
