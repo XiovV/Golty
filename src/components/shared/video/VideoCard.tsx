@@ -1,6 +1,6 @@
 import Image from "next/image";
 import ChannelAvatar from "@/components/channel/ChannelAvatar";
-import { formatFileSize } from "@/utils/format";
+import { formatFileSize, formatTimeAgo } from "@/utils/format";
 
 interface VideoCardProps {
   thumbnailUrl: string;
@@ -81,7 +81,7 @@ function VideoMeta({ channelName, videoSize, dateDownloaded }: VideoMetaProps) {
       )}
       <p>{formatFileSize(videoSize)}</p>
       <p>•</p>
-      <p>{dateDownloaded}</p>
+      <p>{formatTimeAgo(dateDownloaded)}</p>
     </div>
   );
 }
