@@ -94,7 +94,7 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 }
 
 func (s *Server) getChannelsHandler(c echo.Context) error {
-	channels, err := s.Repository.GetChannels()
+	channels, err := s.Repository.GetChannelsWithSize()
 	if err != nil {
 		s.Logger.Error("could not get all channels", zap.Error(err))
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
@@ -129,7 +129,7 @@ func (s *Server) getChannelsHandler(c echo.Context) error {
 func (s *Server) getChannelHandler(c echo.Context) error {
 	channelHandle := strings.Replace(c.Param("channelHandle"), "%40", "@", 1)
 
-	channel, err := s.Repository.FindChannelByHandle(channelHandle)
+	channel, err := s.Repository.FindChannelByHandleWithSize(channelHandle)
 	if err != nil {
 		s.Logger.Error("could not get channel by handle", zap.Error(err), zap.String("channelHandle", channelHandle))
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
