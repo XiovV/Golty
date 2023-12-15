@@ -152,7 +152,7 @@ func (s *Server) getChannelVideosHandler(c echo.Context) error {
 	channelHandle := strings.Replace(c.Param("channelHandle"), "%40", "@", 1)
 	log := s.Logger.With(zap.String("channelHandle", channelHandle))
 
-	channel, err := s.Repository.FindChannelByHandle(channelHandle)
+	channel, err := s.Repository.FindChannelByHandleWithSize(channelHandle)
 	if err != nil {
 		log.Error("could not find channel", zap.Error(err))
 		return echo.NewHTTPError(http.StatusNotFound, "channel does not exist ")
