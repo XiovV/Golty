@@ -86,7 +86,21 @@ func (r *Repository) FindChannelByHandle(channelHandle string) (Channel, error) 
 
 	channel := Channel{}
 
-	err := r.db.GetContext(ctx, &channel, "SELECT id, channelName, channelHandle, channelUrl, avatarUrl WHERE channelHandle = $1", channelHandle)
+	err := r.db.GetContext(ctx, &channel, "SELECT id, channelName, channelHandle, channelUrl, avatarUrl FROM channels WHERE channelHandle = $1", channelHandle)
+	if err != nil {
+		return Channel{}, err
+	}
+
+	return channel, nil
+}
+
+func (r *Repository) FindChannelByID(channelId int) (Channel, error) {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
+
+	channel := Channel{}
+
+	err := r.db.GetContext(ctx, &channel, "SELECT id, channelName, channelHandle, channelUrl, avatarUrl FROM channels WHERE id = $1", channelId)
 	if err != nil {
 		return Channel{}, err
 	}
@@ -106,4 +120,17 @@ func (r *Repository) FindChannelByHandleWithSize(channelHandle string) (ChannelW
 	}
 
 	return channel, nil
+}
+
+func (r *Repository) GetAllDownloadSettings() ([]ChannelDownloadSettings, error) {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
+
+	channelDownloadSettings := []ChannelDownloadSettings{}
+	err := r.db.SelectContext(ctx, &channelDownloadSettings, "SELECT channelId, resolution, format, downloadVideo, downloadAudio, downloadEntire, downloadNewUploads FROM channel_settings")
+	if err != nil {
+		return []ChannelDownloadSettings{}, err
+	}
+
+	return channelDownloadSettings, nil
 }

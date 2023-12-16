@@ -37,6 +37,8 @@ func main() {
 
 	channelsService := service.NewChannelsService(repository, logger, ytdl)
 
+	go channelsService.ResumeDownloads()
+
 	server := api.New(c, logger, repository, channelsService, ytdl)
 
 	err = server.Start()

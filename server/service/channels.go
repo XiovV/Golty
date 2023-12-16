@@ -54,6 +54,7 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 	}
 
 	log.Debug("getting channel videos")
+
 	channelVideos, err := s.ytdl.GetChannelVideos(channel.ChannelUrl)
 	if err != nil {
 		log.Error("could not get channel videos", zap.Error(err))
@@ -62,35 +63,83 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 
 	videoDownloadOptions := ytdl.VideoDownloadOptions{Video: options.Audio, Audio: options.Audio, Resolution: options.Resolution, Output: ytdl.CHANNELS_DEFAULT_OUTPUT}
 
-	for _, videoId := range channelVideos {
-		log := log.With(zap.String("videoId", videoId))
+	err = s.downloadChannelVideos(channel, channelVideos, videoDownloadOptions)
+	if err != nil {
+		log.Error("could not download channel", zap.Error(err))
+		return
+	}
 
-		log.Info("downloading video", zap.String("channelUrl", channel.ChannelUrl))
-		err = s.ytdl.DownloadVideo(videoId, videoDownloadOptions)
+	log.Info("channel downloaded successfully")
+}
+
+func (s *ChannelsService) ResumeDownloads() {
+	s.logger.Debug("resuming downloads")
+	channelDownloadSettings, err := s.repository.GetAllDownloadSettings()
+	if err != nil {
+		s.logger.Error("unable to get channel download settings", zap.Error(err))
+		return
+	}
+
+	for _, channelSettings := range channelDownloadSettings {
+		log := s.logger.With(zap.Int("channelId", channelSettings.ChannelId))
+
+		channel, err := s.repository.FindChannelByID(channelSettings.ChannelId)
 		if err != nil {
-			log.Error("could not download video", zap.Error(err))
+			log.Error("could not find channel by id", zap.Error(err))
 			return
+		}
+
+		log.Debug("getting missing videos")
+		missingVideos, err := s.getMissingVideos(channel)
+		if err != nil {
+			log.Error("could not get missing videos", zap.Error(err))
+			return
+		}
+
+		if len(missingVideos) == 0 {
+			log.Debug("no missing videos, continuing")
+			continue
+		}
+
+		videoDownloadOptions := ytdl.VideoDownloadOptions{
+			Video:      s.integerToBoolean(channelSettings.DownloadVideo),
+			Audio:      s.integerToBoolean(channelSettings.DownloadAudio),
+			Resolution: channelSettings.Resolution,
+			Format:     channelSettings.Format,
+			Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
+		}
+
+		s.downloadChannelVideos(channel, missingVideos, videoDownloadOptions)
+	}
+}
+
+func (s *ChannelsService) downloadChannelVideos(channel repository.Channel, videos []string, options ytdl.VideoDownloadOptions) error {
+	for _, videoId := range videos {
+		log := s.logger.With(zap.String("videoId", videoId))
+
+		log.Debug("downloading video")
+		err := s.ytdl.DownloadVideo(videoId, options)
+		if err != nil {
+			return err
 		}
 		dateDownloaded := time.Now().Unix()
 
-		log.Info("video downloaded successfully")
+		log.Debug("video downloaded successfully")
 
-		log.Info("getting video metadata")
+		log.Debug("getting video metadata")
 		metadata, err := s.ytdl.GetVideoMetadata(videoId)
 		if err != nil {
-			log.Error("could not extract video metadata", zap.Error(err))
-			return
+			return err
 		}
 
-		log.Info("getting video filesize")
+		log.Debug("getting video filesize")
 		channelPath := ytdl.CHANNELS_DIR + channel.ChannelName
 		videoSize, err := s.ytdl.GetVideoSize(channelPath, videoId)
 		if err != nil {
-			log.Error("could not get video file size", zap.Error(err))
-			return
+			return err
 		}
 
-		log.Info("storing video metadata")
+		log.Debug("storing video metadata")
 
 		video := repository.Video{
 			ChannelId:      channel.ID,
@@ -103,12 +152,11 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 
 		err = s.repository.InsertVideo(video)
 		if err != nil {
-			log.Error("could not insert video metadata", zap.Error(err))
-			return
+			return err
 		}
 	}
 
-	log.Info("channel downloaded successfully")
+	return nil
 }
 
 func (s *ChannelsService) getMissingVideos(channel repository.Channel) ([]string, error) {
@@ -129,6 +177,14 @@ func (s *ChannelsService) getMissingVideos(channel repository.Channel) ([]string
 	numberOfMissingVideos := len(channelVideos) - len(downloadedVideos)
 
 	return channelVideos[:numberOfMissingVideos], nil
+}
+
+func (s *ChannelsService) integerToBoolean(integer int) bool {
+	if integer > 0 {
+		return true
+	}
+
+	return false
 }
 
 func (s *ChannelsService) booleanToInteger(boolean bool) int {
