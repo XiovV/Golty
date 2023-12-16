@@ -1,5 +1,7 @@
 package repository
 
+import "github.com/gookit/goutil/dump"
+
 type Channel struct {
 	ID            int    `db:"id"`
 	ChannelUrl    string `db:"channelUrl"`
@@ -14,6 +16,16 @@ type ChannelWithSize struct {
 	TotalSize   int `db:"totalSize"`
 }
 
+type ChannelDownloadSettings struct {
+	ChannelId          int    `db:"channelId"`
+	Resolution         string `db:"resolution"`
+	Format             string `db:"format"`
+	DownloadVideo      int    `db:"downloadVideo"`
+	DownloadAudio      int    `db:"downloadAudio"`
+	DownloadEntire     int    `db:"downloadEntire"`
+	DownloadNewUploads int    `db:"downloadNewUploads"`
+}
+
 func (r *Repository) InsertChannel(channel Channel) (Channel, error) {
 	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
 	defer cancel()
@@ -25,6 +37,19 @@ func (r *Repository) InsertChannel(channel Channel) (Channel, error) {
 	}
 
 	return newChannel, err
+}
+
+func (r *Repository) InsertChannelDownloadSettings(settings ChannelDownloadSettings) error {
+	dump.P(settings)
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
+
+	_, err := r.db.ExecContext(ctx, "INSERT INTO channel_settings (channelId, resolution, format, downloadVideo, downloadAudio, downloadEntire, downloadNewUploads) VALUES ($1, $2, $3, $4, $5, $6, $7)", settings.ChannelId, settings.Resolution, settings.Format, settings.DownloadVideo, settings.DownloadAudio, settings.DownloadEntire, settings.DownloadNewUploads)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *Repository) GetChannels() ([]Channel, error) {

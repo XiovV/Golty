@@ -37,12 +37,12 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 			AvatarUrl     string `json:"avatarUrl"`
 		} `json:"channel"`
 		DownloadSettings struct {
-			DownloadVideo         bool   `json:"downloadVideo"`
-			DownloadAudio         bool   `json:"downloadAudio"`
-			Resolution            string `json:"resolution"`
-			Format                string `json:"format"`
-			DownloadAutomatically bool   `json:"downloadAutomatically"`
-			DownloadEntireChannel bool   `json:"downloadEntireChannel"`
+			DownloadVideo      bool   `json:"downloadVideo"`
+			DownloadAudio      bool   `json:"downloadAudio"`
+			Resolution         string `json:"resolution"`
+			Format             string `json:"format"`
+			DownloadNewUploads bool   `json:"downloadNewUploads"`
+			DownloadEntire     bool   `json:"downloadEntire"`
 		} `json:"downloadSettings"`
 	}
 
@@ -57,8 +57,8 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Either the Video or the Audio checkbox must be checked, or both.")
 	}
 
-	if !addChannelRequest.DownloadSettings.DownloadAutomatically && !addChannelRequest.DownloadSettings.DownloadEntireChannel {
-		s.Logger.Warn("automatically download new uploads and download the entire channel switches aren't toggled", zap.Bool("downloadAutomatically", addChannelRequest.DownloadSettings.DownloadAutomatically), zap.Bool("downloadEntireChannel", addChannelRequest.DownloadSettings.DownloadEntireChannel))
+	if !addChannelRequest.DownloadSettings.DownloadNewUploads && !addChannelRequest.DownloadSettings.DownloadEntire {
+		s.Logger.Warn("automatically download new uploads and download the entire channel switches aren't toggled", zap.Bool("downloadAutomatically", addChannelRequest.DownloadSettings.DownloadNewUploads), zap.Bool("downloadEntireChannel", addChannelRequest.DownloadSettings.DownloadEntire))
 
 		return echo.NewHTTPError(http.StatusBadRequest, "Please toggle either the 'Automatically download new uploads' or 'Download the entire channel' switch, or both.")
 	}
@@ -86,7 +86,15 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 	log.Debug("channel successfully inserted into the database")
 
 	log.Info("downloading channel")
-	channelDownloadOptions := service.ChannelDownloadOptions{Video: addChannelRequest.DownloadSettings.DownloadVideo, Audio: addChannelRequest.DownloadSettings.DownloadAudio, Resolution: addChannelRequest.DownloadSettings.Resolution}
+
+	channelDownloadOptions := service.ChannelDownloadOptions{
+		Video:              addChannelRequest.DownloadSettings.DownloadVideo,
+		Audio:              addChannelRequest.DownloadSettings.DownloadAudio,
+		Resolution:         addChannelRequest.DownloadSettings.Resolution,
+		Format:             addChannelRequest.DownloadSettings.Format,
+		DownloadEntire:     addChannelRequest.DownloadSettings.DownloadEntire,
+		DownloadNewUploads: addChannelRequest.DownloadSettings.DownloadNewUploads,
+	}
 
 	go s.ChannelsService.DownloadChannel(createdChannel, channelDownloadOptions)
 
