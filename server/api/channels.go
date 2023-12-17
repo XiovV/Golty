@@ -173,21 +173,21 @@ func (s *Server) getChannelVideosHandler(c echo.Context) error {
 	}
 
 	type channelVideosResponse struct {
-		VideoId        string `json:"videoId"`
-		Title          string `json:"title"`
-		ThumbnailUrl   string `json:"thumbnailUrl"`
-		Size           int64  `json:"size"`
-		DateDownloaded int64  `json:"dateDownloaded"`
+		VideoId      string `json:"videoId"`
+		Title        string `json:"title"`
+		ThumbnailUrl string `json:"thumbnailUrl"`
+		Size         int64  `json:"size"`
+		DownloadDate int64  `json:"downloadDate"`
 	}
 
 	response := []channelVideosResponse{}
 	for _, video := range channelVideos {
 		response = append(response, channelVideosResponse{
-			VideoId:        video.VideoId,
-			Title:          video.Title,
-			ThumbnailUrl:   video.ThumbnailUrl,
-			Size:           video.Size,
-			DateDownloaded: video.DateDownloaded,
+			VideoId:      video.VideoId,
+			Title:        video.Title,
+			ThumbnailUrl: video.ThumbnailUrl,
+			Size:         video.Size,
+			DownloadDate: video.DownloadDate,
 		})
 	}
 

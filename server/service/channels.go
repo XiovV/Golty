@@ -132,6 +132,11 @@ func (s *ChannelsService) downloadChannelVideos(channel repository.Channel, vide
 			return err
 		}
 
+		parseUploadDate, err := time.Parse("20060102", metadata.UploadDate)
+		if err != nil {
+			return err
+		}
+
 		log.Debug("getting video filesize")
 		channelPath := ytdl.CHANNELS_DIR + channel.ChannelName
 		videoSize, err := s.ytdl.GetVideoSize(channelPath, videoId)
@@ -142,12 +147,13 @@ func (s *ChannelsService) downloadChannelVideos(channel repository.Channel, vide
 		log.Debug("storing video metadata")
 
 		video := repository.Video{
-			ChannelId:      channel.ID,
-			VideoId:        metadata.ID,
-			Title:          metadata.Title,
-			ThumbnailUrl:   metadata.ThumbnailURL,
-			Size:           videoSize,
-			DateDownloaded: dateDownloaded,
+			ChannelId:    channel.ID,
+			VideoId:      metadata.ID,
+			Title:        metadata.Title,
+			ThumbnailUrl: metadata.ThumbnailURL,
+			Size:         videoSize,
+			DownloadDate: dateDownloaded,
+			UploadDate:   parseUploadDate.Unix(),
 		}
 
 		err = s.repository.InsertVideo(video)
