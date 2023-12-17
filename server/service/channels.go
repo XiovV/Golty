@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"golty/repository"
 	"golty/ytdl"
 	"time"
@@ -9,11 +10,11 @@ import (
 )
 
 type ChannelsService struct {
-	repository    *repository.Repository
-	logger        *zap.Logger
-	ytdl          *ytdl.Ytdl
-	channels      []*repository.Channel
-	channelStates []ChannelState
+	repository           *repository.Repository
+	logger               *zap.Logger
+	ytdl                 *ytdl.Ytdl
+	channels             []*repository.Channel
+	currentlyDownloading []*repository.Channel
 }
 
 type ChannelState struct {
@@ -36,6 +37,9 @@ func NewChannelsService(repository *repository.Repository, logger *zap.Logger, y
 
 func (s *ChannelsService) DownloadChannel(channel repository.Channel, options ChannelDownloadOptions) {
 	log := s.logger.With(zap.String("channelUrl", channel.ChannelUrl))
+
+	s.addToCurrentlyDownloading(&channel)
+	defer s.removeFromCurrentlyDownloading(&channel)
 
 	log.Debug("persisting channel download settings")
 
@@ -101,6 +105,8 @@ func (s *ChannelsService) ResumeDownloads() {
 			continue
 		}
 
+		s.addToCurrentlyDownloading(&channel)
+
 		videoDownloadOptions := ytdl.VideoDownloadOptions{
 			Video:      s.integerToBoolean(channelSettings.DownloadVideo),
 			Audio:      s.integerToBoolean(channelSettings.DownloadAudio),
@@ -110,6 +116,8 @@ func (s *ChannelsService) ResumeDownloads() {
 		}
 
 		s.downloadChannelVideos(channel, missingVideos, videoDownloadOptions)
+
+		s.removeFromCurrentlyDownloading(&channel)
 	}
 }
 
@@ -200,4 +208,37 @@ func (s *ChannelsService) booleanToInteger(boolean bool) int {
 	}
 
 	return 0
+}
+
+func (s *ChannelsService) addToCurrentlyDownloading(channel *repository.Channel) {
+	s.logger.Debug("adding channel to currently downloading", zap.String("channelHandle", channel.ChannelHandle))
+	s.currentlyDownloading = append(s.currentlyDownloading, channel)
+}
+
+func (s *ChannelsService) removeFromCurrentlyDownloading(channel *repository.Channel) {
+	s.logger.Debug("removing channel from currently downloading", zap.String("channelHandle", channel.ChannelHandle))
+	for i, c := range s.currentlyDownloading {
+		if c.ChannelHandle == channel.ChannelHandle {
+			s.currentlyDownloading = append(s.currentlyDownloading[:i], s.currentlyDownloading[i+1:]...)
+		}
+	}
+}
+
+func (s *ChannelsService) isChannelCurrentlyDownloading(channelId int) bool {
+	for _, channel := range s.currentlyDownloading {
+		fmt.Println(channel.ID)
+		if channel.ID == channelId {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (s *ChannelsService) GetChannelDownloadState(channelId int) string {
+	if s.isChannelCurrentlyDownloading(channelId) {
+		return "downloading"
+	}
+
+	return "idle"
 }

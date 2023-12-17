@@ -101,6 +101,8 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
+var isDownloading bool
+
 func (s *Server) getChannelsHandler(c echo.Context) error {
 	channels, err := s.Repository.GetChannelsWithSize()
 	if err != nil {
@@ -116,6 +118,7 @@ func (s *Server) getChannelsHandler(c echo.Context) error {
 		AvatarUrl     string `json:"avatarUrl"`
 		TotalVideos   int    `json:"totalVideos"`
 		TotalSize     int    `json:"totalSize"`
+		State         string `json:"state"`
 	}
 
 	channelResponses := []channelResponse{}
@@ -128,6 +131,7 @@ func (s *Server) getChannelsHandler(c echo.Context) error {
 			AvatarUrl:     channel.AvatarUrl,
 			TotalVideos:   channel.TotalVideos,
 			TotalSize:     channel.TotalSize,
+			State:         s.ChannelsService.GetChannelDownloadState(channel.ID),
 		})
 	}
 
@@ -151,9 +155,21 @@ func (s *Server) getChannelHandler(c echo.Context) error {
 		AvatarUrl     string `json:"avatarUrl"`
 		TotalVideos   int    `json:"totalVideos"`
 		TotalSize     int    `json:"totalSize"`
+		State         string `json:"state"`
 	}
 
-	return c.JSON(http.StatusOK, channelResponse{ID: channel.ID, ChannelName: channel.ChannelName, ChannelHandle: channel.ChannelHandle, ChannelUrl: channel.ChannelUrl, AvatarUrl: channel.AvatarUrl, TotalVideos: channel.TotalVideos, TotalSize: channel.TotalSize})
+	response := channelResponse{
+		ID:            channel.ID,
+		ChannelName:   channel.ChannelName,
+		ChannelHandle: channel.ChannelHandle,
+		ChannelUrl:    channel.ChannelUrl,
+		AvatarUrl:     channel.AvatarUrl,
+		TotalVideos:   channel.TotalVideos,
+		TotalSize:     channel.TotalSize,
+		State:         "downloading",
+	}
+
+	return c.JSON(http.StatusOK, response)
 }
 
 func (s *Server) getChannelVideosHandler(c echo.Context) error {
