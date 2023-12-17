@@ -9,10 +9,11 @@ import (
 )
 
 type VideoMetadata struct {
-	ID           string `json:"id"`
-	Title        string `json:"title"`
-	ThumbnailURL string `json:"thumbnail"`
-	UploadDate   string `json:"upload_date"`
+	ID             string `json:"id"`
+	Title          string `json:"title"`
+	ThumbnailURL   string `json:"thumbnail"`
+	UploadDate     string `json:"upload_date"`
+	DurationString string `json:"duration_string"`
 }
 
 func (y *Ytdl) DownloadVideo(videoId string, options VideoDownloadOptions) error {
@@ -26,7 +27,7 @@ func (y *Ytdl) DownloadVideo(videoId string, options VideoDownloadOptions) error
 }
 
 func (y *Ytdl) GetVideoMetadata(videoId string) (VideoMetadata, error) {
-	out, err := y.exec("--print", "%(.{title,thumbnail,id,upload_date})#+j", videoId)
+	out, err := y.exec("--print", "%(.{title,thumbnail,id,upload_date,duration_string})#+j", videoId)
 	if err != nil {
 		return VideoMetadata{}, err
 	}

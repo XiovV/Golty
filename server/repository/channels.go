@@ -1,7 +1,5 @@
 package repository
 
-import "github.com/gookit/goutil/dump"
-
 type Channel struct {
 	ID            int    `db:"id"`
 	ChannelUrl    string `db:"channelUrl"`
@@ -40,7 +38,6 @@ func (r *Repository) InsertChannel(channel Channel) (Channel, error) {
 }
 
 func (r *Repository) InsertChannelDownloadSettings(settings ChannelDownloadSettings) error {
-	dump.P(settings)
 	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
 	defer cancel()
 

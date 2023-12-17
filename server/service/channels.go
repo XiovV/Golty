@@ -73,7 +73,6 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 }
 
 func (s *ChannelsService) ResumeDownloads() {
-	s.logger.Debug("resuming downloads")
 	channelDownloadSettings, err := s.repository.GetAllDownloadSettings()
 	if err != nil {
 		s.logger.Error("unable to get channel download settings", zap.Error(err))
@@ -83,6 +82,7 @@ func (s *ChannelsService) ResumeDownloads() {
 	for _, channelSettings := range channelDownloadSettings {
 		log := s.logger.With(zap.Int("channelId", channelSettings.ChannelId))
 
+		log.Debug("resuming downloads")
 		channel, err := s.repository.FindChannelByID(channelSettings.ChannelId)
 		if err != nil {
 			log.Error("could not find channel by id", zap.Error(err))
@@ -154,6 +154,7 @@ func (s *ChannelsService) downloadChannelVideos(channel repository.Channel, vide
 			Size:         videoSize,
 			DownloadDate: dateDownloaded,
 			UploadDate:   parseUploadDate.Unix(),
+			Duration:     metadata.DurationString,
 		}
 
 		err = s.repository.InsertVideo(video)

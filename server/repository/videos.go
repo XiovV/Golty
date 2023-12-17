@@ -9,13 +9,14 @@ type Video struct {
 	Size         int64  `db:"size"`
 	DownloadDate int64  `db:"downloadDate"`
 	UploadDate   int64  `db:"uploadDate"`
+	Duration     string `db:"duration"`
 }
 
 func (r *Repository) InsertVideo(video Video) error {
 	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
 	defer cancel()
 
-	_, err := r.db.ExecContext(ctx, "INSERT INTO videos (channelId, videoId, title, thumbnailUrl, size, downloadDate, uploadDate) VALUES ($1, $2, $3, $4, $5, $6, $7)", video.ChannelId, video.VideoId, video.Title, video.ThumbnailUrl, video.Size, video.DownloadDate, video.UploadDate)
+	_, err := r.db.ExecContext(ctx, "INSERT INTO videos (channelId, videoId, title, thumbnailUrl, size, downloadDate, uploadDate, duration) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)", video.ChannelId, video.VideoId, video.Title, video.ThumbnailUrl, video.Size, video.DownloadDate, video.UploadDate, video.Duration)
 	if err != nil {
 		return err
 	}
@@ -28,7 +29,7 @@ func (r *Repository) GetChannelVideos(channelId int) ([]Video, error) {
 	defer cancel()
 
 	videos := []Video{}
-	err := r.db.SelectContext(ctx, &videos, "SELECT id, channelId, videoId, title, thumbnailUrl, size, downloadDate, uploadDate FROM videos WHERE channelId = $1 ORDER BY uploadDate DESC", channelId)
+	err := r.db.SelectContext(ctx, &videos, "SELECT id, channelId, videoId, title, thumbnailUrl, size, downloadDate, uploadDate, duration FROM videos WHERE channelId = $1 ORDER BY uploadDate DESC", channelId)
 	if err != nil {
 		return nil, err
 	}

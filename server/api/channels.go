@@ -178,6 +178,7 @@ func (s *Server) getChannelVideosHandler(c echo.Context) error {
 		ThumbnailUrl string `json:"thumbnailUrl"`
 		Size         int64  `json:"size"`
 		DownloadDate int64  `json:"downloadDate"`
+		Duration     string `json:"duration"`
 	}
 
 	response := []channelVideosResponse{}
@@ -188,6 +189,7 @@ func (s *Server) getChannelVideosHandler(c echo.Context) error {
 			ThumbnailUrl: video.ThumbnailUrl,
 			Size:         video.Size,
 			DownloadDate: video.DownloadDate,
+			Duration:     video.Duration,
 		})
 	}
 
