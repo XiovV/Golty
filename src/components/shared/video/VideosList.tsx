@@ -9,12 +9,14 @@ interface Video {
   title: string;
   thumbnailUrl: string;
   size: number;
-  dateDownloaded: number;
+  downloadDate: number;
+  duration: string;
 }
 
 async function fetchVideos(channelHandle: string) {
   const res = await fetch(
     `http://localhost:8080/v1/channels/videos/${channelHandle}`,
+    { cache: "no-cache" },
   );
 
   const videos: Video[] = await res.json();
@@ -34,7 +36,8 @@ export default async function VideosList({ channelHandle }: VideosListProps) {
             thumbnailUrl={video.thumbnailUrl}
             title={video.title}
             videoSize={video.size}
-            dateDownloaded={video.dateDownloaded}
+            downloadDate={video.downloadDate}
+            duration={video.duration}
           />
         );
       })}

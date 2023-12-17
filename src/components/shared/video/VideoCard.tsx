@@ -8,8 +8,9 @@ interface VideoCardProps {
   avatar?: string;
   channelName?: string;
   videoSize: number;
-  dateDownloaded: number;
+  downloadDate: number;
   showAvatar?: boolean;
+  duration: string;
 }
 
 export default function VideoCard({
@@ -18,11 +19,12 @@ export default function VideoCard({
   avatar,
   channelName,
   videoSize,
-  dateDownloaded,
+  downloadDate,
+  duration,
 }: VideoCardProps) {
   return (
     <div className="flex flex-col gap-3 w-[350px]">
-      <VideoThumbnail thumbnailUrl={thumbnailUrl} />
+      <VideoThumbnail thumbnailUrl={thumbnailUrl} duration={duration} />
 
       <div className="flex gap-3 items-start">
         {avatar && <ChannelAvatar avatarUrl={avatar} size={40} />}
@@ -31,7 +33,7 @@ export default function VideoCard({
           videoTitle={title}
           channelName={channelName}
           videoSize={videoSize}
-          dateDownloaded={dateDownloaded}
+          downloadDate={downloadDate}
         />
       </div>
     </div>
@@ -42,14 +44,14 @@ interface VideoInformationProps {
   videoTitle: string;
   channelName?: string;
   videoSize: number;
-  dateDownloaded: number;
+  downloadDate: number;
 }
 
 function VideoInformation({
   videoTitle,
   channelName = "",
   videoSize,
-  dateDownloaded,
+  downloadDate,
 }: VideoInformationProps) {
   return (
     <div className="flex flex-col gap-1 text-xs max-w-[80%]">
@@ -58,7 +60,7 @@ function VideoInformation({
       <VideoMeta
         channelName={channelName}
         videoSize={videoSize}
-        dateDownloaded={dateDownloaded}
+        downloadDate={downloadDate}
       />
     </div>
   );
@@ -67,10 +69,10 @@ function VideoInformation({
 interface VideoMetaProps {
   channelName?: string;
   videoSize: number;
-  dateDownloaded: number;
+  downloadDate: number;
 }
 
-function VideoMeta({ channelName, videoSize, dateDownloaded }: VideoMetaProps) {
+function VideoMeta({ channelName, videoSize, downloadDate }: VideoMetaProps) {
   return (
     <div className="flex gap-1 text-[#676D75] text-sm">
       {channelName && (
@@ -81,25 +83,37 @@ function VideoMeta({ channelName, videoSize, dateDownloaded }: VideoMetaProps) {
       )}
       <p>{formatFileSize(videoSize)}</p>
       <p>•</p>
-      <p>{formatTimeAgo(dateDownloaded)}</p>
+      <p>{formatTimeAgo(downloadDate)}</p>
     </div>
   );
 }
 
 interface VideoThumbnailProps {
   thumbnailUrl: string;
+  duration: string;
   width?: number;
   height?: number;
 }
 
-function VideoThumbnail({ thumbnailUrl, width, height }: VideoThumbnailProps) {
+function VideoThumbnail({
+  thumbnailUrl,
+  width,
+  height,
+  duration,
+}: VideoThumbnailProps) {
   return (
-    <Image
-      priority
-      src={thumbnailUrl}
-      height={height ? height : 0}
-      width={width ? width : 350}
-      alt={"video thumbnail"}
-    />
+    <div className="relative">
+      <Image
+        priority
+        src={thumbnailUrl}
+        height={height ? height : 0}
+        width={width ? width : 350}
+        alt={"video thumbnail"}
+      />
+
+      <div className="absolute bottom-0 right-0 p-2 text-white">
+        <span className="rounded-md bg-black p-1 text-xs ">{duration}</span>
+      </div>
+    </div>
   );
 }

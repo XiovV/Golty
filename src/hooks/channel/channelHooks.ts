@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useToast } from "../../components/ui/use-toast";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
 interface ChannelInfo {
   uploader_id: string;
@@ -27,8 +27,8 @@ interface AddChannelRequest {
     downloadAudio: boolean;
     format: string;
     resolution: string;
-    downloadAutomatically: boolean;
-    downloadEntireChannel: boolean;
+    downloadNewUploads: boolean;
+    downloadEntire: boolean;
   };
 }
 
@@ -56,8 +56,8 @@ export const useAddChannel = () => {
         downloadAudio: Boolean(formData.get("audio")),
         resolution: formData.get("resolution")!.toString(),
         format: formData.get("format")!.toString(),
-        downloadAutomatically: Boolean(formData.get("downloadAutomatically")),
-        downloadEntireChannel: Boolean(formData.get("downloadEntireChannel")),
+        downloadNewUploads: Boolean(formData.get("downloadAutomatically")),
+        downloadEntire: Boolean(formData.get("downloadEntireChannel")),
       },
     };
 
@@ -82,7 +82,7 @@ export const useAddChannel = () => {
       title: `${channelInfo.uploader} added successfully!`,
     });
 
-    router.refresh()
+    router.refresh();
   };
 
   return { addChannel };

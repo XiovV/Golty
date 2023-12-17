@@ -16,15 +16,17 @@ export default async function ChannelList() {
     <div className="flex flex-col gap-6 lg:flex-row lg:flex-wrap lg:gap-x-12">
       {channels.map((channel) => {
         return (
-          <ChannelCard
-            key={channel.channelName}
-            avatarUrl={channel.avatarUrl}
-            channelName={channel.channelName}
-            channelHandle={channel.channelHandle}
-            totalVideos={channel.totalVideos}
-            totalSize={channel.totalSize}
-            checkButton
-          />
+          <>
+            <ChannelCard
+              key={channel.channelName}
+              avatarUrl={channel.avatarUrl}
+              channelName={channel.channelName}
+              channelHandle={channel.channelHandle}
+              totalVideos={channel.totalVideos}
+              totalSize={channel.totalSize}
+              checkButton
+            />
+          </>
         );
       })}
     </div>
