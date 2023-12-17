@@ -3,7 +3,7 @@ import { IoSearch } from "react-icons/io5";
 import { MdOutlineSort } from "react-icons/md";
 import { LuRefreshCw } from "react-icons/lu";
 import { IoMdSettings } from "react-icons/io";
-import { Channel } from "@/types/channel";
+import { Channel } from "@/services/api/channels";
 
 import { FiTrash } from "react-icons/fi";
 import ChannelCard from "@/components/channel/ChannelCard";
@@ -14,7 +14,7 @@ async function fetchChannel(channelHandle: string): Promise<Channel> {
     `http://localhost:8080/v1/channels/${channelHandle}`,
     {
       cache: "no-store",
-    },
+    }
   );
 
   const channel: Channel = await res.json();

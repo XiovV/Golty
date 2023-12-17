@@ -1,32 +1,43 @@
+"use client";
+import { fetchChannels } from "@/services/api/channels";
 import ChannelCard from "./ChannelCard";
-import { Channel } from "../../types/channel";
+import { useEffect } from "react";
 
-async function fetchChannels() {
-  const res = await fetch("http://localhost:8080/v1/channels");
+const POLLING_RATE = 3000;
 
-  const channels: Channel[] = await res.json();
+export default function ChannelList() {
+  const { channels, loading, fetchData } = fetchChannels();
 
-  return channels;
-}
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, POLLING_RATE);
 
-export default async function ChannelList() {
-  const channels = await fetchChannels();
+    return () => clearInterval(intervalId);
+  }, []);
+
+  if (loading && !channels) {
+    return <div>Loading...</div>;
+  }
+
+  if (!channels) {
+    return <div></div>;
+  }
 
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:flex-wrap lg:gap-x-12">
       {channels.map((channel) => {
         return (
-          <>
-            <ChannelCard
-              key={channel.channelName}
-              avatarUrl={channel.avatarUrl}
-              channelName={channel.channelName}
-              channelHandle={channel.channelHandle}
-              totalVideos={channel.totalVideos}
-              totalSize={channel.totalSize}
-              checkButton
-            />
-          </>
+          <ChannelCard
+            key={channel.channelName}
+            avatarUrl={channel.avatarUrl}
+            channelName={channel.channelName}
+            channelHandle={channel.channelHandle}
+            totalVideos={channel.totalVideos}
+            totalSize={channel.totalSize}
+            downloading={channel.state === "downloading"}
+            checkButton
+          />
         );
       })}
     </div>

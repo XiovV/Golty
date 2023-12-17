@@ -37,7 +37,7 @@ export const authOptions: AuthOptions = {
 
         if (token.accessToken && token.refreshToken) {
           const user = {
-            // id: "nesto",
+            id: "this fixes the error",
             accessToken: token.accessToken,
             refreshToken: token.refreshToken
           };
