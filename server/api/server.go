@@ -49,6 +49,7 @@ func (s *Server) Start() error {
 		channels.GET("/info/:channelUrl", s.getChannelInfoHandler)
 		channels.GET("/:channelHandle", s.getChannelHandler)
 		channels.GET("/videos/:channelHandle", s.getChannelVideosHandler)
+		channels.GET("/state", s.getChannelStateWs)
 	}
 
 	return e.Start(":" + s.Config.Port)

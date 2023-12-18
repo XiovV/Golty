@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"golty/repository"
 	"golty/ytdl"
 	"time"
@@ -10,11 +9,12 @@ import (
 )
 
 type ChannelsService struct {
-	repository           *repository.Repository
-	logger               *zap.Logger
-	ytdl                 *ytdl.Ytdl
-	channels             []*repository.Channel
-	currentlyDownloading []*repository.Channel
+	repository                  *repository.Repository
+	logger                      *zap.Logger
+	ytdl                        *ytdl.Ytdl
+	channels                    []*repository.Channel
+	currentlyDownloading        *repository.Channel
+	CurrentlyDownloadingChannel chan *repository.Channel
 }
 
 type ChannelState struct {
@@ -31,15 +31,17 @@ type ChannelDownloadOptions struct {
 	DownloadEntire     bool
 }
 
-func NewChannelsService(repository *repository.Repository, logger *zap.Logger, ytdl *ytdl.Ytdl) *ChannelsService {
-	return &ChannelsService{repository: repository, logger: logger, ytdl: ytdl}
+func NewChannelsService(repo *repository.Repository, logger *zap.Logger, ytdl *ytdl.Ytdl) *ChannelsService {
+	currentlyDownloadingChannel := make(chan *repository.Channel)
+
+	return &ChannelsService{repository: repo, logger: logger, ytdl: ytdl, CurrentlyDownloadingChannel: currentlyDownloadingChannel}
 }
 
 func (s *ChannelsService) DownloadChannel(channel repository.Channel, options ChannelDownloadOptions) {
 	log := s.logger.With(zap.String("channelUrl", channel.ChannelUrl))
 
-	s.addToCurrentlyDownloading(&channel)
-	defer s.removeFromCurrentlyDownloading(&channel)
+	s.setCurrentlyDownloading(&channel)
+	defer s.unsetCurrentlyDownloading()
 
 	log.Debug("persisting channel download settings")
 
@@ -105,7 +107,7 @@ func (s *ChannelsService) ResumeDownloads() {
 			continue
 		}
 
-		s.addToCurrentlyDownloading(&channel)
+		s.setCurrentlyDownloading(&channel)
 
 		videoDownloadOptions := ytdl.VideoDownloadOptions{
 			Video:      s.integerToBoolean(channelSettings.DownloadVideo),
@@ -117,7 +119,7 @@ func (s *ChannelsService) ResumeDownloads() {
 
 		s.downloadChannelVideos(channel, missingVideos, videoDownloadOptions)
 
-		s.removeFromCurrentlyDownloading(&channel)
+		s.unsetCurrentlyDownloading()
 	}
 }
 
@@ -210,35 +212,23 @@ func (s *ChannelsService) booleanToInteger(boolean bool) int {
 	return 0
 }
 
-func (s *ChannelsService) addToCurrentlyDownloading(channel *repository.Channel) {
+func (s *ChannelsService) setCurrentlyDownloading(channel *repository.Channel) {
 	s.logger.Debug("adding channel to currently downloading", zap.String("channelHandle", channel.ChannelHandle))
-	s.currentlyDownloading = append(s.currentlyDownloading, channel)
+	s.currentlyDownloading = channel
+	s.CurrentlyDownloadingChannel <- channel
 }
 
-func (s *ChannelsService) removeFromCurrentlyDownloading(channel *repository.Channel) {
-	s.logger.Debug("removing channel from currently downloading", zap.String("channelHandle", channel.ChannelHandle))
-	for i, c := range s.currentlyDownloading {
-		if c.ChannelHandle == channel.ChannelHandle {
-			s.currentlyDownloading = append(s.currentlyDownloading[:i], s.currentlyDownloading[i+1:]...)
-		}
-	}
+func (s *ChannelsService) unsetCurrentlyDownloading() {
+	s.logger.Debug("removing channel from currently downloading")
+	s.currentlyDownloading = nil
+
+	s.CurrentlyDownloadingChannel <- nil
 }
 
-func (s *ChannelsService) isChannelCurrentlyDownloading(channelId int) bool {
-	for _, channel := range s.currentlyDownloading {
-		fmt.Println(channel.ID)
-		if channel.ID == channelId {
-			return true
-		}
+func (s *ChannelsService) isChannelCurrentlyDownloading() bool {
+	if s.currentlyDownloading == nil {
+		return false
 	}
 
-	return false
-}
-
-func (s *ChannelsService) GetChannelDownloadState(channelId int) string {
-	if s.isChannelCurrentlyDownloading(channelId) {
-		return "downloading"
-	}
-
-	return "idle"
+	return true
 }

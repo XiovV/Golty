@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
@@ -131,7 +132,7 @@ func (s *Server) getChannelsHandler(c echo.Context) error {
 			AvatarUrl:     channel.AvatarUrl,
 			TotalVideos:   channel.TotalVideos,
 			TotalSize:     channel.TotalSize,
-			State:         s.ChannelsService.GetChannelDownloadState(channel.ID),
+			State:         "idle",
 		})
 	}
 
@@ -210,4 +211,48 @@ func (s *Server) getChannelVideosHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, response)
+}
+
+var upgrader = websocket.Upgrader{}
+
+func (s *Server) getChannelStateWs(c echo.Context) error {
+	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+	if err != nil {
+		return err
+	}
+	defer ws.Close()
+
+	type channelStateResponse struct {
+		ChannelId int    `json:"channelId"`
+		State     string `json:"state"`
+	}
+
+	var channelId int
+	go func() {
+		for {
+			channel, ok := <-s.ChannelsService.CurrentlyDownloadingChannel
+			if !ok {
+				return
+			}
+
+			if channel == nil {
+
+				err := ws.WriteJSON(channelStateResponse{ChannelId: channelId, State: "idle"})
+				if err != nil {
+					c.Logger().Error(err)
+				}
+				continue
+			}
+
+			channelId = channel.ID
+
+			err := ws.WriteJSON(channelStateResponse{ChannelId: channelId, State: "downloading"})
+			if err != nil {
+				c.Logger().Error(err)
+			}
+
+		}
+	}()
+
+	return nil
 }

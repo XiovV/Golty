@@ -23,6 +23,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/gookit/color v1.5.4 // indirect
+	github.com/gorilla/websocket v1.5.1 // indirect
 	github.com/itchyny/timefmt-go v0.1.5 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
