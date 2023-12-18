@@ -30,6 +30,7 @@ func (s *Server) Start() error {
 	e.Use(middleware.CORS(), middleware.Logger())
 
 	v1 := e.Group("/v1")
+
 	usersPublic := v1.Group("/users")
 	{
 		usersPublic.POST("/login", s.loginUserHandler)

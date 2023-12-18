@@ -1,8 +1,12 @@
 package service
 
 import (
+	"fmt"
 	"golty/repository"
 	"golty/ytdl"
+	"io"
+	"net/http"
+	"os"
 	"time"
 
 	"go.uber.org/zap"
@@ -15,11 +19,6 @@ type ChannelsService struct {
 	channels                    []*repository.Channel
 	currentlyDownloading        *repository.Channel
 	CurrentlyDownloadingChannel chan *repository.Channel
-}
-
-type ChannelState struct {
-	*repository.Channel
-	State string `json:"state"`
 }
 
 type ChannelDownloadOptions struct {
@@ -142,6 +141,12 @@ func (s *ChannelsService) downloadChannelVideos(channel repository.Channel, vide
 			return err
 		}
 
+		thumbnailDestination := fmt.Sprintf("thumbnails/%s_thumbnail.jpg", metadata.ID)
+		err = s.downloadImage(metadata.ThumbnailURL, thumbnailDestination)
+		if err != nil {
+			return nil
+		}
+
 		parseUploadDate, err := time.Parse("20060102", metadata.UploadDate)
 		if err != nil {
 			return err
@@ -160,7 +165,7 @@ func (s *ChannelsService) downloadChannelVideos(channel repository.Channel, vide
 			ChannelId:    channel.ID,
 			VideoId:      metadata.ID,
 			Title:        metadata.Title,
-			ThumbnailUrl: metadata.ThumbnailURL,
+			ThumbnailUrl: thumbnailDestination,
 			Size:         videoSize,
 			DownloadDate: dateDownloaded,
 			UploadDate:   parseUploadDate.Unix(),
@@ -171,6 +176,29 @@ func (s *ChannelsService) downloadChannelVideos(channel repository.Channel, vide
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (s *ChannelsService) downloadImage(imageUrl string, destination string) error {
+	response, err := http.Get(imageUrl)
+	if err != nil {
+		return nil
+	}
+
+	defer response.Body.Close()
+
+	file, err := os.Create(destination)
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	_, err = io.Copy(file, response.Body)
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -214,15 +242,15 @@ func (s *ChannelsService) booleanToInteger(boolean bool) int {
 
 func (s *ChannelsService) setCurrentlyDownloading(channel *repository.Channel) {
 	s.logger.Debug("adding channel to currently downloading", zap.String("channelHandle", channel.ChannelHandle))
-	s.currentlyDownloading = channel
-	s.CurrentlyDownloadingChannel <- channel
+	// s.currentlyDownloading = channel
+	// s.CurrentlyDownloadingChannel <- channel
 }
 
 func (s *ChannelsService) unsetCurrentlyDownloading() {
 	s.logger.Debug("removing channel from currently downloading")
-	s.currentlyDownloading = nil
-
-	s.CurrentlyDownloadingChannel <- nil
+	// s.currentlyDownloading = nil
+	//
+	// s.CurrentlyDownloadingChannel <- nil
 }
 
 func (s *ChannelsService) isChannelCurrentlyDownloading() bool {
