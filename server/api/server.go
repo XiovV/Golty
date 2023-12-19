@@ -54,6 +54,7 @@ func (s *Server) Start() error {
 	assets := e.Group("/assets")
 	{
 		assets.GET("/thumbnails/:thumbnail", s.serveThumbnail)
+		assets.GET("/avatars/:avatar", s.serveAvatar)
 	}
 
 	return e.Start(":" + s.Config.Port)

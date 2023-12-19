@@ -7,8 +7,10 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
+	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
@@ -75,6 +77,38 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 	}
 
 	log.Info("channel downloaded successfully")
+}
+
+func (s *ChannelsService) AddChannel(channel repository.Channel, downloadOptions ChannelDownloadOptions) error {
+	log := s.logger.With(zap.String("channelUrl", channel.ChannelUrl))
+
+	avatarDestination := fmt.Sprintf("avatars/%s.png", channel.ChannelHandle)
+	err := s.downloadImage(channel.AvatarUrl, avatarDestination)
+	if err != nil {
+		log.Error("could not download image", zap.Error(err))
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	channel.AvatarUrl = avatarDestination
+
+	log.Debug("inserting channel into the database")
+	createdChannel, err := s.repository.InsertChannel(channel)
+	if err != nil {
+		log.Error("could not insert channel", zap.Error(err))
+
+		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			return echo.NewHTTPError(http.StatusBadRequest, "This channel already exists!")
+		}
+
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+	log.Debug("channel successfully inserted into the database")
+
+	log.Info("downloading channel")
+
+	go s.DownloadChannel(createdChannel, downloadOptions)
+
+	return nil
 }
 
 func (s *ChannelsService) ResumeDownloads() {

@@ -53,14 +53,10 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 	}
 
 	if !addChannelRequest.DownloadSettings.DownloadVideo && !addChannelRequest.DownloadSettings.DownloadAudio {
-		s.Logger.Warn("either video or audio checkboxes must be checked", zap.Bool("downloadVideo", addChannelRequest.DownloadSettings.DownloadVideo), zap.Bool("downloadAudio", addChannelRequest.DownloadSettings.DownloadAudio))
-
 		return echo.NewHTTPError(http.StatusBadRequest, "Either the Video or the Audio checkbox must be checked, or both.")
 	}
 
 	if !addChannelRequest.DownloadSettings.DownloadNewUploads && !addChannelRequest.DownloadSettings.DownloadEntire {
-		s.Logger.Warn("automatically download new uploads and download the entire channel switches aren't toggled", zap.Bool("downloadAutomatically", addChannelRequest.DownloadSettings.DownloadNewUploads), zap.Bool("downloadEntireChannel", addChannelRequest.DownloadSettings.DownloadEntire))
-
 		return echo.NewHTTPError(http.StatusBadRequest, "Please toggle either the 'Automatically download new uploads' or 'Download the entire channel' switch, or both.")
 	}
 
@@ -71,23 +67,6 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 		AvatarUrl:     addChannelRequest.Channel.AvatarUrl,
 	}
 
-	log := s.Logger.With(zap.String("channelUrl", channel.ChannelUrl))
-
-	log.Debug("inserting channel into the database")
-	createdChannel, err := s.Repository.InsertChannel(channel)
-	if err != nil {
-		log.Error("could not insert channel", zap.Error(err))
-
-		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
-			return echo.NewHTTPError(http.StatusBadRequest, "This channel already exists!")
-		}
-
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
-	}
-	log.Debug("channel successfully inserted into the database")
-
-	log.Info("downloading channel")
-
 	channelDownloadOptions := service.ChannelDownloadOptions{
 		Video:              addChannelRequest.DownloadSettings.DownloadVideo,
 		Audio:              addChannelRequest.DownloadSettings.DownloadAudio,
@@ -97,7 +76,10 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 		DownloadNewUploads: addChannelRequest.DownloadSettings.DownloadNewUploads,
 	}
 
-	go s.ChannelsService.DownloadChannel(createdChannel, channelDownloadOptions)
+	err := s.ChannelsService.AddChannel(channel, channelDownloadOptions)
+	if err != nil {
+		return err
+	}
 
 	return c.NoContent(http.StatusCreated)
 }

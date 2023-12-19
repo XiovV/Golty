@@ -1,6 +1,7 @@
 cmd/server/server
 cmd/server/videos
 cmd/server/thumbnails
+cmd/server/avatars
 .env
 data/
 
