@@ -51,7 +51,7 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 	}
 
 	videoDownloadOptions := s.channelOptionsToVideoOptions(options, ytdl.CHANNELS_DEFAULT_OUTPUT)
-	err = s.downloadChannelVideos(channel, channelVideos, videoDownloadOptions)
+	err = s.DownloadChannelVideos(channel, channelVideos, videoDownloadOptions)
 	if err != nil {
 		log.Error("could not download channel", zap.Error(err))
 		return
@@ -120,7 +120,7 @@ func (s *ChannelsService) ResumeDownloads() {
 		}
 
 		log.Debug("getting missing videos")
-		missingVideos, err := s.getMissingVideos(channel)
+		missingVideos, err := s.GetMissingVideos(channel)
 		if err != nil {
 			log.Error("could not get missing videos", zap.Error(err))
 			return
@@ -142,7 +142,7 @@ func (s *ChannelsService) ResumeDownloads() {
 			Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
 		}
 
-		s.downloadChannelVideos(channel, missingVideos, videoDownloadOptions)
+		s.DownloadChannelVideos(channel, missingVideos, videoDownloadOptions)
 
 		s.unsetCurrentlyDownloading()
 
@@ -152,7 +152,7 @@ func (s *ChannelsService) ResumeDownloads() {
 	}
 }
 
-func (s *ChannelsService) downloadChannelVideos(channel repository.Channel, videos []string, options ytdl.VideoDownloadOptions) error {
+func (s *ChannelsService) DownloadChannelVideos(channel repository.Channel, videos []string, options ytdl.VideoDownloadOptions) error {
 	for _, videoId := range videos {
 		log := s.logger.With(zap.String("videoId", videoId))
 
@@ -209,4 +209,33 @@ func (s *ChannelsService) downloadChannelVideos(channel repository.Channel, vide
 	}
 
 	return nil
+}
+
+func (s *ChannelsService) CheckForNewUploads(channelId int) (int, error) {
+	channel, err := s.repository.FindChannelByID(channelId)
+	if err != nil {
+		return 0, echo.NewHTTPError(http.StatusBadRequest, "could not find channel")
+	}
+
+	missingVideos, err := s.GetMissingVideos(channel)
+	if err != nil {
+		return 0, echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	channelOptions, err := s.repository.GetChannelDownloadSettings(channelId)
+	if err != nil {
+		return 0, echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	downloadOptions := ytdl.VideoDownloadOptions{
+		Video:      s.integerToBoolean(channelOptions.DownloadVideo),
+		Audio:      s.integerToBoolean(channelOptions.DownloadAudio),
+		Resolution: channelOptions.Resolution,
+		Format:     channelOptions.Format,
+		Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
+	}
+
+	go s.DownloadChannelVideos(channel, missingVideos, downloadOptions)
+
+	return len(missingVideos), nil
 }

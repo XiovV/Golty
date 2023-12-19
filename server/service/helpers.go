@@ -32,7 +32,7 @@ func (s *ChannelsService) downloadImage(imageUrl string, destination string) err
 	return nil
 }
 
-func (s *ChannelsService) getMissingVideos(channel repository.Channel) ([]string, error) {
+func (s *ChannelsService) GetMissingVideos(channel repository.Channel) ([]string, error) {
 	downloadedVideos, err := s.repository.GetChannelVideos(channel.ID)
 	if err != nil {
 		return []string{}, err

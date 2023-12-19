@@ -21,7 +21,7 @@ func (s *ChannelsService) StartScheduler() {
 
 func (s *ChannelsService) checkChannels() {
 	for _, channel := range s.channels {
-		missingVideos, err := s.getMissingVideos(*channel)
+		missingVideos, err := s.GetMissingVideos(*channel)
 		if err != nil {
 			s.logger.Error("could not get missing vidoes", zap.Error(err))
 			continue
@@ -41,6 +41,6 @@ func (s *ChannelsService) checkChannels() {
 			Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
 		}
 
-		s.downloadChannelVideos(*channel, missingVideos, downloadOptions)
+		s.DownloadChannelVideos(*channel, missingVideos, downloadOptions)
 	}
 }
