@@ -1,20 +1,10 @@
 "use client";
 import { fetchChannels } from "@/services/api/channels";
 import ChannelCard from "./ChannelCard";
-import { useEffect } from "react";
-
-const POLLING_RATE = 3000;
+import { API_URL } from "@/app/const";
 
 export default function ChannelList() {
   const { channels, loading } = fetchChannels();
-
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     fetchData();
-  //   }, POLLING_RATE);
-  //
-  //   return () => clearInterval(intervalId);
-  // }, []);
 
   if (loading && !channels) {
     return <div>Loading...</div>;
@@ -30,7 +20,7 @@ export default function ChannelList() {
         return (
           <ChannelCard
             key={channel.channelName}
-            avatarUrl={channel.avatarUrl}
+            avatarUrl={`${API_URL}/assets/${channel.avatarUrl}`}
             channelName={channel.channelName}
             channelHandle={channel.channelHandle}
             totalVideos={channel.totalVideos}

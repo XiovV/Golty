@@ -37,7 +37,7 @@ export default async function Page({
 
       <div className="flex flex-col gap-8 m-5">
         <ChannelCard
-          avatarUrl={channel.avatarUrl}
+          avatarUrl={`${API_URL}/assets/avatar/${channel.avatarUrl}`}
           channelName={channel.channelName}
           channelHandle={channel.channelHandle}
           totalVideos={channel.totalVideos}

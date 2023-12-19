@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useToast } from "../../components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { API_URL } from "@/app/const";
 
 interface ChannelInfo {
   uploader_id: string;
@@ -61,7 +62,7 @@ export const useAddChannel = () => {
       },
     };
 
-    const res = await fetch("http://localhost:8080/v1/channels", {
+    const res = await fetch(`${API_URL}/channels`, {
       method: "POST",
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
@@ -99,10 +100,9 @@ export const useFetchChannelInfo = () => {
 
     setChannelInfo(undefined);
     setLoading(true);
-    const res = await fetch(
-      `http://localhost:8080/v1/channels/info/${channelUrl}`,
-      { cache: "no-cache" },
-    );
+    const res = await fetch(`${API_URL}/channels/info/${channelUrl}`, {
+      cache: "no-cache",
+    });
 
     if (res.status !== 200) {
       setLoading(false);
