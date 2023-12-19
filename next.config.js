@@ -4,6 +4,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    domains: ["localhost"],
     remotePatterns: [
       {
         protocol: "https",
@@ -18,6 +19,11 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "i.ytimg.com",
+        port: "",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
         port: "",
       },
     ],

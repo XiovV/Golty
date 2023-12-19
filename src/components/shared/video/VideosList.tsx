@@ -1,3 +1,4 @@
+import { API_URL } from "@/app/const";
 import VideoCard from "./VideoCard";
 
 interface VideosListProps {
@@ -14,10 +15,9 @@ interface Video {
 }
 
 async function fetchVideos(channelHandle: string) {
-  const res = await fetch(
-    `http://localhost:8080/v1/channels/videos/${channelHandle}`,
-    { cache: "no-cache" },
-  );
+  const res = await fetch(`${API_URL}/channels/videos/${channelHandle}`, {
+    cache: "no-cache",
+  });
 
   const videos: Video[] = await res.json();
 
@@ -33,7 +33,7 @@ export default async function VideosList({ channelHandle }: VideosListProps) {
         return (
           <VideoCard
             key={video.videoId}
-            thumbnailUrl={video.thumbnailUrl}
+            thumbnailUrl={`${API_URL}/assets/${video.thumbnailUrl}`}
             title={video.title}
             videoSize={video.size}
             downloadDate={video.downloadDate}

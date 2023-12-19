@@ -4,18 +4,16 @@ import { MdOutlineSort } from "react-icons/md";
 import { LuRefreshCw } from "react-icons/lu";
 import { IoMdSettings } from "react-icons/io";
 import { Channel } from "@/services/api/channels";
+import { API_URL } from "@/app/const";
 
 import { FiTrash } from "react-icons/fi";
 import ChannelCard from "@/components/channel/ChannelCard";
 import VideosList from "@/components/shared/video/VideosList";
 
 async function fetchChannel(channelHandle: string): Promise<Channel> {
-  const res = await fetch(
-    `http://localhost:8080/v1/channels/${channelHandle}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`${API_URL}/channels/${channelHandle}`, {
+    cache: "no-store",
+  });
 
   const channel: Channel = await res.json();
 

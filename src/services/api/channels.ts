@@ -1,3 +1,4 @@
+import { API_URL } from "@/app/const";
 import { useState, useEffect } from "react";
 
 export interface Channel {
@@ -18,7 +19,7 @@ export function fetchChannels() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8080/v1/channels");
+      const response = await fetch(`${API_URL}/channels`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -31,10 +32,9 @@ export function fetchChannels() {
     }
   };
 
-
   useEffect(() => {
     fetchData();
   }, []);
 
-  return { channels, loading, fetchData }
+  return { channels, loading, fetchData };
 }

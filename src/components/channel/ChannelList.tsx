@@ -6,15 +6,15 @@ import { useEffect } from "react";
 const POLLING_RATE = 3000;
 
 export default function ChannelList() {
-  const { channels, loading, fetchData } = fetchChannels();
+  const { channels, loading } = fetchChannels();
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchData();
-    }, POLLING_RATE);
-
-    return () => clearInterval(intervalId);
-  }, []);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     fetchData();
+  //   }, POLLING_RATE);
+  //
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   if (loading && !channels) {
     return <div>Loading...</div>;
