@@ -53,5 +53,10 @@ func (s *Server) Start() error {
 		channels.GET("/state", s.getChannelStateWs)
 	}
 
+	assets := v1.Group("/assets")
+	{
+		assets.GET("/thumbnails/:thumbnail", s.serveThumbnail)
+	}
+
 	return e.Start(":" + s.Config.Port)
 }
