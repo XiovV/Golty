@@ -29,7 +29,7 @@ export default async function Page({
 
   return (
     <main>
-      <TopBar title={channel.channelName}>
+      <TopBar>
         <DesktopButtons>
           <CheckChannelButton channelId={channel.id} />
         </DesktopButtons>

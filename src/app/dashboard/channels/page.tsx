@@ -1,16 +1,22 @@
-import { IoSearch } from "react-icons/io5";
-import { MdOutlineSort } from "react-icons/md";
-import { TopBar, DesktopButtons } from "@/components/navigation/TopBar";
+import {
+  TopBar,
+  DesktopButtons,
+  MobileButtons,
+} from "@/components/navigation/TopBar";
 import AddChannelButton from "@/components/channel/AddChannelButton";
 import ChannelList from "@/components/channel/ChannelList";
 
 export default async function Home() {
   return (
     <main>
-      <TopBar title="Channels">
+      <TopBar>
         <DesktopButtons>
           <AddChannelButton />
         </DesktopButtons>
+
+        <MobileButtons title="Channels">
+          <AddChannelButton />
+        </MobileButtons>
       </TopBar>
 
       <div className="m-5">

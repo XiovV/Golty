@@ -5,7 +5,6 @@ import profile from "../svgs/profile.svg";
 import SearchBar from "./SearchBar";
 
 interface TopBarProps {
-  title: string;
   children: React.ReactNode;
 }
 
