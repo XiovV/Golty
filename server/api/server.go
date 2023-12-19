@@ -29,20 +29,18 @@ func (s *Server) Start() error {
 	e.HideBanner = true
 	e.Use(middleware.CORS(), middleware.Logger())
 
-	v1 := e.Group("/v1")
-
-	usersPublic := v1.Group("/users")
+	usersPublic := e.Group("/users")
 	{
 		usersPublic.POST("/login", s.loginUserHandler)
 	}
 
-	usersAuth := v1.Group("/users")
+	usersAuth := e.Group("/users")
 	usersAuth.Use(echojwt.WithConfig(jwtConfig))
 	{
 		usersAuth.GET("/me", s.getLoggedInUser)
 	}
 
-	channels := v1.Group("/channels")
+	channels := e.Group("/channels")
 	// channels.Use(echojwt.WithConfig(jwtConfig))
 	{
 		channels.GET("", s.getChannelsHandler)
@@ -53,7 +51,7 @@ func (s *Server) Start() error {
 		channels.GET("/state", s.getChannelStateWs)
 	}
 
-	assets := v1.Group("/assets")
+	assets := e.Group("/assets")
 	{
 		assets.GET("/thumbnails/:thumbnail", s.serveThumbnail)
 	}
