@@ -42,22 +42,6 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 	s.setCurrentlyDownloading(&channel)
 	defer s.unsetCurrentlyDownloading()
 
-	log.Debug("persisting channel download settings")
-
-	err := s.repository.InsertChannelDownloadSettings(repository.ChannelDownloadSettings{
-		ChannelId:          channel.ID,
-		Resolution:         options.Resolution,
-		Format:             options.Format,
-		DownloadVideo:      s.booleanToInteger(options.Video),
-		DownloadAudio:      s.booleanToInteger(options.Audio),
-		DownloadEntire:     s.booleanToInteger(options.DownloadEntire),
-		DownloadNewUploads: s.booleanToInteger(options.DownloadNewUploads),
-	})
-	if err != nil {
-		log.Error("could not persist channel download settings", zap.Error(err))
-		return
-	}
-
 	log.Debug("getting channel videos")
 
 	channelVideos, err := s.ytdl.GetChannelVideos(channel.ChannelUrl)
@@ -66,8 +50,7 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 		return
 	}
 
-	videoDownloadOptions := ytdl.VideoDownloadOptions{Video: options.Audio, Audio: options.Audio, Resolution: options.Resolution, Output: ytdl.CHANNELS_DEFAULT_OUTPUT}
-
+	videoDownloadOptions := s.channelOptionsToVideoOptions(options, ytdl.CHANNELS_DEFAULT_OUTPUT)
 	err = s.downloadChannelVideos(channel, channelVideos, videoDownloadOptions)
 	if err != nil {
 		log.Error("could not download channel", zap.Error(err))
@@ -104,10 +87,16 @@ func (s *ChannelsService) AddChannel(channel repository.Channel, downloadOptions
 
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
-	log.Debug("channel successfully inserted into the database")
 
-	log.Info("downloading channel")
+	log.Debug("persisting channel download settings")
 
+	err = s.repository.InsertChannelDownloadSettings(s.channelOptionsToDBChannelOptions(channel.ID, downloadOptions))
+	if err != nil {
+		log.Error("could not persist channel download settings", zap.Error(err))
+		return err
+	}
+
+	log.Debug("downloading channel")
 	go s.DownloadChannel(createdChannel, downloadOptions)
 
 	return nil
