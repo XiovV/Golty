@@ -2,7 +2,7 @@ import { API_URL } from "@/app/const";
 import VideoCard from "./VideoCard";
 
 interface VideosListProps {
-  channelHandle: string;
+  channelId: string;
 }
 
 interface Video {
@@ -14,8 +14,9 @@ interface Video {
   duration: string;
 }
 
-async function fetchVideos(channelHandle: string) {
-  const res = await fetch(`${API_URL}/channels/videos/${channelHandle}`, {
+async function fetchVideos(channelId: string) {
+  console.log(channelId);
+  const res = await fetch(`${API_URL}/channels/videos/${channelId}`, {
     cache: "no-cache",
   });
 
@@ -24,8 +25,8 @@ async function fetchVideos(channelHandle: string) {
   return videos;
 }
 
-export default async function VideosList({ channelHandle }: VideosListProps) {
-  const videos = await fetchVideos(channelHandle);
+export default async function VideosList({ channelId }: VideosListProps) {
+  const videos = await fetchVideos(channelId);
 
   return (
     <div className="flex flex-col gap-5 lg:flex-row lg:flex-wrap content-start items-start">

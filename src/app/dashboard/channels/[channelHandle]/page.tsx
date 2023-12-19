@@ -45,7 +45,7 @@ export default async function Page({
         />
 
         <div className="mx-auto lg:mx-5 pb-16">
-          <VideosList channelHandle={params.channelHandle} />
+          <VideosList channelId={channel.id} />
         </div>
       </div>
     </main>
