@@ -47,8 +47,9 @@ func (s *Server) Start() error {
 		channels.POST("", s.addChannelHandler)
 		channels.GET("/info/:channelUrl", s.getChannelInfoHandler)
 		channels.GET("/:channelHandle", s.getChannelHandler)
-		channels.GET("/videos/:channelHandle", s.getChannelVideosHandler)
+		channels.GET("/videos/:channelId", s.getChannelVideosHandler)
 		channels.GET("/state", s.getChannelStateWs)
+		channels.GET("/check/:channelHandle", s.checkForNewUploadsHandler)
 	}
 
 	assets := e.Group("/assets")

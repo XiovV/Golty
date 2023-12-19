@@ -7,8 +7,10 @@ import (
 	"go.uber.org/zap"
 )
 
+const SCHEDULER_DEFAULT_INTERVAL = 2 * time.Hour
+
 func (s *ChannelsService) StartScheduler() {
-	ticker := time.Tick(30 * time.Second)
+	ticker := time.Tick(SCHEDULER_DEFAULT_INTERVAL)
 	for {
 		select {
 		case <-ticker:

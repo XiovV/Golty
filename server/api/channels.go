@@ -4,6 +4,7 @@ import (
 	"golty/repository"
 	"golty/service"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gorilla/websocket"
@@ -156,16 +157,15 @@ func (s *Server) getChannelHandler(c echo.Context) error {
 }
 
 func (s *Server) getChannelVideosHandler(c echo.Context) error {
-	channelHandle := strings.Replace(c.Param("channelHandle"), "%40", "@", 1)
-	log := s.Logger.With(zap.String("channelHandle", channelHandle))
+	log := s.Logger.With(zap.String("channelId", c.Param("channelId")))
 
-	channel, err := s.Repository.FindChannelByHandleWithSize(channelHandle)
+	channelId, err := strconv.Atoi(c.Param("channelId"))
 	if err != nil {
-		log.Error("could not find channel", zap.Error(err))
-		return echo.NewHTTPError(http.StatusNotFound, "channel does not exist ")
+		log.Error("could not convert channelId to int", zap.Error(err))
+		return echo.NewHTTPError(http.StatusBadRequest, "channelId must be an integer")
 	}
 
-	channelVideos, err := s.Repository.GetChannelVideos(channel.ID)
+	channelVideos, err := s.Repository.GetChannelVideos(channelId)
 	if err != nil {
 		log.Error("could not get channel videos", zap.Error(err))
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
@@ -193,6 +193,11 @@ func (s *Server) getChannelVideosHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, response)
+}
+
+func (s *Server) checkForNewUploadsHandler(c echo.Context) error {
+	// channelHandle := strings.Replace(c.Param("channelHandle"), "%40", "@", 1)
+	return nil
 }
 
 var upgrader = websocket.Upgrader{}
