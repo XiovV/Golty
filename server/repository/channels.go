@@ -131,3 +131,16 @@ func (r *Repository) GetAllDownloadSettings() ([]ChannelDownloadSettings, error)
 
 	return channelDownloadSettings, nil
 }
+
+func (r *Repository) GetChannelDownloadSettings(channelId int) (ChannelDownloadSettings, error) {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
+
+	channelDownloadSettings := ChannelDownloadSettings{}
+	err := r.db.GetContext(ctx, &channelDownloadSettings, "SELECT resolution, format, downloadVideo, downloadAudio, downloadEntire, downloadNewUploads FROM channel_settings WHERE channelId = $1", channelId)
+	if err != nil {
+		return ChannelDownloadSettings{}, err
+	}
+
+	return channelDownloadSettings, nil
+}

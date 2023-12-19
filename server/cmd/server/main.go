@@ -38,6 +38,7 @@ func main() {
 	channelsService := service.NewChannelsService(repository, logger, ytdl)
 
 	go channelsService.ResumeDownloads()
+	go channelsService.StartScheduler()
 
 	server := api.New(c, logger, repository, channelsService, ytdl)
 
