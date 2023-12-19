@@ -1,12 +1,12 @@
-import TopBar from "@/components/navigation/TopBar";
-import { IoSearch } from "react-icons/io5";
-import { MdOutlineSort } from "react-icons/md";
-import { LuRefreshCw } from "react-icons/lu";
-import { IoMdSettings } from "react-icons/io";
 import { Channel } from "@/services/api/channels";
 import { API_URL } from "@/app/const";
+import CheckChannelButton from "@/components/channel/CheckChannelButton";
+import {
+  TopBar,
+  DesktopButtons,
+  MobileButtons,
+} from "@/components/navigation/TopBar";
 
-import { FiTrash } from "react-icons/fi";
 import ChannelCard from "@/components/channel/ChannelCard";
 import VideosList from "@/components/shared/video/VideosList";
 
@@ -29,11 +29,15 @@ export default async function Page({
 
   return (
     <main>
-      <TopBar
-        title={channel.channelName}
-        mobileButtons={[IoSearch, LuRefreshCw, MdOutlineSort, IoMdSettings]}
-        desktopButtons={[LuRefreshCw, MdOutlineSort, IoMdSettings, FiTrash]}
-      />
+      <TopBar title={channel.channelName}>
+        <DesktopButtons>
+          <CheckChannelButton channelId={channel.id} />
+        </DesktopButtons>
+
+        <MobileButtons title={channel.channelName}>
+          <CheckChannelButton channelId={channel.id} />
+        </MobileButtons>
+      </TopBar>
 
       <div className="flex flex-col gap-8 m-5">
         <ChannelCard

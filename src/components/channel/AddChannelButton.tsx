@@ -26,10 +26,7 @@ import {
 import { Switch as SwitchShadcn } from "../ui/switch";
 import ChannelInfoCard from "./ChannelInfoCard";
 import ChannelInfoCardSkeleton from "./ChannelInfoCardSkeleton";
-import {
-  useAddChannel,
-  useFetchChannelInfo,
-} from "@/hooks/channel/channelHooks";
+import { useAddChannel, useFetchChannelInfo } from "@/hooks/channel";
 import { useState } from "react";
 import { audioExtensions, resolutions, videoExtensions } from "@/app/const";
 

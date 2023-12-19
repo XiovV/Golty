@@ -197,7 +197,8 @@ func (s *Server) getChannelVideosHandler(c echo.Context) error {
 
 func (s *Server) checkForNewUploadsHandler(c echo.Context) error {
 	// channelHandle := strings.Replace(c.Param("channelHandle"), "%40", "@", 1)
-	return nil
+
+	return c.JSON(http.StatusOK, echo.Map{"missingVideos": 2})
 }
 
 var upgrader = websocket.Upgrader{}
