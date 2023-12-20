@@ -90,7 +90,7 @@ func (s *ChannelsService) AddChannel(channel repository.Channel, downloadOptions
 
 	log.Debug("persisting channel download settings")
 
-	err = s.repository.InsertChannelDownloadSettings(s.channelOptionsToDBChannelOptions(channel.ID, downloadOptions))
+	err = s.repository.InsertChannelDownloadSettings(s.channelOptionsToDBChannelOptions(createdChannel.ID, downloadOptions))
 	if err != nil {
 		log.Error("could not persist channel download settings", zap.Error(err))
 		return err
