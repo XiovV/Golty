@@ -21,10 +21,12 @@ export default function ChannelList() {
           <ChannelCard
             key={channel.channelName}
             avatarUrl={`${API_URL}/assets/${channel.avatarUrl}`}
+            channelId={channel.id}
             channelName={channel.channelName}
             channelHandle={channel.channelHandle}
             totalVideos={channel.totalVideos}
             totalSize={channel.totalSize}
+            syncButton
           />
         );
       })}

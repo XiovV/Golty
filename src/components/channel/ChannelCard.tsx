@@ -2,26 +2,26 @@
 import Link from "next/link";
 import ChannelAvatar from "./ChannelAvatar";
 import { formatFileSize } from "@/utils/format";
-import { clsx } from "clsx";
-
-import { LuRefreshCw } from "react-icons/lu";
+import SyncChannelButton from "./SyncChannelButton";
 
 interface ChannelProps {
   avatarUrl: string;
+  channelId: string;
   channelName: string;
   channelHandle: string;
   totalVideos: number;
   totalSize: number;
-  checkButton?: boolean;
-  downloading?: boolean;
+  syncButton?: boolean;
 }
 
 export default function ChannelCard({
   avatarUrl,
+  channelId,
   channelName,
   channelHandle,
   totalVideos,
   totalSize,
+  syncButton,
 }: ChannelProps) {
   const channelUrl = `channels/${channelHandle}`;
 
@@ -37,7 +37,9 @@ export default function ChannelCard({
             <Link href={channelUrl}>
               <p>{channelName}</p>
             </Link>
-            <LuRefreshCw className={clsx({ "animate-spin": false })} />
+            {syncButton && (
+              <SyncChannelButton channelId={channelId} size="1em" />
+            )}
           </div>
 
           <p className="text-[#676D75] text-sm mt-1">{channelHandle}</p>
