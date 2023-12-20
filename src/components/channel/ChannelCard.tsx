@@ -2,7 +2,9 @@
 import Link from "next/link";
 import ChannelAvatar from "./ChannelAvatar";
 import { formatFileSize } from "@/utils/format";
-import PulseLoader from "react-spinners/PulseLoader";
+import { clsx } from "clsx";
+
+import { LuRefreshCw } from "react-icons/lu";
 
 interface ChannelProps {
   avatarUrl: string;
@@ -20,8 +22,6 @@ export default function ChannelCard({
   channelHandle,
   totalVideos,
   totalSize,
-  checkButton,
-  downloading = false,
 }: ChannelProps) {
   const channelUrl = `channels/${channelHandle}`;
 
@@ -33,31 +33,21 @@ export default function ChannelCard({
 
       <div className="flex flex-col justify-between text-lg">
         <div className="flex flex-col">
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-3 items-center">
             <Link href={channelUrl}>
               <p>{channelName}</p>
             </Link>
-
-            <PulseLoader
-              color={"#ffffff"}
-              loading={downloading}
-              size={7}
-              aria-label="Loading Spinner"
-              data-testid="loader"
-            />
+            <LuRefreshCw className={clsx({ "animate-spin": false })} />
           </div>
 
-          <div className="flex gap-1 text-[#676D75] text-sm">
+          <p className="text-[#676D75] text-sm mt-1">{channelHandle}</p>
+
+          <div className="flex gap-1 text-[#676D75] text-sm mt-2">
             <p>{totalVideos} videos</p>
             <p>•</p>
             <p>{formatFileSize(totalSize)}</p>
           </div>
         </div>
-        {checkButton && (
-          <button className="rounded-full bg-white text-black text-sm py-1 font-semibold w-20">
-            Check
-          </button>
-        )}
       </div>
     </div>
   );

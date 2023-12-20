@@ -25,8 +25,6 @@ export default function ChannelList() {
             channelHandle={channel.channelHandle}
             totalVideos={channel.totalVideos}
             totalSize={channel.totalSize}
-            downloading={channel.state === "downloading"}
-            checkButton
           />
         );
       })}
