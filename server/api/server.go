@@ -49,7 +49,7 @@ func (s *Server) Start() error {
 		channels.GET("/:channelHandle", s.getChannelHandler)
 		channels.GET("/videos/:channelId", s.getChannelVideosHandler)
 		channels.GET("/state", s.getChannelStateWs)
-		channels.GET("/check/:channelId", s.checkForNewUploadsHandler)
+		channels.GET("/sync/:channelId", s.syncChannelHandler)
 	}
 
 	assets := e.Group("/assets")

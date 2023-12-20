@@ -211,7 +211,8 @@ func (s *ChannelsService) DownloadChannelVideos(channel repository.Channel, vide
 	return nil
 }
 
-func (s *ChannelsService) CheckForNewUploads(channelId int) (int, error) {
+// TODO: consider renaming this to 'downloadMissingVideos' or something similar
+func (s *ChannelsService) SyncChannel(channelId int) (int, error) {
 	channel, err := s.repository.FindChannelByID(channelId)
 	if err != nil {
 		return 0, echo.NewHTTPError(http.StatusBadRequest, "could not find channel")

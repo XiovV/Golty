@@ -195,13 +195,13 @@ func (s *Server) getChannelVideosHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
-func (s *Server) checkForNewUploadsHandler(c echo.Context) error {
+func (s *Server) syncChannelHandler(c echo.Context) error {
 	channelId, err := strconv.Atoi(c.Param("channelId"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "channelId must be an integer")
 	}
 
-	numOfMissingVideos, err := s.ChannelsService.CheckForNewUploads(channelId)
+	numOfMissingVideos, err := s.ChannelsService.SyncChannel(channelId)
 
 	return c.JSON(http.StatusOK, echo.Map{"missingVideos": numOfMissingVideos})
 }
