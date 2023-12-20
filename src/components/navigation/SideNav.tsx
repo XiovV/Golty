@@ -13,9 +13,9 @@ import { MdBugReport } from "react-icons/md";
 import { FaBell } from "react-icons/fa";
 
 const libraryLinks = [
-  { name: "Channels", href: "/channels", icon: PiTelevisionFill },
-  { name: "Playlists", href: "/playlists", icon: FaListUl },
-  { name: "Videos", href: "/videos", icon: FaRegPlayCircle },
+  { name: "Channels", href: "/dashboard/channels", icon: PiTelevisionFill },
+  { name: "Playlists", href: "/dashboard/playlists", icon: FaListUl },
+  { name: "Videos", href: "/dashboard/videos", icon: FaRegPlayCircle },
 ];
 
 const settingsLinks = [
