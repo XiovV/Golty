@@ -211,7 +211,6 @@ func (s *ChannelsService) DownloadChannelVideos(channel repository.Channel, vide
 	return nil
 }
 
-// TODO: consider renaming this to 'downloadMissingVideos' or something similar
 func (s *ChannelsService) SyncChannel(channelId int) (int, error) {
 	channel, err := s.repository.FindChannelByID(channelId)
 	if err != nil {

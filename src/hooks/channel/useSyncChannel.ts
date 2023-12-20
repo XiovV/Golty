@@ -15,12 +15,17 @@ export const useSyncChannel = () => {
 
     setLoading(false);
 
+    let toastDescription = "No new videos detected.";
+
+    if (syncChannelResponse.missingVideos == 1) {
+      toastDescription = "1 new video detected.";
+    } else if (syncChannelResponse.missingVideos > 1) {
+      toastDescription = `${syncChannelResponse.missingVideos} new videos detected.`;
+    }
+
     toast({
       title: "Checking for new videos completed.",
-      description:
-        syncChannelResponse.missingVideos == 0
-          ? "No new videos detected"
-          : `${syncChannelResponse.missingVideos} videos detected.`,
+      description: toastDescription,
     });
   };
 
