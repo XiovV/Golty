@@ -1,6 +1,6 @@
 import { Channel } from "@/services/api/channels";
 import { API_URL } from "@/app/const";
-import CheckChannelButton from "@/components/channel/CheckChannelButton";
+import SyncChannelButton from "@/components/channel/SyncChannelButton";
 import {
   TopBar,
   DesktopButtons,
@@ -31,11 +31,11 @@ export default async function Page({
     <main>
       <TopBar>
         <DesktopButtons>
-          <CheckChannelButton channelId={channel.id} />
+          <SyncChannelButton channelId={channel.id} />
         </DesktopButtons>
 
         <MobileButtons title={channel.channelName}>
-          <CheckChannelButton channelId={channel.id} />
+          <SyncChannelButton channelId={channel.id} />
         </MobileButtons>
       </TopBar>
 

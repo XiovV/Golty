@@ -27,6 +27,6 @@ export interface AddChannelRequest {
   };
 }
 
-export interface CheckChannelResponse {
+export interface SyncChannelResponse {
   missingVideos: number;
 }
