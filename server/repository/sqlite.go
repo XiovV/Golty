@@ -20,6 +20,8 @@ func New(dbPath string) (*Repository, error) {
 		return nil, err
 	}
 
+	db.MustExec("PRAGMA foreign_keys = ON;")
+
 	return &Repository{db: db}, nil
 }
 
