@@ -9,9 +9,9 @@ import { FaUser } from "react-icons/fa";
 import NavItem from "./NavItem";
 
 const links = [
-  { name: "Channels", href: "/channels", icon: PiTelevisionFill },
-  { name: "Playlists", href: "/playlists", icon: FaListUl },
-  { name: "Videos", href: "/videos", icon: FaRegPlayCircle },
+  { name: "Channels", href: "/dashboard/channels", icon: PiTelevisionFill },
+  { name: "Playlists", href: "/dashboard/playlists", icon: FaListUl },
+  { name: "Videos", href: "/dashboard/videos", icon: FaRegPlayCircle },
   { name: "Settings", href: "/settings", icon: IoMdSettings },
   { name: "Admin", href: "/user", icon: FaUser },
 ];
