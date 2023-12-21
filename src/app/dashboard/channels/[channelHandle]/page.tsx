@@ -1,4 +1,3 @@
-import { Channel } from "@/services/api/channels";
 import { API_URL } from "@/app/const";
 import SyncChannelButton from "@/components/channel/SyncChannelButton";
 import DeleteChannelButton from "@/components/channel/DeleteChannelButton";
@@ -10,6 +9,7 @@ import {
 
 import ChannelCard from "@/components/channel/ChannelCard";
 import VideosList from "@/components/shared/video/VideosList";
+import { Channel } from "@/hooks/channel/types";
 
 async function fetchChannel(channelHandle: string): Promise<Channel> {
   const res = await fetch(`${API_URL}/channels/${channelHandle}`, {

@@ -1,4 +1,6 @@
+"use client";
 import { useToast } from "../../components/ui/use-toast";
+import { useRouter } from "next/navigation";
 import { API_URL } from "@/app/const";
 import {
   ChannelInfo,
@@ -8,6 +10,7 @@ import {
 
 export const useAddChannel = () => {
   const { toast } = useToast();
+  const router = useRouter();
 
   const addChannel = async (
     e: React.FormEvent<HTMLFormElement>,
