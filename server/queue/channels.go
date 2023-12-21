@@ -7,11 +7,17 @@ import (
 
 type ChannelsQueue struct {
 	channels []*repository.Channel
-	lock     sync.Mutex
+	lock     *sync.Mutex
+	cond     *sync.Cond
 }
 
 func New() *ChannelsQueue {
-	return &ChannelsQueue{}
+	mutex := &sync.Mutex{}
+
+	return &ChannelsQueue{
+		lock: mutex,
+		cond: sync.NewCond(mutex),
+	}
 }
 
 func (q *ChannelsQueue) Enqueue(channel *repository.Channel) {
@@ -19,14 +25,15 @@ func (q *ChannelsQueue) Enqueue(channel *repository.Channel) {
 	defer q.lock.Unlock()
 
 	q.channels = append(q.channels, channel)
+	q.cond.Signal()
 }
 
 func (q *ChannelsQueue) Dequeue() *repository.Channel {
 	q.lock.Lock()
 	defer q.lock.Unlock()
 
-	if len(q.channels) == 0 {
-		return nil
+	for len(q.channels) == 0 {
+		q.cond.Wait()
 	}
 
 	channel := q.channels[0]

@@ -112,9 +112,7 @@ func (s *ChannelsService) StartQueueConsumer() {
 	for {
 		channel := s.ChannelsQueue.Dequeue()
 		if channel == nil {
-			fmt.Println("got nothing in the queue, continuing")
-			time.Sleep(1 * time.Second)
-			continue
+			s.logger.Fatal("received nil from the queue. This is a fatal error and must be reported")
 		}
 
 		s.logger.Debug("got channel in queue", zap.Int("channelId", channel.ID))
