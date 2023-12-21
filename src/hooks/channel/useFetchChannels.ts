@@ -4,12 +4,11 @@ import { Channel } from "./types";
 
 export function useFetchChannels() {
   const [channels, setChannels] = useState<Channel[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     console.log("calling fetch channels");
     try {
-      setLoading(true);
       const response = await fetch(`${API_URL}/channels`, {
         cache: "no-cache",
       });
