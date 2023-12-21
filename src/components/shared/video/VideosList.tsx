@@ -15,7 +15,6 @@ interface Video {
 }
 
 async function fetchVideos(channelId: string) {
-  console.log(channelId);
   const res = await fetch(`${API_URL}/channels/videos/${channelId}`, {
     cache: "no-cache",
   });
