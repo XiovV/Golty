@@ -206,6 +206,20 @@ func (s *Server) syncChannelHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"missingVideos": numOfMissingVideos})
 }
 
+func (s *Server) deleteChannelHandler(c echo.Context) error {
+	channelId, err := strconv.Atoi(c.Param("channelId"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "channelId must be an integer")
+	}
+
+	err = s.Repository.DeleteChannel(channelId)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	return c.NoContent(http.StatusNoContent)
+}
+
 var upgrader = websocket.Upgrader{}
 
 func (s *Server) getChannelStateWs(c echo.Context) error {

@@ -10,6 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useDeleteChannel } from "@/hooks/channel/useDeleteChannel";
 import { IconContext } from "react-icons";
 import { LuTrash } from "react-icons/lu";
 
@@ -20,6 +21,8 @@ interface DeleteChannelButtonProps {
 export default function DeleteChannelButton({
   channelId,
 }: DeleteChannelButtonProps) {
+  const { deleteChannel } = useDeleteChannel();
+
   return (
     <AlertDialog>
       <AlertDialogTrigger>
@@ -41,7 +44,7 @@ export default function DeleteChannelButton({
 
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => console.log(channelId)}>
+          <AlertDialogAction onClick={() => deleteChannel(channelId)}>
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

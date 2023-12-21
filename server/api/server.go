@@ -47,6 +47,7 @@ func (s *Server) Start() error {
 		channels.POST("", s.addChannelHandler)
 		channels.GET("/info/:channelUrl", s.getChannelInfoHandler)
 		channels.GET("/:channelHandle", s.getChannelHandler)
+		channels.DELETE("/:channelId", s.deleteChannelHandler)
 		channels.GET("/videos/:channelId", s.getChannelVideosHandler)
 		channels.GET("/state", s.getChannelStateWs)
 		channels.GET("/sync/:channelId", s.syncChannelHandler)

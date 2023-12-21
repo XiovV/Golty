@@ -144,3 +144,15 @@ func (r *Repository) GetChannelDownloadSettings(channelId int) (ChannelDownloadS
 
 	return channelDownloadSettings, nil
 }
+
+func (r *Repository) DeleteChannel(channelId int) error {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
+
+	_, err := r.db.ExecContext(ctx, "DELETE FROM channels WHERE id = $1", channelId)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
