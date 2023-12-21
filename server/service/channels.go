@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"golty/queue"
 	"golty/repository"
 	"golty/ytdl"
 	"net/http"
@@ -19,6 +20,7 @@ type ChannelsService struct {
 	channels                    []*repository.Channel
 	currentlyDownloading        *repository.Channel
 	CurrentlyDownloadingChannel chan *repository.Channel
+	ChannelsQueue               *queue.ChannelsQueue
 }
 
 type ChannelDownloadOptions struct {
@@ -30,17 +32,20 @@ type ChannelDownloadOptions struct {
 	DownloadEntire     bool
 }
 
-func NewChannelsService(repo *repository.Repository, logger *zap.Logger, ytdl *ytdl.Ytdl) *ChannelsService {
+func NewChannelsService(repo *repository.Repository, logger *zap.Logger, ytdl *ytdl.Ytdl, channelsQueue *queue.ChannelsQueue) *ChannelsService {
 	currentlyDownloadingChannel := make(chan *repository.Channel)
 
-	return &ChannelsService{repository: repo, logger: logger, ytdl: ytdl, CurrentlyDownloadingChannel: currentlyDownloadingChannel}
+	return &ChannelsService{
+		repository:                  repo,
+		logger:                      logger,
+		ytdl:                        ytdl,
+		CurrentlyDownloadingChannel: currentlyDownloadingChannel,
+		ChannelsQueue:               channelsQueue,
+	}
 }
 
 func (s *ChannelsService) DownloadChannel(channel repository.Channel, options ChannelDownloadOptions) {
 	log := s.logger.With(zap.String("channelUrl", channel.ChannelUrl))
-
-	s.setCurrentlyDownloading(&channel)
-	defer s.unsetCurrentlyDownloading()
 
 	log.Debug("getting channel videos")
 
@@ -96,10 +101,49 @@ func (s *ChannelsService) AddChannel(channel repository.Channel, downloadOptions
 		return err
 	}
 
-	log.Debug("downloading channel")
-	go s.DownloadChannel(createdChannel, downloadOptions)
+	log.Debug("enqueueing channel")
+	s.ChannelsQueue.Enqueue(&createdChannel)
 
 	return nil
+}
+
+func (s *ChannelsService) StartQueueConsumer() {
+	s.logger.Debug("started queue consumer")
+	for {
+		channel := s.ChannelsQueue.Dequeue()
+		if channel == nil {
+			fmt.Println("got nothing in the queue, continuing")
+			time.Sleep(1 * time.Second)
+			continue
+		}
+
+		s.logger.Debug("got channel in queue", zap.Int("channelId", channel.ID))
+
+		channelSettings, err := s.repository.GetChannelDownloadSettings(channel.ID)
+		if err != nil {
+			s.logger.Error("could not get channel download settings", zap.Error(err), zap.Int("channelId", channel.ID))
+			continue
+		}
+
+		missingVideos, err := s.GetMissingVideos(*channel)
+		if err != nil {
+			s.logger.Error("could not get missing videos", zap.Error(err))
+			continue
+		}
+
+		videoDownloadOptions := ytdl.VideoDownloadOptions{
+			Video:      s.integerToBoolean(channelSettings.DownloadVideo),
+			Audio:      s.integerToBoolean(channelSettings.DownloadAudio),
+			Resolution: channelSettings.Resolution,
+			Format:     channelSettings.Format,
+			Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
+		}
+
+		s.logger.Debug("downloading channel", zap.Int("channelId", channel.ID))
+		s.DownloadChannelVideos(*channel, missingVideos, videoDownloadOptions)
+
+		s.logger.Debug("channel finished downloading", zap.Int("channelId", channel.ID))
+	}
 }
 
 func (s *ChannelsService) ResumeDownloads() {
@@ -112,6 +156,7 @@ func (s *ChannelsService) ResumeDownloads() {
 	for _, channelSettings := range channelDownloadSettings {
 		log := s.logger.With(zap.Int("channelId", channelSettings.ChannelId))
 
+		// TODO: use a JOIN here
 		log.Debug("resuming downloads")
 		channel, err := s.repository.FindChannelByID(channelSettings.ChannelId)
 		if err != nil {
@@ -128,27 +173,10 @@ func (s *ChannelsService) ResumeDownloads() {
 
 		if len(missingVideos) == 0 && s.integerToBoolean(channelSettings.DownloadNewUploads) {
 			log.Debug("no missing videos, continuing")
-			s.registerChannel(&channel)
 			continue
 		}
 
-		s.setCurrentlyDownloading(&channel)
-
-		videoDownloadOptions := ytdl.VideoDownloadOptions{
-			Video:      s.integerToBoolean(channelSettings.DownloadVideo),
-			Audio:      s.integerToBoolean(channelSettings.DownloadAudio),
-			Resolution: channelSettings.Resolution,
-			Format:     channelSettings.Format,
-			Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
-		}
-
-		s.DownloadChannelVideos(channel, missingVideos, videoDownloadOptions)
-
-		s.unsetCurrentlyDownloading()
-
-		if s.integerToBoolean(channelSettings.DownloadNewUploads) {
-			s.registerChannel(&channel)
-		}
+		s.ChannelsQueue.Enqueue(&channel)
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"golty/api"
 	"golty/config"
 	zapLogger "golty/logger"
+	"golty/queue"
 	"golty/repository"
 	"golty/service"
 	"golty/ytdl"
@@ -35,10 +36,13 @@ func main() {
 
 	ytdl := ytdl.New("yt-dlp", logger)
 
-	channelsService := service.NewChannelsService(repository, logger, ytdl)
+	channelsQueue := queue.New()
+
+	channelsService := service.NewChannelsService(repository, logger, ytdl, channelsQueue)
 
 	go channelsService.ResumeDownloads()
-	go channelsService.StartScheduler()
+	go channelsService.StartQueueConsumer()
+	// go channelsService.StartScheduler()
 
 	server := api.New(c, logger, repository, channelsService, ytdl)
 
