@@ -32,10 +32,10 @@ func (s *Server) getChannelInfoHandler(c echo.Context) error {
 	}
 
 	type channelInfoResponse struct {
-		UploaderUrl string `json:"uploader_url"`
-		UploaderId  string `json:"uploader_id"`
+		UploaderUrl string `json:"uploaderUrl"`
+		UploaderId  string `json:"uploaderId"`
 		Uploader    string `json:"uploader"`
-		AvatarUrl   string `json:"avatar_url"`
+		AvatarUrl   string `json:"avatarUrl"`
 	}
 
 	return c.JSON(http.StatusOK, channelInfoResponse{
