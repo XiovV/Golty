@@ -31,7 +31,19 @@ func (s *Server) getChannelInfoHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	return c.JSON(http.StatusOK, channelInfo)
+	type channelInfoResponse struct {
+		UploaderUrl string `json:"uploader_url"`
+		UploaderId  string `json:"uploader_id"`
+		Uploader    string `json:"uploader"`
+		AvatarUrl   string `json:"avatar_url"`
+	}
+
+	return c.JSON(http.StatusOK, channelInfoResponse{
+		UploaderUrl: channelUrl,
+		UploaderId:  channelInfo.UploaderID,
+		Uploader:    channelInfo.Uploader,
+		AvatarUrl:   channelInfo.Avatar.URL,
+	})
 }
 
 func (s *Server) addChannelHandler(c echo.Context) error {
@@ -88,8 +100,6 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 
 	return c.NoContent(http.StatusCreated)
 }
-
-var isDownloading bool
 
 func (s *Server) getChannelsHandler(c echo.Context) error {
 	channels, err := s.Repository.GetChannelsWithSize()
