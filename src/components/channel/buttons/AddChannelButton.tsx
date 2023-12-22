@@ -75,10 +75,10 @@ function AddChannelForm() {
 
       {!loading && channelInfo && (
         <ChannelInfoCard
-          avatarUrl={channelInfo.avatar_url}
+          avatarUrl={channelInfo.avatarUrl}
           name={channelInfo.uploader}
-          handle={channelInfo.uploader_id}
-          channelUrl={channelInfo.uploader_url}
+          handle={channelInfo.uploaderId}
+          channelUrl={channelInfo.uploaderUrl}
         />
       )}
 

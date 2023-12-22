@@ -10,10 +10,10 @@ export interface Channel {
 }
 
 export interface ChannelInfo {
-  uploader_url: string;
-  uploader_id: string;
+  uploaderUrl: string;
+  uploaderId: string;
   uploader: string;
-  avatar_url: string;
+  avatarUrl: string;
 }
 
 export interface ErrorResponse {

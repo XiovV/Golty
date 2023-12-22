@@ -24,8 +24,8 @@ export const useAddChannel = () => {
       channel: {
         channelUrl: formData.get("channelUrl")!.toString(),
         channelName: channelInfo.uploader,
-        channelHandle: channelInfo.uploader_id,
-        avatarUrl: channelInfo.avatar_url,
+        channelHandle: channelInfo.uploaderId,
+        avatarUrl: channelInfo.avatarUrl,
       },
       downloadSettings: {
         downloadVideo: Boolean(formData.get("video")),
