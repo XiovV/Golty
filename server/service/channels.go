@@ -63,10 +63,6 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 	}
 
 	log.Info("channel downloaded successfully")
-
-	if options.Sync {
-		s.registerChannel(&channel)
-	}
 }
 
 func (s *ChannelsService) AddChannel(channel repository.Channel, downloadOptions ChannelDownloadOptions) error {
