@@ -55,8 +55,6 @@ function AddChannelForm() {
   const { loading, channelInfo, getChannelInfo } = useFetchChannelInfo();
   const { addChannel } = useAddChannel();
 
-  const channelUrlRef = useRef<HTMLInputElement>(null);
-
   return (
     <form
       onSubmit={(e) => addChannel(e, channelInfo!)}
@@ -70,7 +68,6 @@ function AddChannelForm() {
           name="channelInput"
           placeholder="URL or Handle"
           onChange={(e) => getChannelInfo(e.target.value)}
-          ref={channelUrlRef}
         />
       </div>
 
@@ -78,10 +75,10 @@ function AddChannelForm() {
 
       {!loading && channelInfo && (
         <ChannelInfoCard
-          avatarUrl={channelInfo.avatar.url}
+          avatarUrl={channelInfo.avatar_url}
           name={channelInfo.uploader}
           handle={channelInfo.uploader_id}
-          channelUrl={channelUrlRef.current!.value!}
+          channelUrl={channelInfo.uploader_url}
         />
       )}
 
