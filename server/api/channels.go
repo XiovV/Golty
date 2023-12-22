@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"golty/repository"
 	"golty/service"
 	"net/http"
@@ -13,12 +14,15 @@ import (
 )
 
 func (s *Server) getChannelInfoHandler(c echo.Context) error {
-	channelUrl := c.Param("channelUrl")
+	channelInput := c.Param("channelInput")
 
-	channelUrlSplit := strings.Split(channelUrl, "/")
-	channelName := channelUrlSplit[len(channelUrlSplit)-1]
-	if strings.Contains(channelName, "@") && len(channelName) == 1 || len(channelName) == 0 {
-		return echo.NewHTTPError(http.StatusBadRequest, "channel name or handle must be provided")
+	if channelInput == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "channel url or handle must be provided")
+	}
+
+	channelUrl := channelInput
+	if !strings.Contains(channelInput, "youtube.com") {
+		channelUrl = fmt.Sprintf("https://youtube.com/%s", channelInput)
 	}
 
 	channelInfo, err := s.Ytdl.GetChannelInfo(channelUrl)
