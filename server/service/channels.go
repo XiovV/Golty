@@ -103,43 +103,6 @@ func (s *ChannelsService) AddChannel(channel repository.Channel, downloadOptions
 	return nil
 }
 
-func (s *ChannelsService) StartQueueConsumer() {
-	s.logger.Debug("started queue consumer")
-	for {
-		channel := s.ChannelsQueue.Dequeue()
-		if channel == nil {
-			s.logger.Fatal("received nil from the queue. This is a fatal error and must be reported")
-		}
-
-		s.logger.Debug("got channel in queue", zap.Int("channelId", channel.ID))
-
-		channelSettings, err := s.repository.GetChannelDownloadSettings(channel.ID)
-		if err != nil {
-			s.logger.Error("could not get channel download settings", zap.Error(err), zap.Int("channelId", channel.ID))
-			continue
-		}
-
-		missingVideos, err := s.GetMissingVideos(*channel)
-		if err != nil {
-			s.logger.Error("could not get missing videos", zap.Error(err))
-			continue
-		}
-
-		videoDownloadOptions := ytdl.VideoDownloadOptions{
-			Video:      bool(channelSettings.DownloadVideo),
-			Audio:      bool(channelSettings.DownloadAudio),
-			Resolution: channelSettings.Resolution,
-			Format:     channelSettings.Format,
-			Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
-		}
-
-		s.logger.Debug("downloading channel", zap.Int("channelId", channel.ID))
-		s.DownloadChannelVideos(*channel, missingVideos, videoDownloadOptions)
-
-		s.logger.Debug("channel finished downloading", zap.Int("channelId", channel.ID))
-	}
-}
-
 func (s *ChannelsService) ResumeDownloads() {
 	channelDownloadSettings, err := s.repository.GetAllDownloadSettings()
 	if err != nil {
@@ -244,20 +207,7 @@ func (s *ChannelsService) SyncChannel(channelId int) (int, error) {
 		return 0, echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	channelOptions, err := s.repository.GetChannelDownloadSettings(channelId)
-	if err != nil {
-		return 0, echo.NewHTTPError(http.StatusInternalServerError, err)
-	}
-
-	downloadOptions := ytdl.VideoDownloadOptions{
-		Video:      bool(channelOptions.DownloadVideo),
-		Audio:      bool(channelOptions.DownloadAudio),
-		Resolution: channelOptions.Resolution,
-		Format:     channelOptions.Format,
-		Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
-	}
-
-	go s.DownloadChannelVideos(channel, missingVideos, downloadOptions)
+	go s.ChannelsQueue.Enqueue(&channel)
 
 	return len(missingVideos), nil
 }

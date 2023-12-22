@@ -20,7 +20,7 @@ func (s *ChannelsService) StartScheduler() {
 }
 
 // TODO: this needs a complete rewrite
-// Add a function that will return only the channels that have the downloadNewUploads setting enabled
+// Add a function that will return only the channels that have the sync setting enabled
 // Go through each channel and enqueue it if it's got more than 1 missing video
 func (s *ChannelsService) checkChannels() {
 	for _, channel := range s.channels {
