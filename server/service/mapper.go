@@ -16,12 +16,12 @@ func (s *ChannelsService) channelOptionsToVideoOptions(channelOptions ChannelDow
 
 func (s *ChannelsService) channelOptionsToDBChannelOptions(channelId int, channelOptions ChannelDownloadOptions) repository.ChannelDownloadSettings {
 	return repository.ChannelDownloadSettings{
-		ChannelId:          channelId,
-		Resolution:         channelOptions.Resolution,
-		Format:             channelOptions.Format,
-		DownloadVideo:      s.booleanToInteger(channelOptions.Video),
-		DownloadAudio:      s.booleanToInteger(channelOptions.Audio),
-		DownloadEntire:     s.booleanToInteger(channelOptions.DownloadEntire),
-		DownloadNewUploads: s.booleanToInteger(channelOptions.DownloadNewUploads),
+		ChannelId:      channelId,
+		Resolution:     channelOptions.Resolution,
+		Format:         channelOptions.Format,
+		DownloadVideo:  repository.BoolAsInt(channelOptions.Video),
+		DownloadAudio:  repository.BoolAsInt(channelOptions.Audio),
+		DownloadEntire: repository.BoolAsInt(channelOptions.DownloadEntire),
+		Sync:           repository.BoolAsInt(channelOptions.Sync),
 	}
 }

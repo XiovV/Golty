@@ -69,12 +69,12 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 	}
 
 	channelDownloadOptions := service.ChannelDownloadOptions{
-		Video:              addChannelRequest.DownloadSettings.DownloadVideo,
-		Audio:              addChannelRequest.DownloadSettings.DownloadAudio,
-		Resolution:         addChannelRequest.DownloadSettings.Resolution,
-		Format:             addChannelRequest.DownloadSettings.Format,
-		DownloadEntire:     addChannelRequest.DownloadSettings.DownloadEntire,
-		DownloadNewUploads: addChannelRequest.DownloadSettings.DownloadNewUploads,
+		Video:          addChannelRequest.DownloadSettings.DownloadVideo,
+		Audio:          addChannelRequest.DownloadSettings.DownloadAudio,
+		Resolution:     addChannelRequest.DownloadSettings.Resolution,
+		Format:         addChannelRequest.DownloadSettings.Format,
+		DownloadEntire: addChannelRequest.DownloadSettings.DownloadEntire,
+		Sync:           addChannelRequest.DownloadSettings.DownloadNewUploads,
 	}
 
 	err := s.ChannelsService.AddChannel(channel, channelDownloadOptions)

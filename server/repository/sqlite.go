@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -27,4 +28,16 @@ func New(dbPath string) (*Repository, error) {
 
 func newBackgroundContext(duration int) (context.Context, context.CancelFunc) {
 	return context.WithTimeout(context.Background(), time.Duration(duration)*time.Second)
+}
+
+type BoolAsInt bool
+
+func (b *BoolAsInt) Scan(value any) error {
+	i, ok := value.(int64)
+	if !ok {
+		return fmt.Errorf("expected int64, got %T", value)
+	}
+
+	*b = i != 0
+	return nil
 }

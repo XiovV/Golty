@@ -24,12 +24,12 @@ type ChannelsService struct {
 }
 
 type ChannelDownloadOptions struct {
-	Video              bool
-	Audio              bool
-	Format             string
-	Resolution         string
-	DownloadNewUploads bool
-	DownloadEntire     bool
+	Video          bool
+	Audio          bool
+	Format         string
+	Resolution     string
+	DownloadEntire bool
+	Sync           bool
 }
 
 func NewChannelsService(repo *repository.Repository, logger *zap.Logger, ytdl *ytdl.Ytdl, channelsQueue *queue.ChannelsQueue) *ChannelsService {
@@ -64,7 +64,7 @@ func (s *ChannelsService) DownloadChannel(channel repository.Channel, options Ch
 
 	log.Info("channel downloaded successfully")
 
-	if options.DownloadNewUploads {
+	if options.Sync {
 		s.registerChannel(&channel)
 	}
 }
@@ -130,8 +130,8 @@ func (s *ChannelsService) StartQueueConsumer() {
 		}
 
 		videoDownloadOptions := ytdl.VideoDownloadOptions{
-			Video:      s.integerToBoolean(channelSettings.DownloadVideo),
-			Audio:      s.integerToBoolean(channelSettings.DownloadAudio),
+			Video:      bool(channelSettings.DownloadVideo),
+			Audio:      bool(channelSettings.DownloadAudio),
 			Resolution: channelSettings.Resolution,
 			Format:     channelSettings.Format,
 			Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
@@ -169,7 +169,7 @@ func (s *ChannelsService) ResumeDownloads() {
 			return
 		}
 
-		if len(missingVideos) == 0 && s.integerToBoolean(channelSettings.DownloadNewUploads) {
+		if len(missingVideos) == 0 && bool(channelSettings.Sync) {
 			log.Debug("no missing videos, continuing")
 			continue
 		}
@@ -254,8 +254,8 @@ func (s *ChannelsService) SyncChannel(channelId int) (int, error) {
 	}
 
 	downloadOptions := ytdl.VideoDownloadOptions{
-		Video:      s.integerToBoolean(channelOptions.DownloadVideo),
-		Audio:      s.integerToBoolean(channelOptions.DownloadAudio),
+		Video:      bool(channelOptions.DownloadVideo),
+		Audio:      bool(channelOptions.DownloadAudio),
 		Resolution: channelOptions.Resolution,
 		Format:     channelOptions.Format,
 		Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
