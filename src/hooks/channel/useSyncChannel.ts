@@ -8,6 +8,10 @@ export const useSyncChannel = () => {
   const { toast } = useToast();
 
   const syncChannel = async (channelId: string) => {
+    if (loading) {
+      return
+    }
+
     setLoading(true);
     const res = await fetch(`${API_URL}/channels/sync/${channelId}`);
 

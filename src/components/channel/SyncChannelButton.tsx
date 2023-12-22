@@ -17,7 +17,9 @@ export default function SyncChannelButton({
 
   return (
     <div
-      className="hover:cursor-pointer"
+      className={clsx("hover:cursor-pointer", {
+        "hover:cursor-default": loading,
+      })}
       onClick={() => syncChannel(channelId)}
     >
       <IconContext.Provider value={{ size: size }}>
