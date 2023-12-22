@@ -7,14 +7,14 @@ export const useFetchChannelInfo = () => {
   const [loading, setLoading] = useState(false);
   const [channelInfo, setChannelInfo] = useState<ChannelInfo>();
 
-  const getChannelInfo = useDebouncedCallback(async (channelUrl: string) => {
-    if (!channelUrl || !channelUrl.includes("https://www.youtube.com/")) {
+  const getChannelInfo = useDebouncedCallback(async (channelInput: string) => {
+    if (!channelInput) {
       return;
     }
 
     setChannelInfo(undefined);
     setLoading(true);
-    const res = await fetch(`${API_URL}/channels/info/${channelUrl}`, {
+    const res = await fetch(`${API_URL}/channels/info/${channelInput}`, {
       cache: "no-cache",
     });
 

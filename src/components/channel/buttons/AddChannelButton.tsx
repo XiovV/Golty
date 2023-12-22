@@ -63,12 +63,12 @@ function AddChannelForm() {
       className="flex flex-col gap-6"
     >
       <div className="grid w-full max-w-sm items-center gap-2">
-        <Label htmlFor="channelUrl">Channel URL</Label>
+        <Label htmlFor="channelInput">Channel</Label>
         <Input
-          type="channelUrl"
-          id="channelUrl"
-          name="channelUrl"
-          placeholder="Channel URL"
+          type="text"
+          id="channelInput"
+          name="channelInput"
+          placeholder="URL or Handle"
           onChange={(e) => getChannelInfo(e.target.value)}
           ref={channelUrlRef}
         />
