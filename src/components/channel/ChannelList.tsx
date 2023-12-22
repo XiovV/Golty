@@ -11,16 +11,16 @@ export default function ChannelList() {
     fetchData();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!loading && !channels) {
+  if (!loading && channels.length == 0) {
     return (
       <div>
         No channels here so far! Press the + icon on the top right to add one.
       </div>
     );
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
