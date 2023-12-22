@@ -55,7 +55,7 @@ func (r *Repository) GetChannels() ([]Channel, error) {
 
 	channels := []Channel{}
 
-	err := r.db.SelectContext(ctx, &channels, "SELECT id, channelName, channelHandle, channelUrl, avatarUrl")
+	err := r.db.SelectContext(ctx, &channels, "SELECT id, channelName, channelHandle, channelUrl, avatarUrl ORDER BY id desc")
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (r *Repository) GetChannelsWithSize() ([]ChannelWithSize, error) {
 
 	channels := []ChannelWithSize{}
 
-	err := r.db.SelectContext(ctx, &channels, "SELECT channels.id, channels.channelName, channels.channelHandle, channels.channelUrl, channels.avatarUrl, COUNT(videos.videoId) as totalVideos, COALESCE(SUM(videos.size), 0) as totalSize FROM channels LEFT JOIN videos ON channels.id = videos.channelId GROUP BY channels.id")
+	err := r.db.SelectContext(ctx, &channels, "SELECT channels.id, channels.channelName, channels.channelHandle, channels.channelUrl, channels.avatarUrl, COUNT(videos.videoId) as totalVideos, COALESCE(SUM(videos.size), 0) as totalSize FROM channels LEFT JOIN videos ON channels.id = videos.channelId GROUP BY channels.id ORDER BY channels.id desc")
 	if err != nil {
 		return nil, err
 	}
