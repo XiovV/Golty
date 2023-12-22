@@ -32,7 +32,7 @@ func (q *ChannelsQueue) Dequeue() *repository.Channel {
 	q.lock.Lock()
 	defer q.lock.Unlock()
 
-	for len(q.channels) == 0 {
+	if len(q.channels) == 0 {
 		q.cond.Wait()
 	}
 
