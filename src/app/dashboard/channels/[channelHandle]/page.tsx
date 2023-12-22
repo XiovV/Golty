@@ -1,14 +1,14 @@
 import { API_URL } from "@/app/const";
-import SyncChannelButton from "@/components/channel/SyncChannelButton";
-import DeleteChannelButton from "@/components/channel/DeleteChannelButton";
+import SyncChannelButton from "@/components/channel/buttons/SyncChannelButton";
+import DeleteChannelButton from "@/components/channel/buttons/DeleteChannelButton";
 import {
   TopBar,
   DesktopButtons,
   MobileButtons,
 } from "@/components/navigation/TopBar";
 
-import ChannelCard from "@/components/channel/ChannelCard";
-import VideosList from "@/components/shared/video/VideosList";
+import ChannelCard from "@/components/channel/cards/ChannelCard";
+import VideosList from "@/components/video/VideosList";
 import { Channel } from "@/hooks/channel/types";
 
 async function fetchChannel(channelHandle: string): Promise<Channel> {

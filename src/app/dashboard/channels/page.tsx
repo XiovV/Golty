@@ -3,7 +3,7 @@ import {
   DesktopButtons,
   MobileButtons,
 } from "@/components/navigation/TopBar";
-import AddChannelButton from "@/components/channel/AddChannelButton";
+import AddChannelButton from "@/components/channel/buttons/AddChannelButton";
 import ChannelList from "@/components/channel/ChannelList";
 
 export default async function Home() {

@@ -10,10 +10,10 @@ import {
 import { useRef } from "react";
 import { IconContext } from "react-icons";
 import { FiPlus } from "react-icons/fi";
-import { Button } from "../ui/button";
-import { Checkbox as CheckboxShadcn } from "../ui/checkbox";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Button } from "../../ui/button";
+import { Checkbox as CheckboxShadcn } from "../../ui/checkbox";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
 import {
   Select,
   SelectContent,
@@ -22,10 +22,10 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Switch as SwitchShadcn } from "../ui/switch";
-import ChannelInfoCard from "./ChannelInfoCard";
-import ChannelInfoCardSkeleton from "./ChannelInfoCardSkeleton";
+} from "../../ui/select";
+import { Switch as SwitchShadcn } from "../../ui/switch";
+import ChannelInfoCard from "../cards/ChannelInfoCard";
+import ChannelInfoCardSkeleton from "../cards/ChannelInfoCardSkeleton";
 import { useAddChannel, useFetchChannelInfo } from "@/hooks/channel";
 import { useState } from "react";
 import { audioExtensions, resolutions, videoExtensions } from "@/app/const";

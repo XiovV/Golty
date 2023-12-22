@@ -1,4 +1,4 @@
-import ChannelAvatar from "./ChannelAvatar";
+import ChannelAvatar from "../ChannelAvatar";
 import Link from "next/link";
 
 interface ChannelInfoCardProps {

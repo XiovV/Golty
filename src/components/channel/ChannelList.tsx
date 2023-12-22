@@ -1,5 +1,5 @@
 "use client";
-import ChannelCard from "./ChannelCard";
+import ChannelCard from "./cards/ChannelCard";
 import { API_URL } from "@/app/const";
 import { useFetchChannels } from "@/hooks/channel/useFetchChannels";
 import { useEffect } from "react";

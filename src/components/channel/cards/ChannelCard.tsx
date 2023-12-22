@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
-import ChannelAvatar from "./ChannelAvatar";
+import ChannelAvatar from "../ChannelAvatar";
 import { formatFileSize } from "@/utils/format";
-import SyncChannelButton from "./SyncChannelButton";
+import SyncChannelButton from "../buttons/SyncChannelButton";
 
 interface ChannelProps {
   avatarUrl: string;
