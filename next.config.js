@@ -6,22 +6,12 @@ const nextConfig = {
   images: {
     domains: ["localhost"],
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "i.imgur.com",
-        port: "",
-      },
-      {
+     {
         protocol: "https",
         hostname: "yt3.googleusercontent.com",
         port: "",
       },
-      {
-        protocol: "https",
-        hostname: "i.ytimg.com",
-        port: "",
-      },
-      {
+     {
         protocol: "http",
         hostname: "localhost",
         port: "",
