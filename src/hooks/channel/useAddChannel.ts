@@ -1,6 +1,5 @@
 "use client";
 import { useToast } from "../../components/ui/use-toast";
-import { useRouter } from "next/navigation";
 import { API_URL } from "@/app/const";
 import {
   ChannelInfo,
@@ -10,7 +9,6 @@ import {
 
 export const useAddChannel = () => {
   const { toast } = useToast();
-  const router = useRouter();
 
   const addChannel = async (
     e: React.FormEvent<HTMLFormElement>,
@@ -22,7 +20,7 @@ export const useAddChannel = () => {
 
     const body: AddChannelRequest = {
       channel: {
-        channelUrl: formData.get("channelUrl")!.toString(),
+        channelInput: formData.get("channelInput")!.toString(),
         channelName: channelInfo.uploader,
         channelHandle: channelInfo.uploaderId,
         avatarUrl: channelInfo.avatarUrl,
@@ -30,7 +28,7 @@ export const useAddChannel = () => {
       downloadSettings: {
         downloadVideo: Boolean(formData.get("video")),
         downloadAudio: Boolean(formData.get("audio")),
-        resolution: formData.get("resolution")!.toString(),
+        quality: formData.get("quality")!.toString(),
         format: formData.get("format")!.toString(),
         downloadNewUploads: Boolean(formData.get("downloadAutomatically")),
         downloadEntire: Boolean(formData.get("downloadEntireChannel")),

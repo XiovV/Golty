@@ -28,7 +28,12 @@ import ChannelInfoCard from "../cards/ChannelInfoCard";
 import ChannelInfoCardSkeleton from "../cards/ChannelInfoCardSkeleton";
 import { useAddChannel, useFetchChannelInfo } from "@/hooks/channel";
 import { useState } from "react";
-import { audioExtensions, resolutions, videoExtensions } from "@/app/const";
+import {
+  audioExtensions,
+  audioQuality,
+  videoResolutions,
+  videoExtensions,
+} from "@/app/const";
 
 export default function AddChannelButton() {
   return (
@@ -52,8 +57,11 @@ export default function AddChannelButton() {
 function AddChannelForm() {
   const [downloadExtensions, setDownloadExtensions] =
     useState<string[]>(videoExtensions);
+
   const { loading, channelInfo, getChannelInfo } = useFetchChannelInfo();
   const { addChannel } = useAddChannel();
+
+  const isVideo = downloadExtensions.includes("m4a");
 
   return (
     <form
@@ -131,13 +139,25 @@ function AddChannelForm() {
               disabled={!channelInfo}
             />
 
-            <Dropdown
-              items={resolutions}
-              name="resolution"
-              label="Resolution"
-              defaultValue="2160p"
-              disabled={!channelInfo}
-            />
+            {isVideo && (
+              <Dropdown
+                items={videoResolutions}
+                name="quality"
+                label={"Resolution"}
+                defaultValue={videoResolutions[0]}
+                disabled={!channelInfo}
+              />
+            )}
+
+            {!isVideo && (
+              <Dropdown
+                items={audioQuality}
+                name="quality"
+                label={"Quality"}
+                defaultValue={audioQuality[0]}
+                disabled={!channelInfo}
+              />
+            )}
           </div>
         </div>
 

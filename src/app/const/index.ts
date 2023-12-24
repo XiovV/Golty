@@ -10,17 +10,7 @@ export const videoExtensions: string[] = [
   "3gp",
 ];
 
-export const audioExtensions: string[] = [
-  "aac",
-  "alac",
-  "flac",
-  "mp3",
-  "opus",
-  "vorbis",
-  "wav",
-];
-
-export const resolutions: string[] = [
+export const videoResolutions: string[] = [
   "2160p",
   "1440p",
   "1080p",
@@ -30,3 +20,21 @@ export const resolutions: string[] = [
   "240p",
   "144p",
 ];
+
+
+export const audioExtensions: string[] = [
+  "Auto",
+  "aac",
+  "alac",
+  "flac",
+  "mp3",
+  "opus",
+  "vorbis",
+  "wav",
+];
+
+export const audioQuality: string[] = [
+  "High (10)",
+  "Medium (5)",
+  "Low (1)",
+]

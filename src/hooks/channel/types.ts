@@ -22,7 +22,7 @@ export interface ErrorResponse {
 
 export interface AddChannelRequest {
   channel: {
-    channelUrl: string;
+    channelInput: string;
     channelName: string;
     channelHandle: string;
     avatarUrl: string;
@@ -31,7 +31,7 @@ export interface AddChannelRequest {
     downloadVideo: boolean;
     downloadAudio: boolean;
     format: string;
-    resolution: string;
+    quality: string;
     downloadNewUploads: boolean;
     downloadEntire: boolean;
   };
