@@ -31,11 +31,11 @@ func New(baseCommand string, logger *zap.Logger) *Ytdl {
 }
 
 type VideoDownloadOptions struct {
-	Video      bool
-	Audio      bool
-	Resolution string
-	Format     string
-	Output     string
+	Video   bool
+	Audio   bool
+	Quality string
+	Format  string
+	Output  string
 }
 
 func (y *Ytdl) exec(args ...string) ([]byte, error) {

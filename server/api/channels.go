@@ -49,7 +49,7 @@ func (s *Server) getChannelInfoHandler(c echo.Context) error {
 func (s *Server) addChannelHandler(c echo.Context) error {
 	var addChannelRequest struct {
 		Channel struct {
-			ChannelUrl    string `json:"channelUrl"`
+			ChannelInput  string `json:"channelInput"`
 			ChannelName   string `json:"channelName"`
 			ChannelHandle string `json:"channelHandle"`
 			AvatarUrl     string `json:"avatarUrl"`
@@ -57,7 +57,7 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 		DownloadSettings struct {
 			DownloadVideo      bool   `json:"downloadVideo"`
 			DownloadAudio      bool   `json:"downloadAudio"`
-			Resolution         string `json:"resolution"`
+			Quality            string `json:"quality"`
 			Format             string `json:"format"`
 			DownloadNewUploads bool   `json:"downloadNewUploads"`
 			DownloadEntire     bool   `json:"downloadEntire"`
@@ -69,6 +69,15 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "json input is invalid")
 	}
 
+	if addChannelRequest.Channel.ChannelInput == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "channel url or handle must be provided")
+	}
+
+	channelUrl := addChannelRequest.Channel.ChannelInput
+	if !strings.Contains(addChannelRequest.Channel.ChannelInput, "youtube.com") {
+		channelUrl = fmt.Sprintf("https://youtube.com/%s", addChannelRequest.Channel.ChannelInput)
+	}
+
 	if !addChannelRequest.DownloadSettings.DownloadVideo && !addChannelRequest.DownloadSettings.DownloadAudio {
 		return echo.NewHTTPError(http.StatusBadRequest, "Either the Video or the Audio checkbox must be checked, or both.")
 	}
@@ -78,7 +87,7 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 	}
 
 	channel := repository.Channel{
-		ChannelUrl:    addChannelRequest.Channel.ChannelUrl,
+		ChannelUrl:    channelUrl,
 		ChannelName:   addChannelRequest.Channel.ChannelName,
 		ChannelHandle: addChannelRequest.Channel.ChannelHandle,
 		AvatarUrl:     addChannelRequest.Channel.AvatarUrl,
@@ -87,7 +96,7 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 	channelDownloadOptions := service.ChannelDownloadOptions{
 		Video:          addChannelRequest.DownloadSettings.DownloadVideo,
 		Audio:          addChannelRequest.DownloadSettings.DownloadAudio,
-		Resolution:     addChannelRequest.DownloadSettings.Resolution,
+		Quality:        addChannelRequest.DownloadSettings.Quality,
 		Format:         addChannelRequest.DownloadSettings.Format,
 		DownloadEntire: addChannelRequest.DownloadSettings.DownloadEntire,
 		Sync:           addChannelRequest.DownloadSettings.DownloadNewUploads,

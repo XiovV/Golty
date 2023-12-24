@@ -7,17 +7,17 @@ import (
 
 func (s *ChannelsService) channelOptionsToVideoOptions(channelOptions ChannelDownloadOptions, output string) ytdl.VideoDownloadOptions {
 	return ytdl.VideoDownloadOptions{
-		Video:      channelOptions.Video,
-		Audio:      channelOptions.Audio,
-		Resolution: channelOptions.Resolution,
-		Output:     output,
+		Video:   channelOptions.Video,
+		Audio:   channelOptions.Audio,
+		Quality: channelOptions.Quality,
+		Output:  output,
 	}
 }
 
 func (s *ChannelsService) channelOptionsToDBChannelOptions(channelId int, channelOptions ChannelDownloadOptions) repository.ChannelDownloadSettings {
 	return repository.ChannelDownloadSettings{
 		ChannelId:      channelId,
-		Resolution:     channelOptions.Resolution,
+		Quality:        channelOptions.Quality,
 		Format:         channelOptions.Format,
 		DownloadVideo:  repository.BoolAsInt(channelOptions.Video),
 		DownloadAudio:  repository.BoolAsInt(channelOptions.Audio),

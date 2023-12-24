@@ -37,11 +37,11 @@ func (s *ChannelsService) checkChannels() {
 		channelSettings, err := s.repository.GetChannelDownloadSettings(channel.ID)
 
 		downloadOptions := ytdl.VideoDownloadOptions{
-			Video:      bool(channelSettings.DownloadVideo),
-			Audio:      bool(channelSettings.DownloadAudio),
-			Resolution: channelSettings.Resolution,
-			Format:     channelSettings.Format,
-			Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
+			Video:   bool(channelSettings.DownloadVideo),
+			Audio:   bool(channelSettings.DownloadAudio),
+			Quality: channelSettings.Quality,
+			Format:  channelSettings.Format,
+			Output:  ytdl.CHANNELS_DEFAULT_OUTPUT,
 		}
 
 		s.DownloadChannelVideos(*channel, missingVideos, downloadOptions)

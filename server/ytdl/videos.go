@@ -18,7 +18,7 @@ type VideoMetadata struct {
 
 func (y *Ytdl) DownloadVideo(videoId string, options VideoDownloadOptions) error {
 	if options.Video {
-		resolutionFlag := fmt.Sprintf("res:%s", y.resolutions[options.Resolution])
+		resolutionFlag := fmt.Sprintf("res:%s", y.resolutions[options.Quality])
 		_, err := y.exec("-S", resolutionFlag, "-o", options.Output, videoId)
 		return err
 	}

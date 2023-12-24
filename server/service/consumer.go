@@ -29,11 +29,11 @@ func (s *ChannelsService) StartQueueConsumer() {
 		}
 
 		videoDownloadOptions := ytdl.VideoDownloadOptions{
-			Video:      bool(channelSettings.DownloadVideo),
-			Audio:      bool(channelSettings.DownloadAudio),
-			Resolution: channelSettings.Resolution,
-			Format:     channelSettings.Format,
-			Output:     ytdl.CHANNELS_DEFAULT_OUTPUT,
+			Video:   bool(channelSettings.DownloadVideo),
+			Audio:   bool(channelSettings.DownloadAudio),
+			Quality: channelSettings.Quality,
+			Format:  channelSettings.Format,
+			Output:  ytdl.CHANNELS_DEFAULT_OUTPUT,
 		}
 
 		s.logger.Debug("downloading channel", zap.Int("channelId", channel.ID))

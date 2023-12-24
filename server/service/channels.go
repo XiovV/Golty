@@ -27,7 +27,7 @@ type ChannelDownloadOptions struct {
 	Video          bool
 	Audio          bool
 	Format         string
-	Resolution     string
+	Quality        string
 	DownloadEntire bool
 	Sync           bool
 }
