@@ -27,16 +27,7 @@ func New(config *config.Config, logger *zap.Logger, repository *repository.Repos
 func (s *Server) Start() error {
 	e := echo.New()
 	e.HideBanner = true
-	e.Use(middleware.CORS(), middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
-		LogURI:    true,
-		LogStatus: true,
-		LogMethod: true,
-		LogError:  true,
-		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-			s.Logger.Info("request", zap.String("method", v.Method), zap.String("URI", v.URI), zap.Int("status", v.Status), zap.Error(v.Error))
-			return nil
-		},
-	}))
+	e.Use(middleware.CORS(), s.requestLogger())
 
 	usersPublic := e.Group("/users")
 	{
