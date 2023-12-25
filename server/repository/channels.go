@@ -18,8 +18,8 @@ type ChannelDownloadSettings struct {
 	ChannelId      int       `db:"channelId"`
 	Quality        string    `db:"quality"`
 	Format         string    `db:"format"`
-	DownloadVideo  BoolAsInt `db:"downloadVideo"`
-	DownloadAudio  BoolAsInt `db:"downloadAudio"`
+	Video          BoolAsInt `db:"video"`
+	Audio          BoolAsInt `db:"audio"`
 	DownloadEntire BoolAsInt `db:"downloadEntire"`
 	Sync           BoolAsInt `db:"sync"`
 }
@@ -41,7 +41,7 @@ func (r *Repository) InsertChannelDownloadSettings(settings ChannelDownloadSetti
 	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
 	defer cancel()
 
-	_, err := r.db.ExecContext(ctx, "INSERT INTO channel_settings (channelId, quality, format, downloadVideo, downloadAudio, downloadEntire, sync) VALUES ($1, $2, $3, $4, $5, $6, $7)", settings.ChannelId, settings.Quality, settings.Format, settings.DownloadVideo, settings.DownloadAudio, settings.DownloadEntire, settings.Sync)
+	_, err := r.db.ExecContext(ctx, "INSERT INTO channel_settings (channelId, quality, format, video, audio, downloadEntire, sync) VALUES ($1, $2, $3, $4, $5, $6, $7)", settings.ChannelId, settings.Quality, settings.Format, settings.Video, settings.Audio, settings.DownloadEntire, settings.Sync)
 	if err != nil {
 		return err
 	}
@@ -124,7 +124,7 @@ func (r *Repository) GetAllDownloadSettings() ([]ChannelDownloadSettings, error)
 	defer cancel()
 
 	channelDownloadSettings := []ChannelDownloadSettings{}
-	err := r.db.SelectContext(ctx, &channelDownloadSettings, "SELECT channelId, quality, format, downloadVideo, downloadAudio, downloadEntire, sync FROM channel_settings")
+	err := r.db.SelectContext(ctx, &channelDownloadSettings, "SELECT channelId, quality, format, video, audio, downloadEntire, sync FROM channel_settings")
 	if err != nil {
 		return []ChannelDownloadSettings{}, err
 	}
@@ -137,7 +137,7 @@ func (r *Repository) GetChannelDownloadSettings(channelId int) (ChannelDownloadS
 	defer cancel()
 
 	channelDownloadSettings := ChannelDownloadSettings{}
-	err := r.db.GetContext(ctx, &channelDownloadSettings, "SELECT quality, format, downloadVideo, downloadAudio, downloadEntire, sync FROM channel_settings WHERE channelId = $1", channelId)
+	err := r.db.GetContext(ctx, &channelDownloadSettings, "SELECT quality, format, video, audio, downloadEntire, sync FROM channel_settings WHERE channelId = $1", channelId)
 	if err != nil {
 		return ChannelDownloadSettings{}, err
 	}

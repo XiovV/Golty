@@ -19,8 +19,8 @@ func (s *ChannelsService) channelOptionsToDBChannelOptions(channelId int, channe
 		ChannelId:      channelId,
 		Quality:        channelOptions.Quality,
 		Format:         channelOptions.Format,
-		DownloadVideo:  repository.BoolAsInt(channelOptions.Video),
-		DownloadAudio:  repository.BoolAsInt(channelOptions.Audio),
+		Video:          repository.BoolAsInt(channelOptions.Video),
+		Audio:          repository.BoolAsInt(channelOptions.Audio),
 		DownloadEntire: repository.BoolAsInt(channelOptions.DownloadEntire),
 		Sync:           repository.BoolAsInt(channelOptions.Sync),
 	}

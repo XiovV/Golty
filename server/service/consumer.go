@@ -29,8 +29,8 @@ func (s *ChannelsService) StartQueueConsumer() {
 		}
 
 		videoDownloadOptions := ytdl.VideoDownloadOptions{
-			Video:   bool(channelSettings.DownloadVideo),
-			Audio:   bool(channelSettings.DownloadAudio),
+			Video:   bool(channelSettings.Video),
+			Audio:   bool(channelSettings.Audio),
 			Quality: channelSettings.Quality,
 			Format:  channelSettings.Format,
 			Output:  ytdl.CHANNELS_DEFAULT_OUTPUT,
