@@ -97,6 +97,10 @@ func (s *ChannelsService) AddChannel(channel repository.Channel, downloadOptions
 		return err
 	}
 
+	if !downloadOptions.DownloadEntire {
+		return nil
+	}
+
 	log.Debug("enqueueing channel")
 	s.ChannelsQueue.Enqueue(&createdChannel)
 
