@@ -6,6 +6,7 @@ type Channel struct {
 	ChannelName   string `db:"channelName"`
 	ChannelHandle string `db:"channelHandle"`
 	AvatarUrl     string `db:"avatarUrl"`
+	DateAdded     int64  `db:"dateAdded"`
 }
 
 type ChannelWithSize struct {
@@ -29,7 +30,7 @@ func (r *Repository) InsertChannel(channel Channel) (Channel, error) {
 	defer cancel()
 
 	var newChannel Channel
-	err := r.db.GetContext(ctx, &newChannel, "INSERT INTO channels (channelUrl, channelName, channelHandle, avatarUrl) VALUES ($1, $2, $3, $4) RETURNING *;", channel.ChannelUrl, channel.ChannelName, channel.ChannelHandle, channel.AvatarUrl)
+	err := r.db.GetContext(ctx, &newChannel, "INSERT INTO channels (channelUrl, channelName, channelHandle, avatarUrl, dateAdded) VALUES ($1, $2, $3, $4, $5) RETURNING *;", channel.ChannelUrl, channel.ChannelName, channel.ChannelHandle, channel.AvatarUrl, channel.DateAdded)
 	if err != nil {
 		return Channel{}, err
 	}

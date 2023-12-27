@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
@@ -91,6 +92,7 @@ func (s *Server) addChannelHandler(c echo.Context) error {
 		ChannelName:   addChannelRequest.Channel.ChannelName,
 		ChannelHandle: addChannelRequest.Channel.ChannelHandle,
 		AvatarUrl:     addChannelRequest.Channel.AvatarUrl,
+		DateAdded:     time.Now().Unix(),
 	}
 
 	channelDownloadOptions := service.ChannelDownloadOptions{
