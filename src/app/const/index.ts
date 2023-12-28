@@ -36,7 +36,7 @@ export const audioExtensions: DropdownItem[] = [
 ];
 
 export const audioQuality: DropdownItem[] = [
-  { name: "High (10)", value: "10" },
+  { name: "Best (0)", value: "0" },
   { name: "Medium (5)", value: "5" },
-  { name: "Low (1)", value: "1" },
+  { name: "Worst (10)", value: "10" },
 ]
