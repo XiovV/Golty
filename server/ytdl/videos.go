@@ -17,9 +17,18 @@ type VideoMetadata struct {
 }
 
 func (y *Ytdl) DownloadVideo(videoId string, options VideoDownloadOptions) error {
-	if options.Video {
-		resolutionFlag := fmt.Sprintf("res:%s", y.resolutions[options.Quality])
-		_, err := y.exec("-S", resolutionFlag, "-o", options.Output, videoId)
+	optionsFlag := y.generateDownloadOptionsFlag(options)
+
+	flags := []string{}
+
+	for _, flag := range optionsFlag {
+		flags = append(flags, flag)
+	}
+
+	flags = append(flags, []string{"-o", options.Output, videoId}...)
+
+	_, err := y.exec(flags...)
+	if err != nil {
 		return err
 	}
 
@@ -39,6 +48,30 @@ func (y *Ytdl) GetVideoMetadata(videoId string) (VideoMetadata, error) {
 	}
 
 	return videoMetadata, nil
+}
+
+func (y *Ytdl) generateDownloadOptionsFlag(options VideoDownloadOptions) []string {
+	// download video and audio
+	if options.Video && options.Audio {
+		return []string{"-f", fmt.Sprintf("bv*[height<=%s]+ba", options.Quality)}
+	}
+
+	// download video only
+	if options.Video && !options.Audio {
+		return []string{"-f", fmt.Sprintf("bv[height<=%s]", options.Quality)}
+	}
+
+	// download audio only
+	if !options.Video && options.Audio {
+		format := options.Format
+		if format == "auto" {
+			format = "mp3"
+		}
+		return []string{"-x", "--audio-format", format, "--audio-quality", options.Quality}
+	}
+
+	// returning an empty string because I feel like returning nil here could be dangerous
+	return []string{""}
 }
 
 func (y *Ytdl) getVideoFilename(path, videoId string) (string, error) {

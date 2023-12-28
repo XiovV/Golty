@@ -49,28 +49,3 @@ func (s *ChannelsService) GetMissingVideos(channel repository.Channel) ([]string
 
 	return channelVideos[:numberOfMissingVideos], nil
 }
-
-// func (s *ChannelsService) setCurrentlyDownloading(channel *repository.Channel) {
-// 	s.logger.Debug("adding channel to currently downloading", zap.String("channelHandle", channel.ChannelHandle))
-// 	// s.currentlyDownloading = channel
-// 	// s.CurrentlyDownloadingChannel <- channel
-// }
-//
-// func (s *ChannelsService) unsetCurrentlyDownloading() {
-// 	s.logger.Debug("removing channel from currently downloading")
-// 	// s.currentlyDownloading = nil
-// 	//
-// 	// s.CurrentlyDownloadingChannel <- nil
-// }
-//
-// func (s *ChannelsService) isChannelCurrentlyDownloading() bool {
-// 	if s.currentlyDownloading == nil {
-// 		return false
-// 	}
-//
-// 	return true
-// }
-//
-// func (s *ChannelsService) registerChannel(channel *repository.Channel) {
-// 	s.channels = append(s.channels, channel)
-// }
