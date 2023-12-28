@@ -34,6 +34,7 @@ import {
   videoResolutions,
   videoExtensions,
 } from "@/app/const";
+import { DropdownItem } from "@/types/dropdown";
 
 export default function AddChannelButton() {
   return (
@@ -56,12 +57,12 @@ export default function AddChannelButton() {
 
 function AddChannelForm() {
   const [downloadExtensions, setDownloadExtensions] =
-    useState<string[]>(videoExtensions);
+    useState<DropdownItem[]>(videoExtensions);
 
   const { loading, channelInfo, getChannelInfo } = useFetchChannelInfo();
   const { addChannel } = useAddChannel();
 
-  const isVideo = downloadExtensions.includes("m4a");
+  const isVideo = downloadExtensions == videoExtensions;
 
   return (
     <form
@@ -135,7 +136,7 @@ function AddChannelForm() {
               items={downloadExtensions}
               name="format"
               label="Format"
-              defaultValue="Auto"
+              defaultValue={downloadExtensions[0].name}
               disabled={!channelInfo}
             />
 
@@ -144,7 +145,7 @@ function AddChannelForm() {
                 items={videoResolutions}
                 name="quality"
                 label={"Resolution"}
-                defaultValue={videoResolutions[0]}
+                defaultValue={videoResolutions[0].value}
                 disabled={!channelInfo}
               />
             )}
@@ -154,7 +155,7 @@ function AddChannelForm() {
                 items={audioQuality}
                 name="quality"
                 label={"Quality"}
-                defaultValue={audioQuality[0]}
+                defaultValue={audioQuality[0].value}
                 disabled={!channelInfo}
               />
             )}
@@ -189,7 +190,7 @@ function AddChannelForm() {
 }
 
 interface DropdownProps {
-  items: string[];
+  items: DropdownItem[];
   name: string;
   label: string;
   defaultValue: string;
@@ -206,15 +207,15 @@ function Dropdown({
   return (
     <Select name={name} defaultValue={defaultValue} disabled={disabled}>
       <SelectTrigger className="w-[90px]">
-        <SelectValue placeholder="Auto" />
+        <SelectValue />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           <SelectLabel>{label}</SelectLabel>
 
           {items.map((item) => (
-            <SelectItem key={item} value={item}>
-              {item}
+            <SelectItem key={item.name} value={item.value}>
+              {item.name}
             </SelectItem>
           ))}
         </SelectGroup>
