@@ -7,7 +7,8 @@ import Image from "next/image";
 import { FaListUl } from "react-icons/fa";
 import { PiTelevisionFill } from "react-icons/pi";
 import { FaRegPlayCircle } from "react-icons/fa";
-import { MdVideoLibrary } from "react-icons/md";
+import { MdSpaceDashboard } from "react-icons/md";
+
 import { HiUsers } from "react-icons/hi";
 import { MdBugReport } from "react-icons/md";
 import { FaBell } from "react-icons/fa";
@@ -20,7 +21,7 @@ const libraryLinks = [
 ];
 
 const settingsLinks = [
-  { name: "Libraries", href: "/libraries", icon: MdVideoLibrary },
+  { name: "Dashboard", href: "/libraries", icon: MdSpaceDashboard },
   { name: "Users", href: "/users", icon: HiUsers },
   { name: "Logs", href: "/logs", icon: MdBugReport },
   { name: "Notifications", href: "/notifications", icon: FaBell },
