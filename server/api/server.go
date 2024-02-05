@@ -29,6 +29,8 @@ func (s *Server) Start() error {
 	e.HideBanner = true
 	e.Use(middleware.CORS(), s.requestLogger())
 
+	e.Static("/", "./dist")
+
 	usersPublic := e.Group("/users")
 	{
 		usersPublic.POST("/login", s.loginUserHandler)
@@ -53,11 +55,11 @@ func (s *Server) Start() error {
 		channels.GET("/sync/:channelId", s.syncChannelHandler)
 	}
 
-	assets := e.Group("/assets")
-	{
-		assets.GET("/thumbnails/:thumbnail", s.serveThumbnail)
-		assets.GET("/avatars/:avatar", s.serveAvatar)
-	}
+	// assets := e.Group("/assets")
+	// {
+	// 	assets.GET("/thumbnails/:thumbnail", s.serveThumbnail)
+	// 	assets.GET("/avatars/:avatar", s.serveAvatar)
+	// }
 
 	return e.Start(":" + s.Config.Port)
 }
