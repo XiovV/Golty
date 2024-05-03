@@ -5,6 +5,7 @@ import (
 	"golty/repository"
 	"golty/service"
 	"golty/ytdl"
+	"net/http"
 
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -29,7 +30,10 @@ func (s *Server) Start() error {
 	e.HideBanner = true
 	e.Use(middleware.CORS(), s.requestLogger())
 
-	e.Static("/", "./dist")
+	assetHandler := http.FileServer(getFrontendAssets())
+
+	e.GET("/", echo.WrapHandler(assetHandler))
+	e.GET("/assets/*", echo.WrapHandler(http.StripPrefix("/assets/", assetHandler)))
 
 	usersPublic := e.Group("/users")
 	{
