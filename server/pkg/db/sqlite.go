@@ -23,7 +23,5 @@ func New(dbPath string, logger *zap.SugaredLogger) (*DB, error) {
 
 	db.initSchema()
 
-	db.initUser()
-
 	return db, nil
 }

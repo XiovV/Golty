@@ -27,6 +27,8 @@ func main() {
 		logger.Fatalln("could not initialize database", "error", err)
 	}
 
+	db.InitUser()
+
 	server := server.New(c, logger, db)
 
 	err = server.Start()

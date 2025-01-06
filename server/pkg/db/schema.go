@@ -3,8 +3,8 @@ package db
 const schema = `
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email TEXT NOT NULL UNIQUE,
-  password TEXT NOT NULL
+  username TEXT NOT NULL UNIQUE,
+  password BLOB NOT NULL
 )
 `
 

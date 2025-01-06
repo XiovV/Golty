@@ -2,31 +2,44 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
+
+	"github.com/matthewhartstonge/argon2"
 )
 
 type User struct {
 	Email    string `db:"email"`
-	Password string `db:"password"`
+	Password []byte `db:"password"`
 }
 
-func (db *DB) initUser() {
-	var user User
+func (db *DB) InitUser() error {
+	var existingUser User
 
-	err := db.db.Get(&user, "SELECT email, password FROM users LIMIT 1")
+	err := db.db.Get(&existingUser, "SELECT email, password FROM users LIMIT 1")
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return
+			db.logger.Info("no users found, generating default admin user")
+			return db.createDefaultUser()
 		}
 
 		db.logger.Fatal("an unknown error occured while checking for existing users", "error", err)
-		return
+		return err
 	}
+
+	return nil
 }
 
-func (db *DB) createDefaultUser() {
-	_, err := db.db.Exec("INSERT INTO users (email, password) VALUES ($1, $2)", "admin@email.com", "test123")
+func (db *DB) createDefaultUser() error {
+	argon := argon2.DefaultConfig()
+
+	encoded, err := argon.HashEncoded([]byte(DEFAULT_ADMIN_PASSWORD))
 	if err != nil {
-		fmt.Println("error", err)
+		return err
 	}
+
+	_, err = db.db.Exec("INSERT INTO users (username, password) VALUES ($1, $2)", DEFAULT_ADMIN_USERNAME, encoded)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
