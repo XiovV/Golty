@@ -22,5 +22,11 @@ func (s *Server) Start() error {
 	e := echo.New()
 	e.HideBanner = true
 
+	api := e.Group("/api")
+
+	authGroup := api.Group("/auth")
+
+	authGroup.POST("/login", s.loginHandler)
+
 	return e.Start(":" + s.config.Port)
 }

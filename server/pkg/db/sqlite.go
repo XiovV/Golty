@@ -1,10 +1,15 @@
 package db
 
 import (
+	"context"
+	"time"
+
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
+
+const DefaultQueryTimeout = 5
 
 type DB struct {
 	db     *sqlx.DB
@@ -24,4 +29,8 @@ func New(dbPath string, logger *zap.SugaredLogger) (*DB, error) {
 	db.initSchema()
 
 	return db, nil
+}
+
+func newBackgroundContext(duration int) (context.Context, context.CancelFunc) {
+	return context.WithTimeout(context.Background(), time.Duration(duration)*time.Second)
 }

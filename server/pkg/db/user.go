@@ -7,14 +7,15 @@ import (
 )
 
 type User struct {
-	Email    string `db:"email"`
+	ID       int    `db:"id"`
+	Username string `db:"username"`
 	Password []byte `db:"password"`
 }
 
 func (db *DB) InitUser() error {
 	var existingUser User
 
-	err := db.db.Get(&existingUser, "SELECT email, password FROM users LIMIT 1")
+	err := db.db.Get(&existingUser, "SELECT username, password FROM users LIMIT 1")
 	if err != nil {
 		if err == sql.ErrNoRows {
 			db.logger.Info("no users found, generating default admin user")
@@ -42,4 +43,18 @@ func (db *DB) createDefaultUser() error {
 	}
 
 	return nil
+}
+
+func (db *DB) GetUserByUsername(username string) (User, error) {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
+
+	var user User
+
+	err := db.db.GetContext(ctx, &user, "SELECT id, username, password FROM users WHERE username = $1", username)
+	if err != nil {
+		return User{}, err
+	}
+
+	return user, nil
 }
