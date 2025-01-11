@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/XiovV/Golty/pkg/config"
@@ -11,7 +10,6 @@ import (
 )
 
 func main() {
-	fmt.Println("starting")
 	logger, err := zapLogger.New()
 	if err != nil {
 		log.Fatalln("logger init error:", err)
@@ -27,9 +25,12 @@ func main() {
 		logger.Fatalln("could not initialize database", "error", err)
 	}
 
-	db.InitUser()
-
 	server := server.New(c, logger, db)
+
+	err = server.Bootstrap()
+	if err != nil {
+		logger.Fatalln("could not bootstrap the server", "error", err)
+	}
 
 	err = server.Start()
 	if err != nil {

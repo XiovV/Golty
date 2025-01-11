@@ -1,48 +1,34 @@
 package db
 
-import (
-	"database/sql"
-
-	"github.com/matthewhartstonge/argon2"
-)
-
 type User struct {
 	ID       int    `db:"id"`
 	Username string `db:"username"`
 	Password []byte `db:"password"`
 }
 
-func (db *DB) InitUser() error {
-	var existingUser User
+func (db *DB) CreateUser(user User) error {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
 
-	err := db.db.Get(&existingUser, "SELECT username, password FROM users LIMIT 1")
+	_, err := db.db.ExecContext(ctx, "INSERT INTO users (username, password) VALUES ($1, $2)", user.Username, user.Password)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			db.logger.Info("no users found, generating default admin user")
-			return db.createDefaultUser()
-		}
-
-		db.logger.Fatal("an unknown error occured while checking for existing users", "error", err)
 		return err
 	}
 
 	return nil
 }
 
-func (db *DB) createDefaultUser() error {
-	argon := argon2.DefaultConfig()
+func (db *DB) GetNumberOfUsers() (int, error) {
+	ctx, cancel := newBackgroundContext(DefaultQueryTimeout)
+	defer cancel()
 
-	encoded, err := argon.HashEncoded([]byte(DEFAULT_ADMIN_PASSWORD))
+	var count int
+	err := db.db.GetContext(ctx, &count, "SELECT COUNT(*) FROM users")
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	_, err = db.db.Exec("INSERT INTO users (username, password) VALUES ($1, $2)", DEFAULT_ADMIN_USERNAME, encoded)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return count, nil
 }
 
 func (db *DB) GetUserByUsername(username string) (User, error) {

@@ -1,4 +1,4 @@
-package db
+package server
 
 const (
 	DEFAULT_ADMIN_USERNAME = "admin"
