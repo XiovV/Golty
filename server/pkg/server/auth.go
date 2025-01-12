@@ -67,7 +67,7 @@ func (s *Server) loginHandler(c echo.Context) error {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	accessToken, err := token.SignedString([]byte("temptoken"))
+	accessToken, err := token.SignedString([]byte(s.tokenSecret))
 	if err != nil {
 		s.logger.Error("could not create jwt", "error", err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")

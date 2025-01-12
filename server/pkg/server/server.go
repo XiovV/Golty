@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
-	"fmt"
 
 	"go.uber.org/zap"
 
@@ -15,9 +14,10 @@ import (
 )
 
 type Server struct {
-	config *config.Config
-	logger *zap.SugaredLogger
-	db     *db.DB
+	config      *config.Config
+	logger      *zap.SugaredLogger
+	db          *db.DB
+	tokenSecret string
 }
 
 func New(config *config.Config, logger *zap.SugaredLogger, db *db.DB) *Server {
@@ -35,7 +35,7 @@ func (s *Server) Bootstrap() error {
 		return err
 	}
 
-	fmt.Println("SECRET", secret)
+	s.tokenSecret = secret
 
 	return nil
 }
