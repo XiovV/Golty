@@ -30,5 +30,9 @@ func (s *Server) Start() error {
 	authGroup.POST("/login", s.loginHandler)
 	authGroup.POST("/refresh-token", s.refreshTokenHandler)
 
+	// protected := api.Group("/protected")
+	// protected.Use(echojwt.WithConfig(s.jwtConfig))
+	// protected.GET("/test", s.protectedRouteHandler)
+
 	return e.Start(":" + s.config.Port)
 }
