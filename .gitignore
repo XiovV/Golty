@@ -1,5 +1,6 @@
 server/server
 server/golty.db
+server/tmp
 
 .idea
 node_modules
