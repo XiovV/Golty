@@ -3,7 +3,9 @@ package server
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -62,16 +64,94 @@ func (s *Server) loginHandler(c echo.Context) error {
 		user.ID,
 		user.Username,
 		jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 15)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * JWT_EXPIRATION_TIME)),
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	accessToken, err := token.SignedString([]byte(s.tokenSecret))
+	accessToken, err := token.SignedString(s.jwtConfig.SigningKey)
 	if err != nil {
 		s.logger.Error("could not create jwt", "error", err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{"access_token": accessToken, "refresh_token": refreshToken})
+}
+
+func (s *Server) refreshTokenHandler(c echo.Context) error {
+	authHeader := c.Request().Header.Get("Authorization")
+
+	if authHeader == "" {
+		s.logger.Warn("authorization header is missing")
+		return echo.NewHTTPError(http.StatusUnauthorized, "authorization header is missing")
+	}
+
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		s.logger.Warn("invalid authorization header format")
+		return echo.NewHTTPError(http.StatusUnauthorized, "invalid authorization header format")
+	}
+
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+
+	parsedToken, err := jwt.ParseWithClaims(token, &jwtCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return s.jwtConfig.SigningKey, nil
+	})
+
+	if err != nil && !errors.Is(err, jwt.ErrTokenExpired) {
+		s.logger.Errorln("could not parse token", "error", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
+	}
+
+	claims, ok := parsedToken.Claims.(*jwtCustomClaims)
+	if !ok {
+		s.logger.Errorln("invalid claims type")
+		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
+	}
+
+	var refreshTokenRequest struct {
+		RefreshToken string `json:"refreshToken"`
+	}
+
+	err = c.Bind(&refreshTokenRequest)
+	if err != nil {
+		s.logger.Warn("could not bind request json body", "error", err)
+		return echo.NewHTTPError(http.StatusBadRequest, "json input is invalid")
+	}
+
+	refreshTokenHash := sha512.Sum512([]byte(refreshTokenRequest.RefreshToken))
+	refreshTokenHashString := hex.EncodeToString(refreshTokenHash[:])
+
+	_, err = s.db.GetRefreshToken(claims.UserID, refreshTokenHashString)
+	if err != nil {
+		s.logger.Errorln("could not find refresh token", "error", err)
+		return echo.NewHTTPError(http.StatusUnauthorized)
+	}
+
+	newRefreshToken := uuid.NewString()
+
+	newRefreshTokenHash := sha512.Sum512([]byte(newRefreshToken))
+	newRefreshTokenHashString := hex.EncodeToString(newRefreshTokenHash[:])
+
+	err = s.db.UpdateRefreshToken(claims.UserID, refreshTokenHashString, newRefreshTokenHashString)
+	if err != nil {
+		s.logger.Errorln("could not update refresh token", "error", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
+	}
+
+	newClaims := &jwtCustomClaims{
+		claims.UserID,
+		claims.Username,
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * JWT_EXPIRATION_TIME)),
+		},
+	}
+
+	newToken := jwt.NewWithClaims(jwt.SigningMethodHS256, newClaims)
+	accessToken, err := newToken.SignedString(s.jwtConfig.SigningKey)
+	if err != nil {
+		s.logger.Error("could not create jwt", "error", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "internal server error")
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{"access_token": accessToken, "refresh_token": newRefreshToken})
 }

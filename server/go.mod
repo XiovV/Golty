@@ -13,6 +13,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jmoiron/sqlx v1.4.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/labstack/echo-jwt/v4 v4.3.0 // indirect
 	github.com/labstack/echo/v4 v4.13.2 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/matthewhartstonge/argon2 v1.1.1 // indirect
@@ -26,6 +27,7 @@ require (
 	golang.org/x/net v0.32.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/time v0.8.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3 // indirect
 )

@@ -23,7 +23,6 @@ func New() (*Config, error) {
 		}
 
 		return &cfg, err
-
 	}
 
 	err := cleanenv.ReadConfig(".env", &cfg)
