@@ -7,6 +7,7 @@ import (
 	"github.com/XiovV/Golty/pkg/db"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Server struct {
@@ -23,6 +24,8 @@ func New(config *config.Config, logger *zap.SugaredLogger, db *db.DB) *Server {
 func (s *Server) Start() error {
 	e := echo.New()
 	e.HideBanner = true
+
+	e.Use(middleware.CORS())
 
 	api := e.Group("/api")
 

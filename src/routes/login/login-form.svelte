@@ -4,6 +4,7 @@
 	import { formSchema, type FormSchema } from './schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { LOGIN } from '../../constants/api';
 
 	export let data: SuperValidated<Infer<FormSchema>>;
 
@@ -14,7 +15,7 @@
 	const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" use:enhance>
+<form method="POST" action={LOGIN} use:enhance>
 	<Form.Field {form} name="username">
 		<Form.Control let:attrs>
 			<Form.Label class="text-white">Username</Form.Label>
